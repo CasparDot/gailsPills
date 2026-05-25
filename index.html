@@ -13,7 +13,7 @@
      PASTE YOUR ANTHROPIC API KEY BELOW (between the quotes)
      ============================================================ -->
 <script>
-  const ANTHROPIC_API_KEY = "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";
+  const ANTHROPIC_API_KEY = "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";
 </script>
 <!-- ============================================================ -->
 
@@ -868,6 +868,9 @@ Use empty string if a field is not visible. Do not guess.` }
       })
     });
     const data = await resp.json();
+    if (!resp.ok) {
+      throw new Error('API error ' + resp.status + ': ' + JSON.stringify(data?.error || data));
+    }
     const text = (data.content || []).find(b => b.type === 'text')?.text || '';
     const clean = text.replace(/```json|```/g,'').trim();
     const parsed = JSON.parse(clean);
@@ -883,7 +886,13 @@ Use empty string if a field is not visible. Do not guess.` }
     document.getElementById('modalPhoto').style.display  = 'none';
     document.getElementById('modalManual').style.display = '';
   } catch (err) {
-    document.getElementById('scanError').textContent = 'Couldn\'t read that label — please fill in the details below.';
+    // Show the real error so we can diagnose it
+    let errMsg = 'Error: ' + (err.message || String(err));
+    try {
+      // Try to get the API response body if available
+      if (err._body) errMsg += ' | ' + err._body;
+    } catch {}
+    document.getElementById('scanError').textContent = errMsg;
     document.getElementById('scanError').style.display = '';
     document.querySelectorAll('.m-tab').forEach((t,i) => t.classList.toggle('active', i===1));
     document.getElementById('modalPhoto').style.display  = 'none';
