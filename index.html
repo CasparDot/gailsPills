@@ -13,7 +13,7 @@
      PASTE YOUR ANTHROPIC API KEY BELOW (between the quotes)
      ============================================================ -->
 <script>
-  const ANTHROPIC_API_KEY = "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";
+  const WORKER_URL = "https://gails-pills-proxy.casparlewis.workers.dev";
 </script>
 <!-- ============================================================ -->
 
@@ -243,6 +243,7 @@
   .mc-name { font-family: 'Fraunces', serif; font-size: 18px; font-weight: 600; color: var(--brown-dark); }
   .mc-detail { font-size: 13px; color: var(--brown-light); margin-top: 3px; }
   .mc-notif { font-size: 12px; color: var(--brown-pale); margin-top: 4px; }
+  .mc-extra { font-size: 12px; color: var(--brown-light); margin-top: 4px; line-height: 1.5; }
   .del-btn { background: none; border: none; font-size: 20px; cursor: pointer; color: #c4a090; padding: 2px 6px; flex-shrink: 0; }
 
   .bar-wrap { margin-top: 12px; }
@@ -414,6 +415,28 @@
           <label>Repeats left</label>
           <input id="fRepeats" type="number" placeholder="e.g. 5">
         </div>
+      </div>
+      <div class="field">
+        <label>Doctor</label>
+        <input id="fDoctor" placeholder="e.g. Dr D. Smith">
+      </div>
+      <div class="field">
+        <label>Pharmacy name</label>
+        <input id="fPharmacyName" placeholder="e.g. Pharmacy 777 Baldivis">
+      </div>
+      <div class="row2">
+        <div class="field">
+          <label>Pharmacy phone</label>
+          <input id="fPharmacyPhone" type="tel" placeholder="e.g. 08 6119 9127">
+        </div>
+        <div class="field">
+          <label>Dispensed date</label>
+          <input id="fDispensedDate" placeholder="e.g. 27/03/26">
+        </div>
+      </div>
+      <div class="field">
+        <label>Pharmacy address</label>
+        <input id="fPharmacyAddress" placeholder="e.g. 114 Amazon Drive, Baldivis WA 6171">
       </div>
       <div class="notif-row">
         <span>🔔 Daily reminders</span>
@@ -652,12 +675,20 @@ function renderMedicines() {
          </div>` : '';
     const notifNote = med.reminders
       ? `<div class="mc-notif">🔔 ${(med.reminderTimes||[]).join(', ')}</div>` : '';
+    const doctorLine = med.doctor
+      ? `<div class="mc-extra">👨‍⚕️ ${med.doctor}</div>` : '';
+    const pharmacyLine = med.pharmacyName
+      ? `<div class="mc-extra">🏥 ${med.pharmacyName}${med.pharmacyPhone ? ` · <a href="tel:${med.pharmacyPhone}" style="color:var(--terracotta);text-decoration:none;font-weight:600">${med.pharmacyPhone}</a>` : ''}</div>` : '';
+    const addressLine = med.pharmacyAddress
+      ? `<div class="mc-extra" style="color:var(--brown-pale)">📍 ${med.pharmacyAddress}</div>` : '';
+    const dateLine = med.dispensedDate
+      ? `<div class="mc-extra" style="color:var(--brown-pale)">📅 Dispensed ${med.dispensedDate}</div>` : '';
     return `<div class="manage-card">
       <div class="mc-header">
         <div>
           <div class="mc-name">${med.name}</div>
           <div class="mc-detail">${[med.strength, med.frequency].filter(Boolean).join(' · ')}</div>
-          ${notifNote}
+          ${notifNote}${doctorLine}${pharmacyLine}${addressLine}${dateLine}
         </div>
         <button class="del-btn" onclick="deleteMed('${med.id}')">🗑</button>
       </div>
@@ -699,9 +730,9 @@ function getAlerts() {
     const repeats = parseInt(med.repeatsLeft || '0');
     if (days === null) return;
     if (days <= 3 && repeats === 0) {
-      out.push({ type:'urgent', title: med.name, msg:`Only ${days} day${days!==1?'s':''} supply left with no repeats. Book with your doctor soon!` });
+      out.push({ type:'urgent', title: med.name, msg:`Only ${days} day${days!==1?'s':''} supply left with no repeats. ${med.doctor ? 'Call '+med.doctor+' to get a new script.' : 'Book with your doctor soon!'} ${med.pharmacyPhone ? 'Pharmacy: '+med.pharmacyPhone : ''}`.trim() });
     } else if (days <= 7) {
-      out.push({ type:'warn', title: med.name, msg:`About ${days} days supply left. ${repeats > 0 ? `${repeats} repeat${repeats>1?'s':''} remaining — time to get a new script.` : 'No repeats — see your doctor.'}` });
+      out.push({ type:'warn', title: med.name, msg:`About ${days} days supply left. ${repeats > 0 ? repeats+' repeat'+(repeats>1?'s':'')+' remaining — time to get a new script.' : 'No repeats — see your doctor.'} ${med.pharmacyPhone ? 'Pharmacy: '+med.pharmacyPhone : ''}`.trim() });
     }
   });
   return out;
@@ -770,12 +801,17 @@ function resetModal() {
   document.getElementById('retakeBtn').style.display    = 'none';
   document.getElementById('scanMsg').style.display      = 'none';
   document.getElementById('scanError').style.display    = 'none';
-  document.getElementById('fName').value      = '';
-  document.getElementById('fStrength').value  = '';
-  document.getElementById('fPPD').value       = '1';
-  document.getElementById('fFreq').value      = 'Once daily';
-  document.getElementById('fQty').value       = '';
-  document.getElementById('fRepeats').value   = '';
+  document.getElementById('fName').value            = '';
+  document.getElementById('fStrength').value        = '';
+  document.getElementById('fPPD').value             = '1';
+  document.getElementById('fFreq').value            = 'Once daily';
+  document.getElementById('fQty').value             = '';
+  document.getElementById('fRepeats').value         = '';
+  document.getElementById('fDoctor').value          = '';
+  document.getElementById('fPharmacyName').value    = '';
+  document.getElementById('fPharmacyPhone').value   = '';
+  document.getElementById('fPharmacyAddress').value = '';
+  document.getElementById('fDispensedDate').value   = '';
   document.getElementById('notifToggle').classList.add('on');
   buildTimeChips();
   // reset modal tabs to photo
@@ -841,27 +877,22 @@ function retakePhoto() {
 
 async function scanLabel() {
   if (!currentPhotoB64) return;
-  if (!ANTHROPIC_API_KEY || ANTHROPIC_API_KEY === 'YOUR_API_KEY_HERE') {
-    document.getElementById('scanError').textContent = 'Please add your API key to the top of the HTML file.';
-    document.getElementById('scanError').style.display = '';
-    return;
-  }
   document.getElementById('scanBtn').disabled = true;
   document.getElementById('scanMsg').style.display = '';
   document.getElementById('scanError').style.display = 'none';
   try {
-    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+    const resp = await fetch(WORKER_URL, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-api-key': ANTHROPIC_API_KEY, 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
+        model: 'claude-sonnet-4-6',
         max_tokens: 800,
         messages: [{
           role: 'user',
           content: [
             { type: 'image', source: { type: 'base64', media_type: currentPhotoMime, data: currentPhotoB64 } },
             { type: 'text', text: `You are reading an Australian pharmacy dispensing label. Return ONLY valid JSON, no markdown, no explanation:
-{"name":"medication name","strength":"e.g. 10mg or empty","frequency":"e.g. Once daily","pillsPerDose":"tablets per dose as string","totalQty":"total qty dispensed as string","repeatsLeft":"repeats remaining as string or 0"}
+{"name":"medication name","strength":"e.g. 5mg or empty","frequency":"e.g. Once daily","pillsPerDose":"tablets per dose as string","totalQty":"total qty dispensed as string","repeatsLeft":"repeats remaining as string or 0","patientName":"patient full name","doctor":"prescribing doctor name e.g. Dr D. Smith","pharmacyName":"pharmacy name e.g. Pharmacy 777 Baldivis","pharmacyPhone":"pharmacy phone number","pharmacyAddress":"full pharmacy address","dispensedDate":"date dispensed as DD/MM/YY or empty"}
 Use empty string if a field is not visible. Do not guess.` }
           ]
         }]
@@ -875,12 +906,17 @@ Use empty string if a field is not visible. Do not guess.` }
     const clean = text.replace(/```json|```/g,'').trim();
     const parsed = JSON.parse(clean);
     // Fill form
-    document.getElementById('fName').value     = parsed.name     || '';
-    document.getElementById('fStrength').value = parsed.strength || '';
-    document.getElementById('fPPD').value      = parsed.pillsPerDose || '1';
-    document.getElementById('fFreq').value     = parsed.frequency || 'Once daily';
-    document.getElementById('fQty').value      = parsed.totalQty  || '';
-    document.getElementById('fRepeats').value  = parsed.repeatsLeft || '';
+    document.getElementById('fName').value           = parsed.name          || '';
+    document.getElementById('fStrength').value       = parsed.strength      || '';
+    document.getElementById('fPPD').value            = parsed.pillsPerDose  || '1';
+    document.getElementById('fFreq').value           = parsed.frequency     || 'Once daily';
+    document.getElementById('fQty').value            = parsed.totalQty      || '';
+    document.getElementById('fRepeats').value        = parsed.repeatsLeft   || '';
+    document.getElementById('fDoctor').value         = parsed.doctor        || '';
+    document.getElementById('fPharmacyName').value   = parsed.pharmacyName  || '';
+    document.getElementById('fPharmacyPhone').value  = parsed.pharmacyPhone || '';
+    document.getElementById('fPharmacyAddress').value= parsed.pharmacyAddress || '';
+    document.getElementById('fDispensedDate').value  = parsed.dispensedDate || '';
     // Switch to manual tab for review
     document.querySelectorAll('.m-tab').forEach((t,i) => t.classList.toggle('active', i===1));
     document.getElementById('modalPhoto').style.display  = 'none';
@@ -915,8 +951,13 @@ function saveMed() {
     pillsPerDose:  document.getElementById('fPPD').value || '1',
     frequency:     document.getElementById('fFreq').value,
     reminderTimes: [...selectedTimes],
-    totalQty:      document.getElementById('fQty').value,
-    repeatsLeft:   document.getElementById('fRepeats').value,
+    totalQty:        document.getElementById('fQty').value,
+    repeatsLeft:     document.getElementById('fRepeats').value,
+    doctor:          document.getElementById('fDoctor').value.trim(),
+    pharmacyName:    document.getElementById('fPharmacyName').value.trim(),
+    pharmacyPhone:   document.getElementById('fPharmacyPhone').value.trim(),
+    pharmacyAddress: document.getElementById('fPharmacyAddress').value.trim(),
+    dispensedDate:   document.getElementById('fDispensedDate').value.trim(),
     reminders,
     addedAt:       new Date().toISOString()
   };
