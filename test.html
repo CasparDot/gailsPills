@@ -30,11 +30,6 @@
 <h2>🔬 Label Scan Tester</h2>
 
 <div class="card">
-  <label>Anthropic API Key</label>
-  <input type="password" id="apiKey" placeholder="sk-ant-api03-..." autocomplete="off">
-</div>
-
-<div class="card">
   <label>Pharmacy Label Photo</label>
   <input type="file" id="photoInput" accept="image/*" capture="environment" style="display:none" onchange="handlePhoto(this)">
   <div class="photo-zone" onclick="document.getElementById('photoInput').click()">
@@ -101,8 +96,6 @@ function setStatus(msg, type='info') {
 }
 
 async function scan() {
-  const key = document.getElementById('apiKey').value.trim();
-  if (!key) { setStatus('Please enter your API key above.', 'error'); return; }
   if (!b64)  { setStatus('Please take a photo first.', 'error'); return; }
 
   document.getElementById('scanBtn').disabled = true;
@@ -110,13 +103,10 @@ async function scan() {
   setStatus('Sending image to Claude… this takes a few seconds.', 'info');
 
   try {
-    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+    const resp = await fetch('https://gails-pills-proxy.casparlewis.workers.dev', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'x-api-key': key,
-        'anthropic-version': '2023-06-01',
-        'anthropic-dangerous-direct-browser-access': 'true'
       },
       body: JSON.stringify({
         model: 'claude-sonnet-4-6',
@@ -137,11 +127,17 @@ First, describe everything you can see on the label in plain English.
 Then, extract these specific fields and return them as JSON at the end:
 {
   "name": "medication name",
-  "strength": "dosage strength e.g. 10mg",
+  "strength": "dosage strength e.g. 5mg",
   "frequency": "how often e.g. Once daily",
   "pillsPerDose": "number of tablets per dose",
   "totalQty": "total quantity dispensed",
-  "repeatsLeft": "number of repeats remaining"
+  "repeatsLeft": "number of repeats remaining",
+  "patientName": "patient full name",
+  "doctor": "prescribing doctor name",
+  "pharmacyName": "pharmacy name",
+  "pharmacyPhone": "pharmacy phone number",
+  "pharmacyAddress": "full pharmacy address",
+  "dispensedDate": "date dispensed as DD/MM/YY"
 }
 
 Use empty string for any field you cannot clearly read.`
