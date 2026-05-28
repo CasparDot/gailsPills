@@ -190,6 +190,31 @@
   @keyframes slideDown{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
   @keyframes pulse{0%,100%{opacity:1}50%{opacity:.45}}
   @keyframes toastIn{from{opacity:0;transform:translateX(-50%) translateY(10px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+
+  /* ── CHAT ─────────────────────────────────────── */
+  #tabChat{display:flex;flex-direction:column;height:calc(100vh - 200px);padding:0}
+  .chat-messages{flex:1;overflow-y:auto;padding:16px;-webkit-overflow-scrolling:touch;display:flex;flex-direction:column;gap:12px}
+  .chat-bubble{max-width:82%;padding:12px 16px;border-radius:20px;font-size:15px;line-height:1.55;animation:fadeUp .25s ease}
+  .chat-bubble.ai{background:white;border:1.5px solid var(--border-light);color:var(--brown-dark);border-bottom-left-radius:6px;align-self:flex-start;box-shadow:0 2px 8px rgba(196,112,58,.07)}
+  .chat-bubble.user{background:linear-gradient(135deg,var(--terracotta),var(--terracotta-light));color:white;border-bottom-right-radius:6px;align-self:flex-end}
+  .chat-bubble.typing{background:white;border:1.5px solid var(--border-light);align-self:flex-start;padding:14px 18px}
+  .typing-dots{display:flex;gap:5px;align-items:center}
+  .typing-dots span{width:8px;height:8px;background:var(--brown-pale);border-radius:50%;animation:typingBounce 1.2s infinite}
+  .typing-dots span:nth-child(2){animation-delay:.2s}
+  .typing-dots span:nth-child(3){animation-delay:.4s}
+  .quick-replies{display:flex;flex-wrap:wrap;gap:8px;padding:8px 16px 4px}
+  .qr-btn{padding:9px 16px;background:white;border:1.5px solid var(--terracotta);border-radius:20px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;color:var(--terracotta);cursor:pointer;transition:all .15s;white-space:nowrap}
+  .qr-btn:active{background:var(--terracotta);color:white}
+  .chat-input-row{display:flex;gap:8px;padding:10px 16px 20px;border-top:1px solid var(--border-light);background:var(--cream);flex-shrink:0}
+  .chat-input{flex:1;padding:12px 16px;border:1.5px solid var(--border);border-radius:24px;font-family:'DM Sans',sans-serif;font-size:15px;color:var(--brown-dark);outline:none;background:white;transition:border-color .2s}
+  .chat-input:focus{border-color:var(--terracotta)}
+  .chat-send-btn{width:46px;height:46px;background:linear-gradient(135deg,var(--terracotta),var(--terracotta-light));border:none;border-radius:50%;cursor:pointer;font-size:20px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:opacity .2s}
+  .chat-send-btn:active{opacity:.8}
+  .chat-send-btn:disabled{opacity:.4;cursor:default}
+  .chat-med-card{background:var(--green-bg);border:1.5px solid var(--green-border);border-radius:14px;padding:10px 14px;margin-top:6px;font-size:13px}
+  .chat-med-card .cm-name{font-family:'Fraunces',serif;font-size:16px;font-weight:600;color:var(--brown-dark)}
+  .chat-med-card .cm-detail{color:var(--brown-light);margin-top:2px}
+  @keyframes typingBounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-6px)}}
 </style>
 </head>
 <body>
@@ -211,12 +236,14 @@
     <button class="tab active" onclick="switchTab('today',this)">Today</button>
     <button class="tab" onclick="switchTab('medicines',this)">Medicines</button>
     <button class="tab" id="alertsTab" onclick="switchTab('alerts',this)">Alerts</button>
+    <button class="tab" onclick="switchTab('chat',this)">💬 Chat</button>
   </div>
 
   <div class="content">
     <div id="tabToday"></div>
     <div id="tabMedicines" style="display:none"></div>
     <div id="tabAlerts" style="display:none"></div>
+    <div id="tabChat" style="display:none"></div>
   </div>
 </div>
 
@@ -628,10 +655,11 @@ function switchTab(name,btn){
   currentTab=name;
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   btn.classList.add('active');
-  ['today','medicines','alerts'].forEach(t=>{
+  ['today','medicines','alerts','chat'].forEach(t=>{
     document.getElementById('tab'+t.charAt(0).toUpperCase()+t.slice(1)).style.display=t===name?'':'none';
   });
-  render();
+  if(name==='chat') renderChat();
+  else render();
 }
 
 // ─── MODAL ────────────────────────────────────────────────────
@@ -931,6 +959,296 @@ window.addEventListener('DOMContentLoaded',()=>{
     },1500);
   }
 });
+
+// ─── CHAT ─────────────────────────────────────────────────────
+let chatHistory = [];   // [{role:'user'|'assistant', content:'...'}]
+let chatReady   = false;
+let chatWaiting = false;
+
+function buildSystemPrompt() {
+  const today = todayKey();
+  const tc    = checks[today] || {};
+  const name  = meds.length ? (meds.find(m=>m.person)?.person || 'there') : 'there';
+
+  const medSummary = meds.length
+    ? meds.map(m => {
+        const taken   = tc[m.id] ? `TAKEN at ${fmtTime(tc[m.id])}` : 'NOT YET TAKEN today';
+        const days    = daysSupply(m);
+        const supply  = days !== null ? `${days} days supply remaining` : 'supply unknown';
+        const repeats = m.repeatsLeft ? `${m.repeatsLeft} repeats left` : 'no repeats';
+        return `- ${m.name}${m.strength?' '+m.strength:''} (${m.frequency})${m.person?' for '+m.person:''}: ${taken}. ${supply}, ${repeats}.${m.doctor?' Doctor: '+m.doctor+'.':''}${m.pharmacyPhone?' Pharmacy: '+m.pharmacyPhone+'.':''}`;
+      }).join('
+')
+    : 'No medicines have been added yet.';
+
+  const hour = new Date().getHours();
+  const timeOfDay = hour < 12 ? 'morning' : hour < 17 ? 'afternoon' : 'evening';
+
+  return `You are a warm, caring medication helper app called "Gail's Pills". You are like a thoughtful, friendly companion — not clinical, not bossy. You speak naturally and warmly, like a good friend who happens to know about Gail's medicines.
+
+Today is ${fmtDate(new Date())} (${timeOfDay}).
+The primary user's name appears to be: ${name}.
+
+Current medicines and today's status:
+${medSummary}
+
+Your role:
+- Help the user remember to take their medicines each day
+- Check in on what they have and haven't taken
+- Gently remind about low supplies and when to reorder
+- Help them add new medicines by talking them through it
+- Answer questions about their medicines (dosing, timing, repeats, pharmacy contact)
+- Keep responses SHORT — 1-3 sentences usually. This is a phone app.
+- Use the person's name naturally but not in every message
+- When all medicines are taken for the day, celebrate warmly but briefly
+- If they say they've taken something, acknowledge it warmly
+- Never be preachy or repetitive about the same reminder
+- You can suggest they tap the "Today" tab to mark medicines as taken
+- If asked about adding a new medicine, suggest tapping the Medicines tab and using the + button or photo scan
+
+Tone: warm, friendly, encouraging — like a caring friend, not a medical professional.`;
+}
+
+function buildOpeningMessage() {
+  const today = todayKey();
+  const tc    = checks[today] || {};
+  const untaken = meds.filter(m => !tc[m.id]);
+  const taken   = meds.filter(m =>  tc[m.id]);
+  const name    = meds.find(m=>m.person)?.person || null;
+  const greeting= name ? `Hi ${name}! 👋` : 'Hi there! 👋';
+  const hour    = new Date().getHours();
+  const timeGreet = hour < 12 ? 'Good morning!' : hour < 17 ? 'Good afternoon!' : 'Good evening!';
+
+  if (!meds.length) {
+    return `${greeting} ${timeGreet} I'm your medication helper. It looks like no medicines have been added yet. Would you like to add one? You can tap the **Medicines** tab and use the + button, or just tell me what you'd like to add!`;
+  }
+
+  if (untaken.length === 0) {
+    return `${greeting} ${timeGreet} You've taken all your medicines today — well done! 🌟 Let me know if you need anything.`;
+  }
+
+  const alerts = getAlerts();
+  let msg = `${greeting} ${timeGreet}`;
+
+  if (untaken.length === meds.length) {
+    msg += ` Here's what's on your list today:
+
+`;
+    msg += untaken.map(m => `💊 **${m.name}**${m.strength?' '+m.strength:''} — ${m.frequency}${m.person&&m.person!==name?' (for '+m.person+')':''}`).join('
+');
+    msg += `
+
+Have you taken any of these yet?`;
+  } else {
+    msg += ` You've taken ${taken.length} of ${meds.length} medicines today. `;
+    if (untaken.length === 1) {
+      msg += `Still to go: **${untaken[0].name}**. Have you taken it yet?`;
+    } else {
+      msg += `Still to go:
+
+` + untaken.map(m=>`💊 **${m.name}**${m.person&&m.person!==name?' (for '+m.person+')':''}`).join('
+');
+    }
+  }
+
+  if (alerts.length) {
+    const urgent = alerts.filter(a=>a.type==='urgent');
+    if (urgent.length) msg += `
+
+⚠️ Also — ${urgent[0].title} is running very low. Worth sorting soon.`;
+  }
+
+  return msg;
+}
+
+function buildQuickReplies() {
+  const today   = todayKey();
+  const tc      = checks[today] || {};
+  const untaken = meds.filter(m => !tc[m.id]);
+  const replies  = [];
+
+  if (untaken.length > 0) {
+    replies.push("Yes, I've taken them all");
+    if (untaken.length <= 3) {
+      untaken.forEach(m => replies.push(`Taken my ${m.name}`));
+    }
+    replies.push("Not yet");
+  } else {
+    replies.push("All good today!");
+  }
+  if (getAlerts().length) replies.push("Tell me about low supplies");
+  replies.push("Add a new medicine");
+
+  return replies.slice(0, 5); // max 5 quick replies
+}
+
+function renderChat() {
+  const el = document.getElementById('tabChat');
+  el.innerHTML = `
+    <div class="chat-messages" id="chatMessages"></div>
+    <div class="quick-replies" id="quickReplies"></div>
+    <div class="chat-input-row">
+      <input class="chat-input" id="chatInput" placeholder="Type a message…" onkeydown="if(event.key==='Enter')sendChat()">
+      <button class="chat-send-btn" id="chatSendBtn" onclick="sendChat()">➤</button>
+    </div>
+  `;
+
+  // If first time opening chat this session, start with AI greeting
+  if (!chatReady) {
+    chatReady = true;
+    chatHistory = [];
+    const opening = buildOpeningMessage();
+    appendChatBubble('ai', opening);
+    chatHistory.push({role:'assistant', content: opening});
+    renderQuickReplies();
+  } else {
+    // Re-render existing messages
+    chatHistory.forEach(m => appendChatBubble(m.role==='assistant'?'ai':'user', m.content));
+    renderQuickReplies();
+  }
+
+  scrollChatToBottom();
+}
+
+function appendChatBubble(role, text) {
+  const messages = document.getElementById('chatMessages');
+  if (!messages) return;
+  const div = document.createElement('div');
+  div.className = `chat-bubble ${role}`;
+  // Simple markdown: **bold**
+  div.innerHTML = text
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    .replace(/
+/g, '<br>');
+  messages.appendChild(div);
+  scrollChatToBottom();
+}
+
+function showTyping() {
+  const messages = document.getElementById('chatMessages');
+  if (!messages) return;
+  const div = document.createElement('div');
+  div.className = 'chat-bubble typing';
+  div.id = 'typingIndicator';
+  div.innerHTML = '<div class="typing-dots"><span></span><span></span><span></span></div>';
+  messages.appendChild(div);
+  scrollChatToBottom();
+}
+
+function hideTyping() {
+  const el = document.getElementById('typingIndicator');
+  if (el) el.remove();
+}
+
+function scrollChatToBottom() {
+  setTimeout(() => {
+    const el = document.getElementById('chatMessages');
+    if (el) el.scrollTop = el.scrollHeight;
+  }, 50);
+}
+
+function renderQuickReplies() {
+  const el = document.getElementById('quickReplies');
+  if (!el) return;
+  const replies = buildQuickReplies();
+  el.innerHTML = replies.map(r =>
+    `<button class="qr-btn" onclick="sendChatMessage('${r.replace(/'/g,"\'")}')">
+      ${r}
+    </button>`
+  ).join('');
+}
+
+function sendChat() {
+  const input = document.getElementById('chatInput');
+  if (!input) return;
+  const text = input.value.trim();
+  if (!text || chatWaiting) return;
+  input.value = '';
+  sendChatMessage(text);
+}
+
+async function sendChatMessage(text) {
+  if (chatWaiting) return;
+  chatWaiting = true;
+
+  // Clear quick replies while waiting
+  const qr = document.getElementById('quickReplies');
+  if (qr) qr.innerHTML = '';
+
+  const sendBtn = document.getElementById('chatSendBtn');
+  if (sendBtn) sendBtn.disabled = true;
+
+  appendChatBubble('user', text);
+  chatHistory.push({role:'user', content: text});
+  showTyping();
+
+  try {
+    const resp = await fetch(WORKER_URL, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-6',
+        max_tokens: 400,
+        system: buildSystemPrompt(),
+        messages: chatHistory.filter(m => m.role !== 'system')
+      })
+    });
+
+    const data = await resp.json();
+    if (!resp.ok) throw new Error('API ' + resp.status);
+    const reply = data.content?.find(b => b.type==='text')?.text || 'Sorry, I didn't catch that.';
+
+    hideTyping();
+    appendChatBubble('ai', reply);
+    chatHistory.push({role:'assistant', content: reply});
+
+    // Check if user mentioned taking a medicine — update check-offs
+    checkForMedConfirmations(text);
+    renderQuickReplies();
+
+  } catch(err) {
+    hideTyping();
+    appendChatBubble('ai', 'Sorry, I'm having trouble connecting right now. Please check your internet and try again.');
+  } finally {
+    chatWaiting = false;
+    if (sendBtn) sendBtn.disabled = false;
+  }
+}
+
+// Lightly parse user message to auto-check off medicines they mention taking
+function checkForMedConfirmations(text) {
+  const lower = text.toLowerCase();
+  const takenPhrases = ['taken', 'took', 'had', "i've taken", 'already taken', 'done', 'yes'];
+  const mentionsTaking = takenPhrases.some(p => lower.includes(p));
+  if (!mentionsTaking) return;
+
+  const today = todayKey();
+  if (!checks[today]) checks[today] = {};
+  let updated = false;
+
+  if (lower.includes('all') || lower.includes('all of them') || lower.includes('everything')) {
+    meds.forEach(m => {
+      if (!checks[today][m.id]) {
+        checks[today][m.id] = new Date().toISOString();
+        updated = true;
+      }
+    });
+  } else {
+    meds.forEach(m => {
+      if (!checks[today][m.id] && lower.includes(m.name.toLowerCase())) {
+        checks[today][m.id] = new Date().toISOString();
+        updated = true;
+      }
+    });
+  }
+
+  if (updated) {
+    localStorage.setItem(LS_CHECKS, JSON.stringify(checks));
+    // Refresh allDoneBanner
+    document.getElementById('allDoneBanner').style.display = allTakenToday() ? 'flex' : 'none';
+  }
+}
+
 </script>
 </body>
 </html>
