@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Label Scan Test</title>
+<style>
+  body { font-family: sans-serif; max-width: 500px; margin: 0 auto; padding: 20px; background: #f5f5f5; }
+  h2 { color: #333; margin-bottom: 20px; }
+  .card { background: white; border-radius: 12px; padding: 20px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+  label { display: block; font-size: 13px; font-weight: 600; color: #555; margin-bottom: 6px; }
+  input[type=text], input[type=password] { width: 100%; padding: 10px 12px; border: 1.5px solid #ddd; border-radius: 8px; font-size: 14px; box-sizing: border-box; }
+  input:focus { outline: none; border-color: #c4703a; }
+  .photo-zone { border: 2px dashed #ccc; border-radius: 12px; padding: 30px; text-align: center; cursor: pointer; margin-bottom: 12px; background: #fafafa; }
+  .photo-zone:active { background: #fff5ee; }
+  img#preview { width: 100%; border-radius: 10px; margin-bottom: 12px; display: none; }
+  button { width: 100%; padding: 14px; background: #c4703a; color: white; border: none; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; margin-bottom: 8px; }
+  button:disabled { opacity: 0.5; cursor: default; }
+  button.secondary { background: #eee; color: #555; }
+  .status { padding: 12px; border-radius: 8px; font-size: 13px; margin-bottom: 12px; display: none; }
+  .status.info { background: #e8f4ff; color: #1a5276; border: 1px solid #aed6f1; }
+  .status.error { background: #ffebeb; color: #c0392b; border: 1px solid #f5b7b1; }
+  .status.success { background: #eafaf1; color: #1e8449; border: 1px solid #a9dfbf; }
+  pre { background: #f8f8f8; border: 1px solid #ddd; border-radius: 8px; padding: 14px; font-size: 13px; overflow-x: auto; white-space: pre-wrap; word-break: break-word; }
+  .raw-toggle { background: none; border: none; color: #c4703a; font-size: 13px; cursor: pointer; text-decoration: underline; width: auto; padding: 4px 0; margin-bottom: 8px; }
+</style>
+</head>
+<body>
+
+<h2>🔬 Label Scan Tester</h2>
+
+<div class="card">
+  <label>Anthropic API Key</label>
+  <input type="password" id="apiKey" placeholder="sk-ant-api03-..." autocomplete="off">
+</div>
+
+<div class="card">
+  <label>Pharmacy Label Photo</label>
+  <input type="file" id="photoInput" accept="image/*" capture="environment" style="display:none" onchange="handlePhoto(this)">
+  <div class="photo-zone" onclick="document.getElementById('photoInput').click()">
+    <div style="font-size:36px;margin-bottom:8px">📷</div>
+    <div style="color:#888;font-size:14px">Tap to take a photo or choose from library</div>
+  </div>
+  <img id="preview">
+  <div id="imgInfo" style="font-size:12px;color:#888;margin-bottom:10px;display:none"></div>
+  <button id="scanBtn" onclick="scan()" disabled>🔍 Read the label</button>
+  <button class="secondary" onclick="retake()" id="retakeBtn" style="display:none">↩ Use a different photo</button>
+</div>
+
+<div id="statusBox" class="status"></div>
+
+<div id="resultsCard" class="card" style="display:none">
+  <strong style="font-size:15px">What Claude read:</strong>
+  <div id="parsedResult" style="margin-top:12px"></div>
+  <br>
+  <button class="raw-toggle" onclick="document.getElementById('rawBox').style.display = document.getElementById('rawBox').style.display==='none'?'':'none'">show/hide raw response</button>
+  <pre id="rawBox" style="display:none"></pre>
+</div>
+
+<script>
+let b64 = null;
+let mime = null;
+
+function handlePhoto(input) {
+  const file = input.files[0];
+  if (!file) return;
+  mime = file.type || 'image/jpeg';
+  const sizeKB = Math.round(file.size / 1024);
+  const reader = new FileReader();
+  reader.onload = e => {
+    b64 = e.target.result.split(',')[1];
+    document.getElementById('preview').src = e.target.result;
+    document.getElementById('preview').style.display = '';
+    document.getElementById('imgInfo').textContent = `File: ${file.name} · ${sizeKB}KB · ${mime}`;
+    document.getElementById('imgInfo').style.display = '';
+    document.getElementById('scanBtn').disabled = false;
+    document.getElementById('retakeBtn').style.display = '';
+    document.getElementById('resultsCard').style.display = 'none';
+    setStatus('');
+  };
+  reader.readAsDataURL(file);
+}
+
+function retake() {
+  b64 = null; mime = null;
+  document.getElementById('photoInput').value = '';
+  document.getElementById('preview').style.display = 'none';
+  document.getElementById('imgInfo').style.display = 'none';
+  document.getElementById('scanBtn').disabled = true;
+  document.getElementById('retakeBtn').style.display = 'none';
+  document.getElementById('resultsCard').style.display = 'none';
+  setStatus('');
+}
+
+function setStatus(msg, type='info') {
+  const el = document.getElementById('statusBox');
+  if (!msg) { el.style.display = 'none'; return; }
+  el.className = 'status ' + type;
+  el.textContent = msg;
+  el.style.display = '';
+}
+
+async function scan() {
+  const key = document.getElementById('apiKey').value.trim();
+  if (!key) { setStatus('Please enter your API key above.', 'error'); return; }
+  if (!b64)  { setStatus('Please take a photo first.', 'error'); return; }
+
+  document.getElementById('scanBtn').disabled = true;
+  document.getElementById('resultsCard').style.display = 'none';
+  setStatus('Sending image to Claude… this takes a few seconds.', 'info');
+
+  try {
+    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': key,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        messages: [{
+          role: 'user',
+          content: [
+            {
+              type: 'image',
+              source: { type: 'base64', media_type: mime, data: b64 }
+            },
+            {
+              type: 'text',
+              text: `Please read this Australian pharmacy dispensing label carefully.
+
+First, describe everything you can see on the label in plain English.
+
+Then, extract these specific fields and return them as JSON at the end:
+{
+  "name": "medication name",
+  "strength": "dosage strength e.g. 10mg",
+  "frequency": "how often e.g. Once daily",
+  "pillsPerDose": "number of tablets per dose",
+  "totalQty": "total quantity dispensed",
+  "repeatsLeft": "number of repeats remaining"
+}
+
+Use empty string for any field you cannot clearly read.`
+            }
+          ]
+        }]
+      })
+    });
+
+    // Get raw response text first
+    const rawText = await resp.text();
+    document.getElementById('rawBox').textContent = rawText;
+
+    if (!resp.ok) {
+      setStatus('API error ' + resp.status + ': ' + rawText, 'error');
+      document.getElementById('resultsCard').style.display = '';
+      return;
+    }
+
+    const data = JSON.parse(rawText);
+    const text = (data.content || []).find(b => b.type === 'text')?.text || '';
+
+    // Show full Claude response
+    setStatus('✅ Claude responded successfully!', 'success');
+
+    // Try to extract JSON from the response
+    let parsed = null;
+    const jsonMatch = text.match(/\{[\s\S]*\}/);
+    if (jsonMatch) {
+      try { parsed = JSON.parse(jsonMatch[0]); } catch {}
+    }
+
+    const resultsEl = document.getElementById('parsedResult');
+    let html = `<div style="background:#f8f8f8;border-radius:8px;padding:14px;font-size:14px;line-height:1.8;margin-bottom:12px;white-space:pre-wrap">${text}</div>`;
+
+    if (parsed) {
+      html += `<strong style="font-size:13px;color:#555">Extracted fields:</strong><table style="width:100%;margin-top:8px;font-size:14px;border-collapse:collapse">` +
+        Object.entries(parsed).map(([k,v]) =>
+          `<tr><td style="padding:6px 8px;color:#888;border-bottom:1px solid #eee;width:40%">${k}</td><td style="padding:6px 8px;border-bottom:1px solid #eee;font-weight:500">${v||'<em style="color:#ccc">empty</em>'}</td></tr>`
+        ).join('') + `</table>`;
+    }
+
+    resultsEl.innerHTML = html;
+    document.getElementById('resultsCard').style.display = '';
+
+  } catch (err) {
+    setStatus('Network/fetch error: ' + err.message, 'error');
+    document.getElementById('resultsCard').style.display = '';
+  } finally {
+    document.getElementById('scanBtn').disabled = false;
+  }
+}
+</script>
+</body>
+</html>
