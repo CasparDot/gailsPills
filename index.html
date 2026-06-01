@@ -1108,11 +1108,10 @@ function buildSystemPrompt() {
     'RESEARCH & DOCTOR CONVERSATIONS: If aware of relevant recent research or updated guidelines, mention as something to raise at their next appointment. Use phrases like "Something worth asking your doctor about..." Never present as established fact or reason to change their prescription.',
     '',
     '== RULES ==',
-    '- Frame ALL health information as informational, never medical advice.',
-    '- Always defer to their prescribing doctor and pharmacist.',
-    '- Use phrases like: "Worth mentioning to your doctor", "Your pharmacist would know more".',
+    '- A one-time disclaimer is shown at the start of every session. Do NOT repeat it — do not say "I\'m not a doctor", "consult your doctor", "this is not medical advice", or similar phrases in your responses unless something is genuinely urgent.',
+    '- Talk naturally, like a knowledgeable friend. Share useful information directly and conversationally.',
     '- Never suggest changing doses, stopping medicines, or self-diagnosing.',
-    '- If something sounds urgent, calmly suggest contacting doctor or pharmacist.',
+    '- If something sounds genuinely urgent, calmly suggest they contact their doctor or pharmacist — but only then.',
     '- Keep routine check-in responses SHORT (2-4 sentences). Slightly longer for health topics if genuinely useful.',
     '- Use their name naturally but not every message.',
     '- Celebrate warmly when all medicines are taken.',
@@ -1134,11 +1133,12 @@ function buildOpeningMessage() {
   var hour = new Date().getHours();
   var timeGreet = hour<12?'Good morning!':hour<17?'Good afternoon!':'Good evening!';
 
+  var disclaimer = '\n\n_Just a note: I\'m an app, not a medical professional — anything I share is for information only. Always follow your doctor\'s or pharmacist\'s advice._';
   if(!meds.length){
-    return greeting+' '+timeGreet+' I\'m your medication helper.\n\nIt looks like no medicines have been added yet. Tap **➕ Add medicine** below to get started, or if you have a backup file, tap the menu (≡) and choose Restore backup.';
+    return greeting+' '+timeGreet+' I\'m your medication helper.\n\nIt looks like no medicines have been added yet. Tap **➕ Add medicine** below to get started, or if you have a backup file, tap the menu (≡) and choose Restore backup.'+disclaimer;
   }
   if(untaken.length===0){
-    return greeting+' '+timeGreet+" You've taken all your medicines today \u2014 well done! \u{1F31F} Let me know if you need anything.";
+    return greeting+' '+timeGreet+" You've taken all your medicines today \u2014 well done! \u{1F31F} Let me know if you need anything."+disclaimer;
   }
 
   var alerts=getAlerts();
@@ -1160,7 +1160,7 @@ function buildOpeningMessage() {
     var urgent=alerts.filter(function(a){ return a.type==='urgent'; });
     if(urgent.length) msg+='\n\n\u26A0\uFE0F Also \u2014 '+urgent[0].title+' is running very low. Worth sorting soon.';
   }
-  return msg;
+  return msg+disclaimer;
 }
 
 function buildQuickReplies() {
