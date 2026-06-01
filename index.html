@@ -256,6 +256,7 @@
       <div>
         <div class="app-title">Gail's <em>pills</em></div>
         <div class="date-pill" id="datePill"></div>
+        <script>document.getElementById("datePill").textContent=(function(){var d=new Date();return d.toLocaleDateString("en-AU",{weekday:"long",day:"numeric",month:"long"});})();</script>
       </div>
       <div style="display:flex;gap:8px;align-items:center">
         <button class="notif-btn" id="notifBtn" onclick="requestNotifications()">🔔</button>
@@ -602,7 +603,7 @@ function scheduleNotif(med,timeName){
 
 // ─── RENDER ───────────────────────────────────────────────────
 function render(){
-  document.getElementById('datePill').textContent=fmtDate(new Date());
+  var dp=document.getElementById('datePill'); if(dp) dp.textContent=fmtDate(new Date());
   document.getElementById('allDoneBanner').style.display=allTakenToday()?'flex':'none';
   renderAlertsCount();
   if(currentTab==='today')     renderToday();
@@ -1349,7 +1350,7 @@ window.addEventListener('DOMContentLoaded', function() {
   buildTimeChips();
   scheduleAllNotifications();
   // Set date immediately so it shows before any render
-  document.getElementById('datePill').textContent = fmtDate(new Date());
+  var dp=document.getElementById('datePill'); if(dp) dp.textContent=fmtDate(new Date());
   // Ask for primary user's name on first launch
   if(!primaryUserName) {
     setTimeout(function() {
