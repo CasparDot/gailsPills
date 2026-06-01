@@ -24,7 +24,7 @@
   *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
   body{font-family:'DM Sans',sans-serif;background:var(--cream);min-height:100vh;color:var(--brown-dark);overscroll-behavior:none}
   .app{max-width:430px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column;position:relative}
- 
+
   /* HEADER */
   .header{background:linear-gradient(135deg,#e8d5c4 0%,#f5e6d3 60%,#fdf0e8 100%);padding:52px 24px 18px;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:10}
   .header-top{display:flex;justify-content:space-between;align-items:flex-start}
@@ -34,21 +34,21 @@
   .notif-btn{background:none;border:1.5px solid var(--border);border-radius:50%;width:40px;height:40px;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s}
   .notif-btn.granted{border-color:var(--green-border);background:var(--green-bg)}
   .all-done-banner{margin-top:14px;background:var(--green-bg);border:1px solid var(--green-border);color:var(--green-text);border-radius:14px;padding:10px 16px;font-size:14px;font-weight:600;display:flex;align-items:center;gap:8px;animation:slideDown .3s ease}
- 
+
   /* PERSON FILTER */
   .person-filter{display:flex;gap:8px;padding:10px 16px;background:#f7ede0;border-bottom:1px solid var(--border);overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
   .person-filter::-webkit-scrollbar{display:none}
   .pf-chip{padding:6px 14px;border-radius:20px;border:1.5px solid var(--border);background:white;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;color:var(--brown-light);cursor:pointer;white-space:nowrap;transition:all .2s;flex-shrink:0}
   .pf-chip.active{background:var(--terracotta);border-color:var(--terracotta);color:white}
- 
+
   /* TABS */
   .tabs{display:flex;background:#eddfc8;padding:6px;gap:4px;border-bottom:1px solid var(--border);flex-shrink:0}
   .tab{flex:1;padding:10px 4px;border:none;background:transparent;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;color:var(--brown-light);cursor:pointer;transition:all .2s;text-align:center;letter-spacing:.2px}
   .tab.active{background:white;color:var(--terracotta);box-shadow:0 2px 8px rgba(196,112,58,.15)}
- 
+
   /* CONTENT */
   .content{flex:1;padding:20px 16px 40px;overflow-y:auto;-webkit-overflow-scrolling:touch}
- 
+
   /* RESTORE PROMPT */
   .restore-prompt{background:white;border:2px dashed var(--terracotta);border-radius:20px;padding:28px 20px;text-align:center;margin-bottom:20px;animation:fadeUp .4s ease}
   .restore-prompt .rp-icon{font-size:44px;margin-bottom:12px}
@@ -56,12 +56,12 @@
   .restore-prompt p{font-size:13px;color:var(--brown-pale);margin-bottom:18px;line-height:1.6}
   .restore-file-btn{background:linear-gradient(135deg,var(--terracotta),var(--terracotta-light));color:white;border:none;border-radius:14px;padding:14px 24px;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;cursor:pointer;width:100%}
   .restore-dismiss{margin-top:10px;background:none;border:none;font-size:13px;color:var(--brown-pale);cursor:pointer;text-decoration:underline}
- 
+
   /* EMPTY */
   .empty-state{text-align:center;padding:60px 20px;color:var(--brown-pale)}
   .empty-state .icon{font-size:52px;margin-bottom:16px}
   .empty-state p{font-size:15px;line-height:1.7}
- 
+
   /* PILL CARDS */
   .pill-card{background:white;border-radius:22px;padding:20px;margin-bottom:14px;box-shadow:0 2px 16px rgba(196,112,58,.07);border:1.5px solid var(--border-light);animation:fadeUp .35s ease both}
   .pill-card.taken{background:var(--green-bg);border-color:var(--green-border)}
@@ -82,21 +82,21 @@
   .take-btn.done{background:var(--green-bg);color:var(--green-text);border:1.5px solid var(--green-border);cursor:default}
   .take-time{font-size:12px;opacity:.75;font-weight:400}
   .undo-link{margin-top:8px;background:none;border:none;font-size:12px;color:var(--brown-pale);cursor:pointer;text-decoration:underline;display:block}
- 
+
   /* SECTION TITLE */
   .section-title{font-family:'Fraunces',serif;font-size:19px;font-weight:300;font-style:italic;color:var(--brown-mid);margin-bottom:16px}
- 
+
   /* ADD BTN */
   .add-btn{width:100%;padding:16px;border:2px dashed #d4a882;background:transparent;border-radius:18px;font-family:'DM Sans',sans-serif;font-size:15px;color:var(--terracotta);font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:16px;transition:all .2s}
   .add-btn:active{background:#fff5ee}
- 
+
   /* BACKUP ROW */
   .backup-row{display:flex;gap:10px;margin-bottom:20px}
   .bk-btn{flex:1;padding:13px 8px;border-radius:13px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;transition:opacity .2s}
   .bk-btn.save{background:#fff5ee;border:1.5px solid var(--terracotta);color:var(--terracotta)}
   .bk-btn.load{background:#f0f4ff;border:1.5px solid var(--blue-text);color:var(--blue-text)}
   .bk-btn:active{opacity:.7}
- 
+
   /* MANAGE CARDS */
   .manage-card{background:white;border-radius:18px;padding:16px 18px;margin-bottom:12px;border:1.5px solid var(--border-light);box-shadow:0 2px 8px rgba(0,0,0,.04)}
   .mc-header{display:flex;justify-content:space-between;align-items:flex-start}
@@ -110,7 +110,7 @@
   .bar-bg{background:#f0e4d4;border-radius:6px;height:8px;overflow:hidden}
   .bar-fill{height:100%;border-radius:6px;transition:width .5s ease}
   .bar-label{display:flex;justify-content:space-between;font-size:12px;color:var(--brown-pale);margin-top:5px}
- 
+
   /* ALERTS */
   .alert-card{background:white;border-radius:16px;padding:16px 18px;margin-bottom:12px;border-left:4px solid var(--terracotta);box-shadow:0 2px 8px rgba(0,0,0,.04)}
   .alert-card.urgent{border-left-color:var(--red-border)}
@@ -119,7 +119,7 @@
   .no-alerts{text-align:center;padding:50px 20px;color:var(--brown-pale)}
   .no-alerts .icon{font-size:46px;margin-bottom:14px}
   .no-alerts p{font-size:15px;line-height:1.7}
- 
+
   /* MODAL */
   .overlay{position:fixed;inset:0;background:rgba(61,44,30,.55);z-index:100;display:flex;align-items:flex-end;animation:fadeIn .2s ease}
   .modal{background:var(--cream);border-radius:28px 28px 0 0;padding:28px 20px 48px;width:100%;max-width:430px;margin:0 auto;animation:slideUp .3s ease;max-height:92vh;overflow-y:auto}
@@ -127,7 +127,7 @@
   .modal-tabs{display:flex;gap:8px;margin-bottom:20px}
   .m-tab{flex:1;padding:11px;border:1.5px solid var(--border);background:white;border-radius:13px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;color:var(--brown-light);cursor:pointer;text-align:center;transition:all .2s}
   .m-tab.active{border-color:var(--terracotta);background:#fff5ee;color:var(--terracotta)}
- 
+
   /* PHOTO */
   .photo-zone{border:2px dashed #d4a882;border-radius:18px;padding:32px 20px;text-align:center;cursor:pointer;background:white;margin-bottom:14px;transition:background .2s}
   .photo-zone:active{background:#fff5ee}
@@ -138,7 +138,7 @@
   .scan-btn:disabled{opacity:.55;cursor:default}
   .scan-msg{text-align:center;color:var(--brown-light);font-size:14px;padding:10px;animation:pulse 1.5s infinite}
   .scan-error{color:#c0392b;font-size:13px;text-align:center;margin-top:8px;background:#ffebeb;border-radius:10px;padding:10px}
- 
+
   /* MULTI-PACKET BANNER */
   .multipack-banner{background:#fff8e8;border:1.5px solid #f4c261;border-radius:16px;padding:16px 18px;margin-bottom:16px;animation:slideDown .3s ease}
   .multipack-banner h4{font-family:'Fraunces',serif;font-size:16px;font-weight:600;color:#7a5500;margin-bottom:6px}
@@ -149,19 +149,19 @@
   .mp-btn.manual{background:white;border:1.5px solid var(--terracotta);color:var(--terracotta)}
   .mp-btn.unopened{background:#e8f4ea;color:var(--green-text)}
   .mp-btn:active{opacity:.8}
- 
+
   /* STEPPER */
   .qty-stepper{display:flex;align-items:center;gap:0;border:1.5px solid var(--border);border-radius:13px;overflow:hidden;background:white}
   .stepper-btn{width:52px;height:50px;border:none;background:#f7ede0;font-size:22px;font-weight:300;color:var(--terracotta);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .15s}
   .stepper-btn:active{background:#ffe0cc}
   .stepper-val{flex:1;text-align:center;font-size:20px;font-weight:600;color:var(--brown-dark);border:none;outline:none;background:transparent;font-family:'DM Sans',sans-serif;min-width:0}
   .qty-hint{font-size:12px;color:var(--brown-pale);margin-top:6px;text-align:center}
- 
+
   /* COUNT PHOTO */
   .count-photo-btn{width:100%;padding:12px;border:1.5px dashed var(--border);border-radius:13px;background:transparent;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;color:var(--brown-light);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;margin-top:8px;transition:all .2s}
   .count-photo-btn:active{background:#fff5ee;border-color:var(--terracotta);color:var(--terracotta)}
   .counting-msg{text-align:center;font-size:13px;color:var(--brown-light);padding:8px;animation:pulse 1.5s infinite}
- 
+
   /* FORM */
   .field{margin-bottom:14px}
   .field label{display:block;font-size:12px;font-weight:600;color:var(--brown-mid);margin-bottom:7px;letter-spacing:.3px;text-transform:uppercase}
@@ -180,19 +180,18 @@
   .save-btn{width:100%;padding:18px;background:linear-gradient(135deg,var(--terracotta),var(--terracotta-light));color:white;border:none;border-radius:17px;font-family:'DM Sans',sans-serif;font-size:17px;font-weight:600;cursor:pointer;margin-top:10px;transition:opacity .2s}
   .save-btn:active{opacity:.85}
   .cancel-link{width:100%;padding:14px;background:transparent;border:none;font-family:'DM Sans',sans-serif;font-size:15px;color:var(--brown-pale);cursor:pointer;margin-top:4px;display:block;text-align:center}
- 
+
   /* TOAST */
   .toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:var(--brown-dark);color:white;padding:12px 24px;border-radius:30px;font-size:14px;font-weight:500;z-index:200;animation:toastIn .3s ease;white-space:nowrap;box-shadow:0 4px 20px rgba(0,0,0,.25)}
- 
+
   @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
   @keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
   @keyframes fadeIn{from{opacity:0}to{opacity:1}}
   @keyframes slideDown{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
   @keyframes pulse{0%,100%{opacity:1}50%{opacity:.45}}
   @keyframes toastIn{from{opacity:0;transform:translateX(-50%) translateY(10px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
- 
+
   /* ── CHAT ─────────────────────────────────────── */
-  #tabChat{display:flex;flex-direction:column;height:calc(100vh - 200px);padding:0}
   .chat-messages{flex:1;overflow-y:auto;padding:16px;-webkit-overflow-scrolling:touch;display:flex;flex-direction:column;gap:12px}
   .chat-bubble{max-width:82%;padding:12px 16px;border-radius:20px;font-size:15px;line-height:1.55;animation:fadeUp .25s ease}
   .chat-bubble.ai{background:white;border:1.5px solid var(--border-light);color:var(--brown-dark);border-bottom-left-radius:6px;align-self:flex-start;box-shadow:0 2px 8px rgba(196,112,58,.07)}
@@ -215,6 +214,39 @@
   .chat-med-card .cm-name{font-family:'Fraunces',serif;font-size:16px;font-weight:600;color:var(--brown-dark)}
   .chat-med-card .cm-detail{color:var(--brown-light);margin-top:2px}
   @keyframes typingBounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-6px)}}
+
+  /* ── HAMBURGER & DRAWER ───────────────────────────── */
+  .hamburger{background:none;border:1.5px solid var(--border);border-radius:10px;width:40px;height:40px;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;flex-shrink:0;transition:all .2s}
+  .hamburger:active{background:var(--border-light)}
+  .hamburger span{display:block;width:18px;height:2px;background:var(--brown-mid);border-radius:2px;transition:all .3s}
+  .drawer-overlay{position:fixed;inset:0;background:rgba(61,44,30,.45);z-index:50;opacity:0;pointer-events:none;transition:opacity .25s}
+  .drawer-overlay.open{opacity:1;pointer-events:all}
+  .drawer{position:fixed;top:0;right:0;bottom:0;width:78%;max-width:300px;background:var(--cream);z-index:51;transform:translateX(100%);transition:transform .28s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;box-shadow:-4px 0 24px rgba(61,44,30,.15)}
+  .drawer.open{transform:translateX(0)}
+  .drawer-header{padding:52px 24px 20px;background:linear-gradient(135deg,#e8d5c4 0%,#f5e6d3 100%);border-bottom:1px solid var(--border)}
+  .drawer-header h3{font-family:'Fraunces',serif;font-size:22px;font-weight:300;font-style:italic;color:var(--brown-mid)}
+  .drawer-header p{font-size:12px;color:var(--brown-pale);margin-top:4px}
+  .drawer-nav{flex:1;padding:16px 12px;overflow-y:auto}
+  .drawer-btn{width:100%;padding:14px 16px;background:white;border:1.5px solid var(--border-light);border-radius:14px;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;color:var(--brown-dark);cursor:pointer;display:flex;align-items:center;gap:12px;margin-bottom:10px;transition:all .2s;text-align:left}
+  .drawer-btn:active{background:var(--border-light)}
+  .drawer-btn .db-icon{font-size:20px;width:28px;text-align:center}
+  .drawer-btn .db-label{flex:1}
+  .drawer-btn .db-badge{background:var(--red-border);color:white;font-size:11px;font-weight:700;padding:2px 7px;border-radius:10px}
+  .drawer-divider{border:none;border-top:1px solid var(--border-light);margin:8px 0 16px}
+  .drawer-section-label{font-size:11px;font-weight:700;color:var(--brown-pale);letter-spacing:.8px;text-transform:uppercase;padding:0 4px;margin-bottom:8px}
+  .drawer-close{padding:16px 24px 32px;border-top:1px solid var(--border-light)}
+  .drawer-close-btn{width:100%;padding:14px;background:var(--border-light);border:none;border-radius:14px;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;color:var(--brown-mid);cursor:pointer}
+
+  /* ── QUICK ACTION BUTTONS ─────────────────────────── */
+  .quick-actions{display:flex;gap:8px;padding:10px 16px 6px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;flex-shrink:0;background:var(--cream);border-top:1px solid var(--border-light);position:sticky;bottom:72px;z-index:5}
+  .quick-actions::-webkit-scrollbar{display:none}
+  .qa-btn{padding:8px 14px;background:white;border:1.5px solid var(--border);border-radius:20px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;color:var(--brown-mid);cursor:pointer;white-space:nowrap;flex-shrink:0;transition:all .2s;display:flex;align-items:center;gap:5px}
+  .qa-btn:active{background:var(--terracotta);border-color:var(--terracotta);color:white}
+  .qa-btn.primary{background:var(--terracotta);border-color:var(--terracotta);color:white}
+
+  /* ── FULL SCREEN CHAT ─────────────────────────────── */
+  #tabChat{display:flex;flex-direction:column;height:calc(100vh - 240px);padding:0;min-height:300px}
+
 </style>
 </head>
 <body>
@@ -225,28 +257,81 @@
         <div class="app-title">Gail's <em>pills</em></div>
         <div class="date-pill" id="datePill"></div>
       </div>
-      <button class="notif-btn" id="notifBtn" onclick="requestNotifications()">🔔</button>
+      <div style="display:flex;gap:8px;align-items:center">
+        <button class="notif-btn" id="notifBtn" onclick="requestNotifications()">🔔</button>
+        <button class="hamburger" onclick="openDrawer()" aria-label="Menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
     </div>
     <div class="all-done-banner" id="allDoneBanner" style="display:none">✅ All done for today — great work!</div>
   </div>
- 
-  <div class="person-filter" id="personFilter"></div>
- 
-  <div class="tabs">
-    <button class="tab active" onclick="switchTab('today',this)">Today</button>
-    <button class="tab" onclick="switchTab('medicines',this)">Medicines</button>
-    <button class="tab" id="alertsTab" onclick="switchTab('alerts',this)">Alerts</button>
-    <button class="tab" onclick="switchTab('chat',this)">💬 Chat</button>
-  </div>
- 
-  <div class="content">
-    <div id="tabToday"></div>
+
+  <div class="content" id="mainContent">
+    <div id="tabToday" style="display:none"></div>
     <div id="tabMedicines" style="display:none"></div>
     <div id="tabAlerts" style="display:none"></div>
-    <div id="tabChat" style="display:none"></div>
+    <div id="tabChat"></div>
+  </div>
+
+  <!-- QUICK ACTIONS -->
+  <div class="quick-actions" id="quickActions" style="display:flex">
+    <button class="qa-btn primary" onclick="qaAction('status')">💊 Today</button>
+    <button class="qa-btn" onclick="qaAction('medicines')">📋 Medicines</button>
+    <button class="qa-btn" onclick="qaAction('supplies')">⚠️ Supplies</button>
+    <button class="qa-btn" onclick="qaAction('add')">➕ Add medicine</button>
+    <button class="qa-btn" onclick="qaAction('interactions')">🔬 Interactions</button>
+    <button class="qa-btn" onclick="qaAction('tips')">💡 Tips</button>
   </div>
 </div>
- 
+
+<!-- DRAWER OVERLAY -->
+<div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
+
+<!-- SIDE DRAWER -->
+<div class="drawer" id="drawer">
+  <div class="drawer-header">
+    <h3>Gail's <em style="font-style:italic;color:var(--terracotta)">pills</em></h3>
+    <p>Manage your medicines</p>
+  </div>
+  <div class="drawer-nav">
+    <div class="drawer-section-label">Views</div>
+    <button class="drawer-btn" onclick="openDrawerTab('today')">
+      <span class="db-icon">📅</span>
+      <span class="db-label">Today's checklist</span>
+    </button>
+    <button class="drawer-btn" onclick="openDrawerTab('medicines')">
+      <span class="db-icon">💊</span>
+      <span class="db-label">All medicines</span>
+    </button>
+    <button class="drawer-btn" id="drawerAlertsBtn" onclick="openDrawerTab('alerts')">
+      <span class="db-icon">⚠️</span>
+      <span class="db-label">Alerts</span>
+    </button>
+    <hr class="drawer-divider">
+    <div class="drawer-section-label">Actions</div>
+    <button class="drawer-btn" onclick="closeDrawer();openModal()">
+      <span class="db-icon">➕</span>
+      <span class="db-label">Add a medicine</span>
+    </button>
+    <button class="drawer-btn" onclick="closeDrawer();manualExport()">
+      <span class="db-icon">💾</span>
+      <span class="db-label">Save backup</span>
+    </button>
+    <button class="drawer-btn" onclick="closeDrawer();document.getElementById('importInput').click()">
+      <span class="db-icon">📂</span>
+      <span class="db-label">Restore backup</span>
+    </button>
+    <button class="drawer-btn" onclick="closeDrawer();requestNotifications()">
+      <span class="db-icon">🔔</span>
+      <span class="db-label">Notification settings</span>
+    </button>
+  </div>
+  <div class="drawer-close">
+    <button class="drawer-close-btn" onclick="closeDrawer()">Close menu</button>
+  </div>
+</div>
+
 <!-- ADD MEDICINE MODAL -->
 <div class="overlay" id="modal" style="display:none" onclick="if(event.target===this)closeModal()">
   <div class="modal">
@@ -255,7 +340,7 @@
       <button class="m-tab active" onclick="switchModalTab('photo',this)">📷 Photo scan</button>
       <button class="m-tab" onclick="switchModalTab('manual',this)">✏️ Type it in</button>
     </div>
- 
+
     <!-- PHOTO TAB -->
     <div id="modalPhoto">
       <input type="file" id="photoInput" accept="image/*" capture="environment" style="display:none" onchange="handlePhoto(this)">
@@ -269,10 +354,10 @@
       <div class="scan-msg" id="scanMsg" style="display:none">Reading your pharmacy label…</div>
       <div class="scan-error" id="scanError" style="display:none"></div>
     </div>
- 
+
     <!-- MANUAL TAB -->
     <div id="modalManual" style="display:none">
- 
+
       <!-- MULTI-PACKET BANNER (shown when packetNumber detected) -->
       <div class="multipack-banner" id="multipackBanner" style="display:none">
         <h4 id="multipackTitle">📦 Multiple packets detected</h4>
@@ -283,7 +368,7 @@
           <button class="mp-btn unopened" onclick="addFullSecondPacket()">📦 Other packet is unopened</button>
         </div>
       </div>
- 
+
       <div class="field">
         <label>For</label>
         <input id="fPerson" placeholder="e.g. Gail, Tom, Jack…">
@@ -316,7 +401,7 @@
         <label>Reminder time(s)</label>
         <div class="time-grid" id="timeChips"></div>
       </div>
- 
+
       <!-- QUANTITY STEPPER -->
       <div class="field">
         <label>Tablets remaining in this packet</label>
@@ -331,7 +416,7 @@
         <button class="count-photo-btn" onclick="document.getElementById('countPhotoInput').click()">📷 Or photo the remaining tablets to count them</button>
         <div class="counting-msg" id="countingMsg" style="display:none">Counting tablets…</div>
       </div>
- 
+
       <!-- SECOND PACKET QTY (shown after multi-packet flow) -->
       <div id="secondPacketField" style="display:none">
         <div class="field">
@@ -344,7 +429,7 @@
           <div class="qty-hint">Total will be combined automatically</div>
         </div>
       </div>
- 
+
       <div class="row2">
         <div class="field">
           <label>Repeats left</label>
@@ -386,18 +471,18 @@
     </div>
   </div>
 </div>
- 
+
 <!-- FILE INPUTS -->
 <input type="file" id="importInput" accept=".json" style="display:none" onchange="importBackup(this)">
 <input type="file" id="secondPacketInput" accept="image/*" capture="environment" style="display:none" onchange="handleSecondPacketPhoto(this)">
- 
+
 <script>
 // ─── CONFIG ───────────────────────────────────────────────────
 const LS_MEDS   = 'gails-pills-meds-v3';
 const LS_CHECKS = 'gails-pills-checks-v3';
 const TIME_OPTIONS = ['Morning','Midday','Afternoon','Night'];
 const TIME_HOURS   = {Morning:8,Midday:12,Afternoon:15,Night:21};
- 
+
 // ─── STATE ────────────────────────────────────────────────────
 let meds         = JSON.parse(localStorage.getItem(LS_MEDS)   || '[]');
 let checks       = JSON.parse(localStorage.getItem(LS_CHECKS) || '{}');
@@ -411,7 +496,7 @@ let photoMime    = null;
 let scannedPacketNumber  = null;
 let scannedTotalPackets  = null;
 let scannedPacketQty     = null;
- 
+
 // ─── HELPERS ──────────────────────────────────────────────────
 function todayKey(){ return new Date().toISOString().slice(0,10); }
 function fmtDate(d){ return d.toLocaleDateString('en-AU',{weekday:'long',day:'numeric',month:'long'}); }
@@ -442,7 +527,7 @@ function filteredMeds(){
   if(activePerson==='All') return meds;
   return meds.filter(m=>(m.person||'')=== activePerson);
 }
- 
+
 // ─── PERSIST ──────────────────────────────────────────────────
 function persist(){
   localStorage.setItem(LS_MEDS,  JSON.stringify(meds));
@@ -471,7 +556,7 @@ function importBackup(input){
   };
   reader.readAsText(file); input.value='';
 }
- 
+
 // ─── NOTIFICATIONS ────────────────────────────────────────────
 function updateNotifBtn(){
   const btn=document.getElementById('notifBtn');
@@ -506,18 +591,29 @@ function scheduleNotif(med,timeName){
     });
   },fire-now));
 }
- 
+
 // ─── RENDER ───────────────────────────────────────────────────
 function render(){
   document.getElementById('datePill').textContent=fmtDate(new Date());
   document.getElementById('allDoneBanner').style.display=allTakenToday()?'flex':'none';
-  renderPersonFilter();
   renderAlertsCount();
   if(currentTab==='today')     renderToday();
   if(currentTab==='medicines') renderMedicines();
   if(currentTab==='alerts')    renderAlerts();
 }
- 
+
+function renderAlertsCount(){
+  var n=getAlerts().length;
+  // Update drawer badge if drawer exists
+  var btn=document.getElementById('drawerAlertsBtn');
+  if(!btn) return;
+  var badge=btn.querySelector('.db-badge');
+  if(n>0){
+    if(!badge){ badge=document.createElement('span'); badge.className='db-badge'; btn.appendChild(badge); }
+    badge.textContent=n;
+  } else if(badge){ badge.remove(); }
+}
+
 function renderPersonFilter(){
   const persons=getPersons();
   const el=document.getElementById('personFilter');
@@ -526,9 +622,9 @@ function renderPersonFilter(){
   const all=['All',...persons];
   el.innerHTML=all.map(p=>`<button class="pf-chip${activePerson===p?' active':''}" onclick="setActivePerson('${p}')">${p}</button>`).join('');
 }
- 
+
 function setActivePerson(p){ activePerson=p; render(); }
- 
+
 function renderToday(){
   const el=document.getElementById('tabToday');
   const fm=filteredMeds();
@@ -562,7 +658,7 @@ function renderToday(){
     </div>`;
   }).join('');
 }
- 
+
 function renderMedicines(){
   const el=document.getElementById('tabMedicines');
   const cards=meds.map(med=>{
@@ -597,7 +693,7 @@ function renderMedicines(){
     ${cards||'<div class="empty-state" style="padding:30px 20px"><p>No medicines yet.</p></div>'}
   `;
 }
- 
+
 function renderAlerts(){
   const alerts=getAlerts();
   const el=document.getElementById('tabAlerts');
@@ -605,12 +701,12 @@ function renderAlerts(){
     ?alerts.map(a=>`<div class="alert-card ${a.type}"><div class="alert-title">${a.title}${a.person?' <span style="font-size:12px;color:var(--brown-pale)">· ${a.person}</span>':''}</div><div class="alert-detail">${a.msg}</div></div>`).join('')
     :`<div class="no-alerts"><div class="icon">🌿</div><p>All supplies are looking good.<br>No action needed right now.</p></div>`);
 }
- 
+
 function renderAlertsCount(){
   const n=getAlerts().length;
-  document.getElementById('alertsTab').textContent=n?`Alerts (${n})`:'Alerts';
+  // alerts count shown in drawer badge
 }
- 
+
 function getAlerts(){
   const out=[];
   meds.forEach(med=>{
@@ -626,7 +722,7 @@ function getAlerts(){
   });
   return out;
 }
- 
+
 // ─── PILL ACTIONS ─────────────────────────────────────────────
 function takePill(id){
   const today=todayKey();
@@ -649,19 +745,28 @@ function deleteMed(id){
   meds=meds.filter(m=>m.id!==id);
   persist(); scheduleAllNotifications(); render();
 }
- 
+
 // ─── TABS ─────────────────────────────────────────────────────
-function switchTab(name,btn){
+function switchTab(name){
   currentTab=name;
-  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-  btn.classList.add('active');
-  ['today','medicines','alerts','chat'].forEach(t=>{
-    document.getElementById('tab'+t.charAt(0).toUpperCase()+t.slice(1)).style.display=t===name?'':'none';
+  ['today','medicines','alerts','chat'].forEach(function(t){
+    var el=document.getElementById('tab'+t.charAt(0).toUpperCase()+t.slice(1));
+    if(el) el.style.display=(t===name)?'':'none';
   });
+  var qa=document.getElementById('quickActions');
+  if(qa) qa.style.display=(name==='chat')?'flex':'none';
+  // Keep content area scrollable
+  var mc=document.getElementById('mainContent');
+  if(mc) mc.style.paddingBottom=(name==='chat')?'0':'20px';
   if(name==='chat') renderChat();
   else render();
 }
- 
+
+function openDrawerTab(name){
+  closeDrawer();
+  setTimeout(function(){ switchTab(name); },200);
+}
+
 // ─── MODAL ────────────────────────────────────────────────────
 function openModal(){ resetModal(); document.getElementById('modal').style.display='flex'; }
 function closeModal(){ document.getElementById('modal').style.display='none'; resetModal(); }
@@ -706,7 +811,7 @@ function toggleTime(name,el){
   if(selectedTimes.includes(name)){ if(selectedTimes.length===1) return; selectedTimes=selectedTimes.filter(t=>t!==name); el.classList.remove('selected'); }
   else{ selectedTimes.push(name); el.classList.add('selected'); }
 }
- 
+
 // ─── STEPPER ──────────────────────────────────────────────────
 function stepQty(delta){
   const el=document.getElementById('fQty');
@@ -718,7 +823,7 @@ function stepQty2(delta){
   const val=Math.max(0,(parseFloat(el.value)||0)+delta);
   el.value=val;
 }
- 
+
 // ─── PHOTO / SCAN ─────────────────────────────────────────────
 function handlePhoto(input){
   const file=input.files[0]; if(!file) return;
@@ -744,7 +849,7 @@ function retakePhoto(){
   document.getElementById('retakeBtn').style.display='none';
   document.getElementById('scanError').style.display='none';
 }
- 
+
 async function scanLabel(){
   if(!photoB64) return;
   document.getElementById('scanBtn').disabled=true;
@@ -770,7 +875,7 @@ Use empty string for unclear fields. Do not guess.`}
     const text=(data.content||[]).find(b=>b.type==='text')?.text||'';
     const clean=text.replace(/```json|```/g,'').trim();
     const p=JSON.parse(clean);
- 
+
     // Fill standard fields
     document.getElementById('fName').value          =p.name          ||'';
     document.getElementById('fStrength').value      =p.strength      ||'';
@@ -783,7 +888,7 @@ Use empty string for unclear fields. Do not guess.`}
     document.getElementById('fPharmacyPhone').value =p.pharmacyPhone ||'';
     document.getElementById('fPharmacyAddress').value=p.pharmacyAddress||'';
     document.getElementById('fDispensedDate').value =p.dispensedDate ||'';
- 
+
     // Multi-packet handling
     if(p.packetNumber && p.totalPackets && p.totalPackets!=='1'){
       scannedPacketNumber=parseInt(p.packetNumber);
@@ -798,12 +903,12 @@ Use empty string for unclear fields. Do not guess.`}
           : `This is the last packet (${p.packetNumber} of ${p.totalPackets}). Has the previous packet already been started?`;
       banner.style.display='';
     }
- 
+
     // Switch to manual tab
     document.querySelectorAll('.m-tab').forEach((t,i)=>t.classList.toggle('active',i===1));
     document.getElementById('modalPhoto').style.display='none';
     document.getElementById('modalManual').style.display='';
- 
+
   }catch(err){
     document.getElementById('scanError').textContent='Error: '+err.message;
     document.getElementById('scanError').style.display='';
@@ -815,13 +920,13 @@ Use empty string for unclear fields. Do not guess.`}
     document.getElementById('scanMsg').style.display='none';
   }
 }
- 
+
 // ─── MULTI-PACKET ACTIONS ─────────────────────────────────────
 function scanSecondPacket(){
   document.getElementById('multipackBanner').style.display='none';
   document.getElementById('secondPacketInput').click();
 }
- 
+
 async function handleSecondPacketPhoto(input){
   const file=input.files[0]; if(!file) return;
   const mime=file.type||'image/jpeg';
@@ -851,12 +956,12 @@ async function handleSecondPacketPhoto(input){
   };
   reader.readAsDataURL(file);
 }
- 
+
 function enterSecondPacketManually(){
   document.getElementById('multipackBanner').style.display='none';
   document.getElementById('secondPacketField').style.display='';
 }
- 
+
 function addFullSecondPacket(){
   // Add the same qty as the scanned packet (unopened = full packet)
   document.getElementById('fQty2').value=scannedPacketQty||'';
@@ -864,7 +969,7 @@ function addFullSecondPacket(){
   document.getElementById('multipackBanner').style.display='none';
   showToast('Full second packet added');
 }
- 
+
 // ─── COUNT PHOTO ──────────────────────────────────────────────
 async function handleCountPhoto(input){
   const file=input.files[0]; if(!file) return;
@@ -895,7 +1000,7 @@ async function handleCountPhoto(input){
   };
   reader.readAsDataURL(file);
 }
- 
+
 // ─── SAVE MED ─────────────────────────────────────────────────
 function saveMed(){
   const name=document.getElementById('fName').value.trim();
@@ -928,7 +1033,7 @@ function saveMed(){
   switchTab('today',document.querySelector('.tab')); render();
   showToast('💊 '+(med.person?med.person+': ':'')+name+' added!');
 }
- 
+
 // ─── TOAST ────────────────────────────────────────────────────
 function showToast(msg){
   let t=document.querySelector('.toast'); if(t) t.remove();
@@ -937,40 +1042,21 @@ function showToast(msg){
   document.body.appendChild(t);
   toastTimer=setTimeout(()=>t&&t.remove(),2500);
 }
- 
+
 // ─── INIT ─────────────────────────────────────────────────────
-window.addEventListener('DOMContentLoaded',()=>{
-  updateNotifBtn(); buildTimeChips(); render(); scheduleAllNotifications();
- 
-  if(!meds.length){
-    const today=document.getElementById('tabToday');
-    today.innerHTML=`<div class="restore-prompt">
-      <div class="rp-icon">📂</div>
-      <h3>Welcome back!</h3>
-      <p>If you have a backup from before, load it now to restore everything.</p>
-      <button class="restore-file-btn" onclick="document.getElementById('importInput').click()">Load my backup file</button>
-      <button class="restore-dismiss" onclick="this.closest('.restore-prompt').remove()">Start fresh</button>
-    </div>`+today.innerHTML;
-  }
- 
-  if('Notification' in window && Notification.permission==='default'){
-    setTimeout(()=>{
-      if(confirm('Can Gail\'s Pills send reminders when it\'s time to take medicine?')) requestNotifications();
-    },1500);
-  }
-});
- 
+
+
 // CHAT STATE
 var chatHistory = [];
 var chatReady   = false;
 var chatWaiting = false;
- 
+
 function buildSystemPrompt() {
   var today = todayKey();
   var tc    = checks[today] || {};
   var nameGuess = '';
   for(var i=0;i<meds.length;i++){ if(meds[i].person){ nameGuess=meds[i].person; break; } }
- 
+
   var medLines = [];
   for(var i=0;i<meds.length;i++){
     var m=meds[i];
@@ -980,13 +1066,53 @@ function buildSystemPrompt() {
     var rpts  = m.repeatsLeft ? m.repeatsLeft+' repeats left' : 'no repeats';
     medLines.push('- '+m.name+(m.strength?' '+m.strength:'')+' ('+m.frequency+')'+(m.person?' for '+m.person:'')+': '+taken+'. '+supply+', '+rpts+'.'+(m.doctor?' Doctor: '+m.doctor+'.':'')+(m.pharmacyPhone?' Pharmacy: '+m.pharmacyPhone+'.':''));
   }
- 
+
   var hour=new Date().getHours();
   var timeOfDay=hour<12?'morning':hour<17?'afternoon':'evening';
- 
-  return 'You are a warm, caring medication helper app called "Gail\'s Pills". You are like a thoughtful, friendly companion — not clinical, not bossy. You speak naturally and warmly, like a good friend who happens to know about Gail\'s medicines.\n\nToday is '+fmtDate(new Date())+' ('+timeOfDay+').\nThe primary user\'s name appears to be: '+(nameGuess||'unknown')+'.\n\nCurrent medicines and today\'s status:\n'+(medLines.length?medLines.join('\n'):'No medicines added yet.')+'\n\nYour role:\n- Help the user remember to take their medicines each day\n- Check in on what they have and haven\'t taken\n- Gently remind about low supplies and when to reorder\n- Answer questions about their medicines (dosing, timing, repeats, pharmacy contact)\n- Keep responses SHORT — 1-3 sentences usually. This is a phone app.\n- Use the person\'s name naturally but not in every message\n- When all medicines are taken, celebrate warmly but briefly\n- Never be preachy or repetitive\n- You can suggest tapping the Today tab to mark medicines as taken\n- If asked about adding a medicine, suggest tapping the Medicines tab\n\nTone: warm, friendly, encouraging — like a caring friend, not a medical professional.';
+
+  var systemPrompt = [
+    'You are a warm, caring medication helper app called "Gail\'s Pills".',
+    'You are like a knowledgeable, trusted friend — warm and approachable, never clinical or bossy.',
+    '',
+    'Today is '+fmtDate(new Date())+' ('+timeOfDay+').',
+    'The primary user\'s name appears to be: '+(nameGuess||'unknown')+'.',
+    '',
+    '== CURRENT MEDICINES AND STATUS ==',
+    medLines.length ? medLines.join('\n') : 'No medicines added yet.',
+    '',
+    '== YOUR ROLE ==',
+    '1. DAILY REMINDERS — Help track and remember medicines each day.',
+    '2. HEALTH COMPANION — Share useful, relevant information about their specific medicines.',
+    '3. REORDER SUPPORT — Remind about low supplies and when to contact pharmacy or doctor.',
+    '',
+    '== HEALTH GUIDANCE ==',
+    'When relevant, proactively share:',
+    '',
+    'INTERACTIONS: Drug-drug, drug-food (e.g. grapefruit with calcium channel blockers like Felodipine, dairy with some antibiotics), drug-alcohol, timing interactions between medicines.',
+    '',
+    'THINGS TO AVOID: Specific foods, drinks, supplements, or OTC medicines that may interact. Activities affected (driving, sun). Flag medicines that should never be stopped suddenly.',
+    '',
+    'SYMPTOMS TO WATCH: Common side effects worth knowing. Signs to contact their doctor or pharmacist. Symptoms suggesting a medicine may not be working. Frame calmly — never alarmist.',
+    '',
+    'RESEARCH & DOCTOR CONVERSATIONS: If aware of relevant recent research or updated guidelines, mention as something to raise at their next appointment. Use phrases like "Something worth asking your doctor about..." Never present as established fact or reason to change their prescription.',
+    '',
+    '== RULES ==',
+    '- Frame ALL health information as informational, never medical advice.',
+    '- Always defer to their prescribing doctor and pharmacist.',
+    '- Use phrases like: "Worth mentioning to your doctor", "Your pharmacist would know more".',
+    '- Never suggest changing doses, stopping medicines, or self-diagnosing.',
+    '- If something sounds urgent, calmly suggest contacting doctor or pharmacist.',
+    '- Keep routine check-in responses SHORT (2-4 sentences). Slightly longer for health topics if genuinely useful.',
+    '- Use their name naturally but not every message.',
+    '- Celebrate warmly when all medicines are taken.',
+    '- Never be preachy or repetitive.',
+    '- Be proactive — mention interactions, low supply, relevant tips naturally in conversation.',
+    '',
+    'Tone: warm, knowledgeable, caring — like a trusted friend who happens to know a lot about medicines.'
+  ].join('\n');
+  return systemPrompt;
 }
- 
+
 function buildOpeningMessage() {
   var today   = todayKey();
   var tc      = checks[today] || {};
@@ -997,17 +1123,17 @@ function buildOpeningMessage() {
   var greeting = name ? 'Hi '+name+'! \uD83D\uDC4B' : 'Hi there! \uD83D\uDC4B';
   var hour = new Date().getHours();
   var timeGreet = hour<12?'Good morning!':hour<17?'Good afternoon!':'Good evening!';
- 
+
   if(!meds.length){
-    return greeting+' '+timeGreet+" I'm your medication helper. No medicines have been added yet. Tap the Medicines tab and use the + button to get started!";
+    return greeting+' '+timeGreet+' I\'m your medication helper.\n\nIt looks like no medicines have been added yet. Tap **➕ Add medicine** below to get started, or if you have a backup file, tap the menu (≡) and choose Restore backup.';
   }
   if(untaken.length===0){
     return greeting+' '+timeGreet+" You've taken all your medicines today \u2014 well done! \u{1F31F} Let me know if you need anything.";
   }
- 
+
   var alerts=getAlerts();
   var msg=greeting+' '+timeGreet;
- 
+
   if(untaken.length===meds.length){
     msg+=" Here's what's on your list today:\n\n";
     msg+=untaken.map(function(m){ return '\uD83D\uDC8A **'+m.name+'**'+(m.strength?' '+m.strength:'')+' \u2014 '+m.frequency+(m.person&&m.person!==name?' (for '+m.person+')':''); }).join('\n');
@@ -1026,7 +1152,7 @@ function buildOpeningMessage() {
   }
   return msg;
 }
- 
+
 function buildQuickReplies() {
   var today   = todayKey();
   var tc      = checks[today] || {};
@@ -1045,10 +1171,10 @@ function buildQuickReplies() {
   replies.push('Add a new medicine');
   return replies.slice(0,5);
 }
- 
+
 function renderChat() {
   var el=document.getElementById('tabChat');
-  el.innerHTML='<div class="chat-messages" id="chatMessages"></div><div class="quick-replies" id="quickReplies"></div><div class="chat-input-row"><input class="chat-input" id="chatInput" placeholder="Type a message\u2026" onkeydown="if(event.key===\'Enter\')sendChat()"><button class="chat-send-btn" id="chatSendBtn" onclick="sendChat()">\u27A4</button></div>';
+  el.innerHTML='<div class="chat-messages" id="chatMessages"></div><div class="chat-input-row"><input class="chat-input" id="chatInput" placeholder="Type a message\u2026" onkeydown="if(event.key===\'Enter\')sendChat()"><button class="chat-send-btn" id="chatSendBtn" onclick="sendChat()">\u27A4</button></div>';
   if(!chatReady){
     chatReady=true; chatHistory=[];
     var opening=buildOpeningMessage();
@@ -1057,10 +1183,9 @@ function renderChat() {
   } else {
     chatHistory.forEach(function(m){ appendChatBubble(m.role==='assistant'?'ai':'user',m.content); });
   }
-  renderQuickReplies();
   scrollChatToBottom();
 }
- 
+
 function appendChatBubble(role,text){
   var messages=document.getElementById('chatMessages');
   if(!messages) return;
@@ -1070,7 +1195,7 @@ function appendChatBubble(role,text){
   messages.appendChild(div);
   scrollChatToBottom();
 }
- 
+
 function showTyping(){
   var messages=document.getElementById('chatMessages');
   if(!messages) return;
@@ -1079,16 +1204,16 @@ function showTyping(){
   div.innerHTML='<div class="typing-dots"><span></span><span></span><span></span></div>';
   messages.appendChild(div); scrollChatToBottom();
 }
- 
+
 function hideTyping(){ var el=document.getElementById('typingIndicator'); if(el) el.remove(); }
- 
+
 function scrollChatToBottom(){
   setTimeout(function(){
     var el=document.getElementById('chatMessages');
     if(el) el.scrollTop=el.scrollHeight;
   },50);
 }
- 
+
 function renderQuickReplies(){
   var el=document.getElementById('quickReplies');
   if(!el) return;
@@ -1097,7 +1222,7 @@ function renderQuickReplies(){
     return '<button class="qr-btn" onclick="sendChatMessage(\''+r.replace(/'/g,"\\'")+'\')">'+ r +'</button>';
   }).join('');
 }
- 
+
 function sendChat(){
   var input=document.getElementById('chatInput');
   if(!input) return;
@@ -1106,7 +1231,7 @@ function sendChat(){
   input.value='';
   sendChatMessage(text);
 }
- 
+
 async function sendChatMessage(text){
   if(chatWaiting) return;
   chatWaiting=true;
@@ -1136,7 +1261,6 @@ async function sendChatMessage(text){
     appendChatBubble('ai',reply);
     chatHistory.push({role:'assistant',content:reply});
     checkForMedConfirmations(text);
-    renderQuickReplies();
   }catch(err){
     hideTyping();
     appendChatBubble('ai',"Sorry, I'm having trouble connecting right now. Please check your internet and try again.");
@@ -1145,7 +1269,7 @@ async function sendChatMessage(text){
     if(sendBtn) sendBtn.disabled=false;
   }
 }
- 
+
 function checkForMedConfirmations(text){
   var lower=text.toLowerCase();
   var takenPhrases=['taken','took','had','already','done','yes'];
@@ -1167,7 +1291,62 @@ function checkForMedConfirmations(text){
     document.getElementById('allDoneBanner').style.display=allTakenToday()?'flex':'none';
   }
 }
- 
+
+
+// ─── DRAWER ───────────────────────────────────────────────────
+function openDrawer(){
+  var n=getAlerts().length;
+  var badge=document.getElementById('drawerAlertsBtn').querySelector('.db-badge');
+  if(n>0){
+    if(!badge){ badge=document.createElement('span'); badge.className='db-badge'; document.getElementById('drawerAlertsBtn').appendChild(badge); }
+    badge.textContent=n;
+  } else if(badge){ badge.remove(); }
+  document.getElementById('drawer').classList.add('open');
+  document.getElementById('drawerOverlay').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeDrawer(){
+  document.getElementById('drawer').classList.remove('open');
+  document.getElementById('drawerOverlay').classList.remove('open');
+  document.body.style.overflow='';
+}
+
+// ─── QUICK ACTIONS ────────────────────────────────────────────
+function qaAction(type){
+  var msgs={
+    status:   "What medicines do I still need to take today?",
+    medicines: "Can you give me a summary of all my medicines?",
+    supplies:  "Which medicines are running low and need reordering?",
+    add:       "I'd like to add a new medicine.",
+    interactions: "Are there any interactions or things I should avoid with my current medicines?",
+    tips:      "What should I know about my medicines? Any tips, side effects or things to watch for?"
+  };
+  var msg=msgs[type];
+  if(!msg) return;
+  // If 'add', open modal directly
+  if(type==='add'){
+    sendChatMessage(msg);
+    setTimeout(function(){ openModal(); },600);
+    return;
+  }
+  sendChatMessage(msg);
+}
+
+
+// ─── INIT ─────────────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', function() {
+  updateNotifBtn();
+  buildTimeChips();
+  scheduleAllNotifications();
+  switchTab('chat');
+  if('Notification' in window && Notification.permission === 'default') {
+    setTimeout(function() {
+      if(confirm("Can Gail's Pills send reminders when it's time to take medicine?")) {
+        requestNotifications();
+      }
+    }, 2500);
+  }
+});
 </script>
 </body>
 </html>
