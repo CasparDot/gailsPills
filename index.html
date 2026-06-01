@@ -326,6 +326,10 @@
       <span class="db-icon">🔔</span>
       <span class="db-label">Notification settings</span>
     </button>
+    <button class="drawer-btn" onclick="changePrimaryUser()">
+      <span class="db-icon">👤</span>
+      <span class="db-label" id="drawerUserLabel">My name</span>
+    </button>
   </div>
   <div class="drawer-close">
     <button class="drawer-close-btn" onclick="closeDrawer()">Close menu</button>
@@ -480,18 +484,21 @@
 // ─── CONFIG ───────────────────────────────────────────────────
 const LS_MEDS   = 'gails-pills-meds-v3';
 const LS_CHECKS = 'gails-pills-checks-v3';
+const LS_USER   = 'gails-pills-user-v1';
 const TIME_OPTIONS = ['Morning','Midday','Afternoon','Night'];
 const TIME_HOURS   = {Morning:8,Midday:12,Afternoon:15,Night:21};
 
 // ─── STATE ────────────────────────────────────────────────────
-let meds         = JSON.parse(localStorage.getItem(LS_MEDS)   || '[]');
-let checks       = JSON.parse(localStorage.getItem(LS_CHECKS) || '{}');
+let meds            = JSON.parse(localStorage.getItem(LS_MEDS)   || '[]');
+let checks          = JSON.parse(localStorage.getItem(LS_CHECKS) || '{}');
+let primaryUserName = localStorage.getItem(LS_USER) || '';
 let currentTab   = 'today';
 let selectedTimes= ['Morning'];
 let activePerson = 'All';
 let toastTimer   = null;
 let notifTimers  = [];
 let photoB64     = null;
+let editingMedId = null;
 let photoMime    = null;
 let scannedPacketNumber  = null;
 let scannedTotalPackets  = null;
@@ -551,6 +558,7 @@ function importBackup(input){
       const data=JSON.parse(e.target.result);
       if(data.meds){meds=data.meds;localStorage.setItem(LS_MEDS,JSON.stringify(meds));}
       if(data.checks){checks=data.checks;localStorage.setItem(LS_CHECKS,JSON.stringify(checks));}
+      if(data.primaryUserName){primaryUserName=data.primaryUserName;localStorage.setItem(LS_USER,primaryUserName);}
       render(); scheduleAllNotifications(); showToast('✅ Backup restored!');
     }catch{ showToast('❌ Couldn\'t read that file'); }
   };
@@ -679,7 +687,10 @@ function renderMedicines(){
           <div class="mc-detail">${[med.strength,med.frequency].filter(Boolean).join(' · ')}</div>
           ${notifNote}${doctorLine}${pharmLine}${addrLine}${dateLine}${packetLine}
         </div>
-        <button class="del-btn" onclick="deleteMed('${med.id}')">🗑</button>
+        <div style="display:flex;gap:6px;flex-shrink:0">
+          <button class="del-btn" style="font-size:16px;color:var(--terracotta);border:1.5px solid var(--border-light);border-radius:10px;padding:6px 10px" onclick="openEditModal('${med.id}')">✏️</button>
+          <button class="del-btn" onclick="deleteMed('${med.id}')">🗑</button>
+        </div>
       </div>${bar}
     </div>`;
   }).join('');
@@ -1054,8 +1065,7 @@ var chatWaiting = false;
 function buildSystemPrompt() {
   var today = todayKey();
   var tc    = checks[today] || {};
-  var nameGuess = '';
-  for(var i=0;i<meds.length;i++){ if(meds[i].person){ nameGuess=meds[i].person; break; } }
+  var nameGuess = primaryUserName || '';
 
   var medLines = [];
   for(var i=0;i<meds.length;i++){
@@ -1118,8 +1128,7 @@ function buildOpeningMessage() {
   var tc      = checks[today] || {};
   var untaken = meds.filter(function(m){ return !tc[m.id]; });
   var taken   = meds.filter(function(m){ return  tc[m.id]; });
-  var name    = null;
-  for(var i=0;i<meds.length;i++){ if(meds[i].person){ name=meds[i].person; break; } }
+  var name    = primaryUserName || null;
   var greeting = name ? 'Hi '+name+'! \uD83D\uDC4B' : 'Hi there! \uD83D\uDC4B';
   var hour = new Date().getHours();
   var timeGreet = hour<12?'Good morning!':hour<17?'Good afternoon!':'Good evening!';
@@ -1295,6 +1304,7 @@ function checkForMedConfirmations(text){
 
 // ─── DRAWER ───────────────────────────────────────────────────
 function openDrawer(){
+  updateDrawerUserLabel();
   var n=getAlerts().length;
   var badge=document.getElementById('drawerAlertsBtn').querySelector('.db-badge');
   if(n>0){
@@ -1338,7 +1348,21 @@ window.addEventListener('DOMContentLoaded', function() {
   updateNotifBtn();
   buildTimeChips();
   scheduleAllNotifications();
-  switchTab('chat');
+  // Set date immediately so it shows before any render
+  document.getElementById('datePill').textContent = fmtDate(new Date());
+  // Ask for primary user's name on first launch
+  if(!primaryUserName) {
+    setTimeout(function() {
+      var n = prompt("Welcome to Gail's Pills!\n\nWhat's your name?");
+      if(n && n.trim()) {
+        primaryUserName = n.trim();
+        localStorage.setItem(LS_USER, primaryUserName);
+      }
+      switchTab('chat');
+    }, 300);
+  } else {
+    switchTab('chat');
+  }
   if('Notification' in window && Notification.permission === 'default') {
     setTimeout(function() {
       if(confirm("Can Gail's Pills send reminders when it's time to take medicine?")) {
@@ -1347,6 +1371,153 @@ window.addEventListener('DOMContentLoaded', function() {
     }, 2500);
   }
 });
+
+// ─── EDIT MEDICINE ────────────────────────────────────────────
+
+function openEditModal(id) {
+  var med = meds.find(function(m){ return m.id === id; });
+  if(!med) return;
+  editingMedId = id;
+  document.getElementById('eName').value           = med.person          || '';
+  document.getElementById('eMedName').value        = med.name            || '';
+  document.getElementById('eStrength').value       = med.strength        || '';
+  document.getElementById('ePPD').value            = med.pillsPerDose    || '1';
+  document.getElementById('eFreq').value           = med.frequency       || 'Once daily';
+  document.getElementById('eQty').value            = med.totalQty        || '';
+  document.getElementById('eRepeats').value        = med.repeatsLeft     || '';
+  document.getElementById('eDoctor').value         = med.doctor          || '';
+  document.getElementById('ePharmacyName').value   = med.pharmacyName    || '';
+  document.getElementById('ePharmacyPhone').value  = med.pharmacyPhone   || '';
+  document.getElementById('eDispensedDate').value  = med.dispensedDate   || '';
+  document.getElementById('ePharmacyAddress').value= med.pharmacyAddress || '';
+  var toggle = document.getElementById('eNotifToggle');
+  if(med.reminders) toggle.classList.add('on'); else toggle.classList.remove('on');
+  document.getElementById('editModal').style.display = 'flex';
+}
+
+function closeEditModal() {
+  document.getElementById('editModal').style.display = 'none';
+  editingMedId = null;
+}
+
+function editStepQty(delta) {
+  var el = document.getElementById('eQty');
+  el.value = Math.max(0, (parseFloat(el.value) || 0) + delta);
+}
+
+function saveEditMed() {
+  if(!editingMedId) return;
+  var name = document.getElementById('eMedName').value.trim();
+  if(!name) { showToast('Please enter a medicine name'); return; }
+  meds = meds.map(function(m) {
+    if(m.id !== editingMedId) return m;
+    return {
+      id:              m.id,
+      addedAt:         m.addedAt,
+      person:          document.getElementById('eName').value.trim(),
+      name:            name,
+      strength:        document.getElementById('eStrength').value.trim(),
+      pillsPerDose:    document.getElementById('ePPD').value || '1',
+      frequency:       document.getElementById('eFreq').value,
+      reminderTimes:   m.reminderTimes || ['Morning'],
+      totalQty:        document.getElementById('eQty').value,
+      repeatsLeft:     document.getElementById('eRepeats').value,
+      doctor:          document.getElementById('eDoctor').value.trim(),
+      pharmacyName:    document.getElementById('ePharmacyName').value.trim(),
+      pharmacyPhone:   document.getElementById('ePharmacyPhone').value.trim(),
+      dispensedDate:   document.getElementById('eDispensedDate').value.trim(),
+      pharmacyAddress: document.getElementById('ePharmacyAddress').value.trim(),
+      packetInfo:      m.packetInfo || '',
+      reminders:       document.getElementById('eNotifToggle').classList.contains('on')
+    };
+  });
+  persist();
+  scheduleAllNotifications();
+  closeEditModal();
+  showToast('✓ ' + name + ' updated');
+  if(currentTab === 'medicines') renderMedicines();
+}
+
+function confirmDeleteMed() {
+  if(!editingMedId) return;
+  var med = meds.find(function(m){ return m.id === editingMedId; });
+  if(!med) return;
+  if(confirm('Remove ' + med.name + '? This cannot be undone.')) {
+    meds = meds.filter(function(m){ return m.id !== editingMedId; });
+    persist();
+    scheduleAllNotifications();
+    closeEditModal();
+    showToast('Removed ' + med.name);
+    if(currentTab === 'medicines') renderMedicines();
+  }
+}
+
+
+// ─── PRIMARY USER ─────────────────────────────────────────────
+function changePrimaryUser() {
+  closeDrawer();
+  var n = prompt("What's your name?", primaryUserName || '');
+  if(n !== null && n.trim()) {
+    primaryUserName = n.trim();
+    localStorage.setItem(LS_USER, primaryUserName);
+    updateDrawerUserLabel();
+    chatReady = false; // Reset chat so greeting uses new name
+    showToast('Hi ' + primaryUserName + '!');
+    if(currentTab === 'chat') renderChat();
+  }
+}
+
+function updateDrawerUserLabel() {
+  var el = document.getElementById('drawerUserLabel');
+  if(el) el.textContent = primaryUserName ? 'My name: ' + primaryUserName : 'Set my name';
+}
+
 </script>
+
+<!-- EDIT MEDICINE MODAL -->
+<div class="overlay" id="editModal" style="display:none" onclick="if(event.target===this)closeEditModal()">
+  <div class="modal">
+    <div class="modal-title">Edit medicine</div>
+    <div id="editForm">
+      <div class="field"><label>For</label><input id="eName" placeholder="e.g. Gail"></div>
+      <div class="field"><label>Medicine name *</label><input id="eMedName" placeholder="e.g. Metformin"></div>
+      <div class="row2">
+        <div class="field"><label>Strength</label><input id="eStrength" placeholder="e.g. 500mg"></div>
+        <div class="field"><label>Tablets per dose</label><input id="ePPD" type="number" min="0.5" step="0.5"></div>
+      </div>
+      <div class="field"><label>How often</label>
+        <select id="eFreq">
+          <option>Once daily</option><option>Twice daily</option>
+          <option>Three times daily</option><option>Every other day</option><option>Weekly</option>
+        </select>
+      </div>
+      <div class="row2">
+        <div class="field"><label>Tablets remaining</label>
+          <div class="qty-stepper">
+            <button class="stepper-btn" onclick="editStepQty(-1)">−</button>
+            <input class="stepper-val" id="eQty" type="number" placeholder="?">
+            <button class="stepper-btn" onclick="editStepQty(1)">+</button>
+          </div>
+        </div>
+        <div class="field"><label>Repeats left</label><input id="eRepeats" type="number" placeholder="e.g. 5"></div>
+      </div>
+      <div class="field"><label>Doctor</label><input id="eDoctor" placeholder="e.g. Dr D. Smith"></div>
+      <div class="field"><label>Pharmacy name</label><input id="ePharmacyName" placeholder="e.g. Pharmacy 777"></div>
+      <div class="row2">
+        <div class="field"><label>Pharmacy phone</label><input id="ePharmacyPhone" type="tel"></div>
+        <div class="field"><label>Dispensed date</label><input id="eDispensedDate" placeholder="DD/MM/YY"></div>
+      </div>
+      <div class="field"><label>Pharmacy address</label><input id="ePharmacyAddress"></div>
+      <div class="notif-row">
+        <span>🔔 Daily reminders</span>
+        <button class="toggle on" id="eNotifToggle" onclick="this.classList.toggle('on')"></button>
+      </div>
+      <button class="save-btn" onclick="saveEditMed()">Save changes</button>
+      <button class="cancel-link" style="color:var(--red-border);margin-top:8px" onclick="confirmDeleteMed()">🗑 Delete this medicine</button>
+      <button class="cancel-link" onclick="closeEditModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
