@@ -8,487 +8,339 @@
 <meta name="apple-mobile-web-app-title" content="Gail's Pills">
 <meta name="theme-color" content="#e8d5c4">
 <title>Gail's Pills</title>
-<script>
-  const WORKER_URL = "https://gails-pills-proxy.casparlewis.workers.dev";
-</script>
+<script>const WORKER_URL="https://gails-pills-proxy.casparlewis.workers.dev";</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --cream:#fdf6ee;--warm-white:#fffaf5;--brown-dark:#3d2c1e;--brown-mid:#5c3d2e;
-    --brown-light:#8a6550;--brown-pale:#a08070;--terracotta:#c4703a;--terracotta-light:#d4845a;
-    --border:#e8d0b8;--border-light:#f0e0d0;--green-bg:#f0faf4;--green-border:#a8d5b5;
-    --green-text:#2d6a4f;--orange-bg:#fff8f0;--orange-border:#f4a261;--red-bg:#fff5f5;
-    --red-border:#e63946;--blue-bg:#e8eaf6;--blue-text:#3949ab;
-  }
-  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-  body{font-family:'DM Sans',sans-serif;background:var(--cream);min-height:100vh;color:var(--brown-dark);overscroll-behavior:none}
-  .app{max-width:430px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column;position:relative}
-
-  /* HEADER */
-  .header{background:linear-gradient(135deg,#e8d5c4 0%,#f5e6d3 60%,#fdf0e8 100%);padding:52px 24px 18px;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:10}
-  .header-top{display:flex;justify-content:space-between;align-items:flex-start}
-  .app-title{font-family:'Fraunces',serif;font-size:30px;font-weight:300;color:var(--brown-mid);line-height:1.1}
-  .app-title em{font-style:italic;color:var(--terracotta)}
-  .date-pill{background:var(--terracotta);color:white;font-size:11px;font-weight:600;padding:4px 12px;border-radius:20px;letter-spacing:.6px;text-transform:uppercase;margin-top:6px;display:inline-block}
-  .notif-btn{background:none;border:1.5px solid var(--border);border-radius:50%;width:40px;height:40px;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s}
-  .notif-btn.granted{border-color:var(--green-border);background:var(--green-bg)}
-  .all-done-banner{margin-top:14px;background:var(--green-bg);border:1px solid var(--green-border);color:var(--green-text);border-radius:14px;padding:10px 16px;font-size:14px;font-weight:600;display:flex;align-items:center;gap:8px;animation:slideDown .3s ease}
-
-  /* PERSON FILTER */
-  .person-filter{display:flex;gap:8px;padding:10px 16px;background:#f7ede0;border-bottom:1px solid var(--border);overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
-  .person-filter::-webkit-scrollbar{display:none}
-  .pf-chip{padding:6px 14px;border-radius:20px;border:1.5px solid var(--border);background:white;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;color:var(--brown-light);cursor:pointer;white-space:nowrap;transition:all .2s;flex-shrink:0}
-  .pf-chip.active{background:var(--terracotta);border-color:var(--terracotta);color:white}
-
-  /* TABS */
-  .tabs{display:flex;background:#eddfc8;padding:6px;gap:4px;border-bottom:1px solid var(--border);flex-shrink:0}
-  .tab{flex:1;padding:10px 4px;border:none;background:transparent;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;color:var(--brown-light);cursor:pointer;transition:all .2s;text-align:center;letter-spacing:.2px}
-  .tab.active{background:white;color:var(--terracotta);box-shadow:0 2px 8px rgba(196,112,58,.15)}
-
-  /* CONTENT */
-  .content{flex:1;padding:20px 16px 40px;overflow-y:auto;-webkit-overflow-scrolling:touch}
-
-  /* RESTORE PROMPT */
-  .restore-prompt{background:white;border:2px dashed var(--terracotta);border-radius:20px;padding:28px 20px;text-align:center;margin-bottom:20px;animation:fadeUp .4s ease}
-  .restore-prompt .rp-icon{font-size:44px;margin-bottom:12px}
-  .restore-prompt h3{font-family:'Fraunces',serif;font-size:20px;font-weight:400;font-style:italic;color:var(--brown-mid);margin-bottom:8px}
-  .restore-prompt p{font-size:13px;color:var(--brown-pale);margin-bottom:18px;line-height:1.6}
-  .restore-file-btn{background:linear-gradient(135deg,var(--terracotta),var(--terracotta-light));color:white;border:none;border-radius:14px;padding:14px 24px;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;cursor:pointer;width:100%}
-  .restore-dismiss{margin-top:10px;background:none;border:none;font-size:13px;color:var(--brown-pale);cursor:pointer;text-decoration:underline}
-
-  /* EMPTY */
-  .empty-state{text-align:center;padding:60px 20px;color:var(--brown-pale)}
-  .empty-state .icon{font-size:52px;margin-bottom:16px}
-  .empty-state p{font-size:15px;line-height:1.7}
-
-  /* PILL CARDS */
-  .pill-card{background:white;border-radius:22px;padding:20px;margin-bottom:14px;box-shadow:0 2px 16px rgba(196,112,58,.07);border:1.5px solid var(--border-light);animation:fadeUp .35s ease both}
-  .pill-card.taken{background:var(--green-bg);border-color:var(--green-border)}
-  .pill-card.warn{border-color:var(--orange-border);background:var(--orange-bg)}
-  .pill-card.crit{border-color:var(--red-border);background:var(--red-bg)}
-  .pill-name{font-family:'Fraunces',serif;font-size:22px;font-weight:600;color:var(--brown-dark);margin-bottom:2px}
-  .pill-person{font-size:12px;font-weight:600;color:var(--terracotta);margin-bottom:4px;text-transform:uppercase;letter-spacing:.4px}
-  .pill-sub{font-size:13px;color:var(--brown-light);margin-bottom:12px;line-height:1.5}
-  .badges{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
-  .badge{font-size:12px;padding:4px 11px;border-radius:20px;font-weight:600}
-  .badge.supply{background:#e8f4ea;color:#2d6a4f}
-  .badge.supply.warn{background:#fff0e0;color:#b85c00}
-  .badge.supply.crit{background:#ffebeb;color:#c0392b}
-  .badge.repeats{background:var(--blue-bg);color:var(--blue-text)}
-  .take-btn{width:100%;padding:17px;border:none;border-radius:15px;font-family:'DM Sans',sans-serif;font-size:16px;font-weight:600;cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:10px}
-  .take-btn.untaken{background:linear-gradient(135deg,var(--terracotta),var(--terracotta-light));color:white;box-shadow:0 4px 18px rgba(196,112,58,.32)}
-  .take-btn.untaken:active{transform:scale(.97)}
-  .take-btn.done{background:var(--green-bg);color:var(--green-text);border:1.5px solid var(--green-border);cursor:default}
-  .take-time{font-size:12px;opacity:.75;font-weight:400}
-  .undo-link{margin-top:8px;background:none;border:none;font-size:12px;color:var(--brown-pale);cursor:pointer;text-decoration:underline;display:block}
-
-  /* SECTION TITLE */
-  .section-title{font-family:'Fraunces',serif;font-size:19px;font-weight:300;font-style:italic;color:var(--brown-mid);margin-bottom:16px}
-
-  /* ADD BTN */
-  .add-btn{width:100%;padding:16px;border:2px dashed #d4a882;background:transparent;border-radius:18px;font-family:'DM Sans',sans-serif;font-size:15px;color:var(--terracotta);font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:16px;transition:all .2s}
-  .add-btn:active{background:#fff5ee}
-
-  /* BACKUP ROW */
-  .backup-row{display:flex;gap:10px;margin-bottom:20px}
-  .bk-btn{flex:1;padding:13px 8px;border-radius:13px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;transition:opacity .2s}
-  .bk-btn.save{background:#fff5ee;border:1.5px solid var(--terracotta);color:var(--terracotta)}
-  .bk-btn.load{background:#f0f4ff;border:1.5px solid var(--blue-text);color:var(--blue-text)}
-  .bk-btn:active{opacity:.7}
-
-  /* MANAGE CARDS */
-  .manage-card{background:white;border-radius:18px;padding:16px 18px;margin-bottom:12px;border:1.5px solid var(--border-light);box-shadow:0 2px 8px rgba(0,0,0,.04)}
-  .mc-header{display:flex;justify-content:space-between;align-items:flex-start}
-  .mc-name{font-family:'Fraunces',serif;font-size:18px;font-weight:600;color:var(--brown-dark)}
-  .mc-person{font-size:11px;font-weight:600;color:var(--terracotta);text-transform:uppercase;letter-spacing:.4px;margin-top:2px}
-  .mc-detail{font-size:13px;color:var(--brown-light);margin-top:3px}
-  .mc-extra{font-size:12px;color:var(--brown-light);margin-top:4px;line-height:1.5}
-  .mc-notif{font-size:12px;color:var(--brown-pale);margin-top:4px}
-  .del-btn{background:none;border:none;font-size:20px;cursor:pointer;color:#c4a090;padding:2px 6px;flex-shrink:0}
-  .bar-wrap{margin-top:12px}
-  .bar-bg{background:#f0e4d4;border-radius:6px;height:8px;overflow:hidden}
-  .bar-fill{height:100%;border-radius:6px;transition:width .5s ease}
-  .bar-label{display:flex;justify-content:space-between;font-size:12px;color:var(--brown-pale);margin-top:5px}
-
-  /* ALERTS */
-  .alert-card{background:white;border-radius:16px;padding:16px 18px;margin-bottom:12px;border-left:4px solid var(--terracotta);box-shadow:0 2px 8px rgba(0,0,0,.04)}
-  .alert-card.urgent{border-left-color:var(--red-border)}
-  .alert-title{font-weight:600;font-size:15px;color:var(--brown-dark);margin-bottom:4px}
-  .alert-detail{font-size:13px;color:var(--brown-light);line-height:1.6}
-  .no-alerts{text-align:center;padding:50px 20px;color:var(--brown-pale)}
-  .no-alerts .icon{font-size:46px;margin-bottom:14px}
-  .no-alerts p{font-size:15px;line-height:1.7}
-
-  /* MODAL */
-  .overlay{position:fixed;inset:0;background:rgba(61,44,30,.55);z-index:100;display:flex;align-items:flex-end;animation:fadeIn .2s ease}
-  .modal{background:var(--cream);border-radius:28px 28px 0 0;padding:28px 20px 48px;width:100%;max-width:430px;margin:0 auto;animation:slideUp .3s ease;max-height:92vh;overflow-y:auto}
-  .modal-title{font-family:'Fraunces',serif;font-size:23px;font-weight:300;font-style:italic;color:var(--brown-mid);margin-bottom:20px}
-  .modal-tabs{display:flex;gap:8px;margin-bottom:20px}
-  .m-tab{flex:1;padding:11px;border:1.5px solid var(--border);background:white;border-radius:13px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;color:var(--brown-light);cursor:pointer;text-align:center;transition:all .2s}
-  .m-tab.active{border-color:var(--terracotta);background:#fff5ee;color:var(--terracotta)}
-
-  /* PHOTO */
-  .photo-zone{border:2px dashed #d4a882;border-radius:18px;padding:32px 20px;text-align:center;cursor:pointer;background:white;margin-bottom:14px;transition:background .2s}
-  .photo-zone:active{background:#fff5ee}
-  .photo-zone .pz-icon{font-size:44px;margin-bottom:12px}
-  .photo-zone p{color:var(--brown-pale);font-size:14px;line-height:1.6}
-  .photo-preview{width:100%;border-radius:14px;margin-bottom:14px;max-height:180px;object-fit:cover}
-  .scan-btn{width:100%;padding:16px;background:linear-gradient(135deg,var(--terracotta),var(--terracotta-light));color:white;border:none;border-radius:15px;font-family:'DM Sans',sans-serif;font-size:16px;font-weight:600;cursor:pointer;margin-bottom:10px;display:flex;align-items:center;justify-content:center;gap:8px;transition:opacity .2s}
-  .scan-btn:disabled{opacity:.55;cursor:default}
-  .scan-msg{text-align:center;color:var(--brown-light);font-size:14px;padding:10px;animation:pulse 1.5s infinite}
-  .scan-error{color:#c0392b;font-size:13px;text-align:center;margin-top:8px;background:#ffebeb;border-radius:10px;padding:10px}
-
-  /* MULTI-PACKET BANNER */
-  .multipack-banner{background:#fff8e8;border:1.5px solid #f4c261;border-radius:16px;padding:16px 18px;margin-bottom:16px;animation:slideDown .3s ease}
-  .multipack-banner h4{font-family:'Fraunces',serif;font-size:16px;font-weight:600;color:#7a5500;margin-bottom:6px}
-  .multipack-banner p{font-size:13px;color:#8a6520;margin-bottom:12px;line-height:1.5}
-  .multipack-btns{display:flex;flex-direction:column;gap:8px}
-  .mp-btn{padding:12px;border-radius:12px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer;border:none;text-align:center;transition:opacity .2s}
-  .mp-btn.scan{background:var(--terracotta);color:white}
-  .mp-btn.manual{background:white;border:1.5px solid var(--terracotta);color:var(--terracotta)}
-  .mp-btn.unopened{background:#e8f4ea;color:var(--green-text)}
-  .mp-btn:active{opacity:.8}
-
-  /* STEPPER */
-  .qty-stepper{display:flex;align-items:center;gap:0;border:1.5px solid var(--border);border-radius:13px;overflow:hidden;background:white}
-  .stepper-btn{width:52px;height:50px;border:none;background:#f7ede0;font-size:22px;font-weight:300;color:var(--terracotta);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .15s}
-  .stepper-btn:active{background:#ffe0cc}
-  .stepper-val{flex:1;text-align:center;font-size:20px;font-weight:600;color:var(--brown-dark);border:none;outline:none;background:transparent;font-family:'DM Sans',sans-serif;min-width:0}
-  .qty-hint{font-size:12px;color:var(--brown-pale);margin-top:6px;text-align:center}
-
-  /* COUNT PHOTO */
-  .count-photo-btn{width:100%;padding:12px;border:1.5px dashed var(--border);border-radius:13px;background:transparent;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;color:var(--brown-light);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;margin-top:8px;transition:all .2s}
-  .count-photo-btn:active{background:#fff5ee;border-color:var(--terracotta);color:var(--terracotta)}
-  .counting-msg{text-align:center;font-size:13px;color:var(--brown-light);padding:8px;animation:pulse 1.5s infinite}
-
-  /* FORM */
-  .field{margin-bottom:14px}
-  .field label{display:block;font-size:12px;font-weight:600;color:var(--brown-mid);margin-bottom:7px;letter-spacing:.3px;text-transform:uppercase}
-  .field input,.field select{width:100%;padding:13px 15px;border:1.5px solid var(--border);border-radius:13px;background:white;font-family:'DM Sans',sans-serif;font-size:15px;color:var(--brown-dark);outline:none;transition:border-color .2s;-webkit-appearance:none;appearance:none}
-  .field input:focus,.field select:focus{border-color:var(--terracotta)}
-  .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-  .time-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-  .time-chip{padding:11px 6px;border:1.5px solid var(--border);background:white;border-radius:11px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;color:var(--brown-light);cursor:pointer;text-align:center;transition:all .15s}
-  .time-chip.selected{border-color:var(--terracotta);background:#fff5ee;color:var(--terracotta);font-weight:600}
-  .notif-row{display:flex;align-items:center;justify-content:space-between;background:white;border:1.5px solid var(--border);border-radius:13px;padding:13px 15px;margin-bottom:14px}
-  .notif-row span{font-size:14px;color:var(--brown-mid);font-weight:500}
-  .toggle{width:44px;height:26px;background:#ddd;border-radius:13px;border:none;cursor:pointer;position:relative;transition:background .2s;flex-shrink:0}
-  .toggle.on{background:var(--terracotta)}
-  .toggle::after{content:'';position:absolute;top:3px;left:3px;width:20px;height:20px;background:white;border-radius:50%;transition:transform .2s;box-shadow:0 1px 4px rgba(0,0,0,.2)}
-  .toggle.on::after{transform:translateX(18px)}
-  .save-btn{width:100%;padding:18px;background:linear-gradient(135deg,var(--terracotta),var(--terracotta-light));color:white;border:none;border-radius:17px;font-family:'DM Sans',sans-serif;font-size:17px;font-weight:600;cursor:pointer;margin-top:10px;transition:opacity .2s}
-  .save-btn:active{opacity:.85}
-  .cancel-link{width:100%;padding:14px;background:transparent;border:none;font-family:'DM Sans',sans-serif;font-size:15px;color:var(--brown-pale);cursor:pointer;margin-top:4px;display:block;text-align:center}
-
-  /* TOAST */
-  .toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:var(--brown-dark);color:white;padding:12px 24px;border-radius:30px;font-size:14px;font-weight:500;z-index:200;animation:toastIn .3s ease;white-space:nowrap;box-shadow:0 4px 20px rgba(0,0,0,.25)}
-
-  @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
-  @keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
-  @keyframes fadeIn{from{opacity:0}to{opacity:1}}
-  @keyframes slideDown{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
-  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.45}}
-  @keyframes toastIn{from{opacity:0;transform:translateX(-50%) translateY(10px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
-
-  /* ── CHAT ─────────────────────────────────────── */
-  .chat-messages{flex:1;overflow-y:auto;padding:16px;-webkit-overflow-scrolling:touch;display:flex;flex-direction:column;gap:12px}
-  .chat-bubble{max-width:82%;padding:12px 16px;border-radius:20px;font-size:15px;line-height:1.55;animation:fadeUp .25s ease}
-  .chat-bubble.ai{background:white;border:1.5px solid var(--border-light);color:var(--brown-dark);border-bottom-left-radius:6px;align-self:flex-start;box-shadow:0 2px 8px rgba(196,112,58,.07)}
-  .chat-bubble.user{background:linear-gradient(135deg,var(--terracotta),var(--terracotta-light));color:white;border-bottom-right-radius:6px;align-self:flex-end}
-  .chat-bubble.typing{background:white;border:1.5px solid var(--border-light);align-self:flex-start;padding:14px 18px}
-  .typing-dots{display:flex;gap:5px;align-items:center}
-  .typing-dots span{width:8px;height:8px;background:var(--brown-pale);border-radius:50%;animation:typingBounce 1.2s infinite}
-  .typing-dots span:nth-child(2){animation-delay:.2s}
-  .typing-dots span:nth-child(3){animation-delay:.4s}
-  .quick-replies{display:flex;flex-wrap:wrap;gap:8px;padding:8px 16px 4px}
-  .qr-btn{padding:9px 16px;background:white;border:1.5px solid var(--terracotta);border-radius:20px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;color:var(--terracotta);cursor:pointer;transition:all .15s;white-space:nowrap}
-  .qr-btn:active{background:var(--terracotta);color:white}
-  .chat-input-row{display:flex;gap:8px;padding:10px 16px 20px;border-top:1px solid var(--border-light);background:var(--cream);flex-shrink:0}
-  .chat-input{flex:1;padding:12px 16px;border:1.5px solid var(--border);border-radius:24px;font-family:'DM Sans',sans-serif;font-size:15px;color:var(--brown-dark);outline:none;background:white;transition:border-color .2s}
-  .chat-input:focus{border-color:var(--terracotta)}
-  .chat-send-btn{width:46px;height:46px;background:linear-gradient(135deg,var(--terracotta),var(--terracotta-light));border:none;border-radius:50%;cursor:pointer;font-size:20px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:opacity .2s}
-  .chat-send-btn:active{opacity:.8}
-  .chat-send-btn:disabled{opacity:.4;cursor:default}
-  .chat-med-card{background:var(--green-bg);border:1.5px solid var(--green-border);border-radius:14px;padding:10px 14px;margin-top:6px;font-size:13px}
-  .chat-med-card .cm-name{font-family:'Fraunces',serif;font-size:16px;font-weight:600;color:var(--brown-dark)}
-  .chat-med-card .cm-detail{color:var(--brown-light);margin-top:2px}
-  @keyframes typingBounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-6px)}}
-
-  /* ── HAMBURGER & DRAWER ───────────────────────────── */
-  .hamburger{background:none;border:1.5px solid var(--border);border-radius:10px;width:40px;height:40px;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;flex-shrink:0;transition:all .2s}
-  .hamburger:active{background:var(--border-light)}
-  .hamburger span{display:block;width:18px;height:2px;background:var(--brown-mid);border-radius:2px;transition:all .3s}
-  .drawer-overlay{position:fixed;inset:0;background:rgba(61,44,30,.45);z-index:50;opacity:0;pointer-events:none;transition:opacity .25s}
-  .drawer-overlay.open{opacity:1;pointer-events:all}
-  .drawer{position:fixed;top:0;right:0;bottom:0;width:78%;max-width:300px;background:var(--cream);z-index:51;transform:translateX(100%);transition:transform .28s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;box-shadow:-4px 0 24px rgba(61,44,30,.15)}
-  .drawer.open{transform:translateX(0)}
-  .drawer-header{padding:52px 24px 20px;background:linear-gradient(135deg,#e8d5c4 0%,#f5e6d3 100%);border-bottom:1px solid var(--border)}
-  .drawer-header h3{font-family:'Fraunces',serif;font-size:22px;font-weight:300;font-style:italic;color:var(--brown-mid)}
-  .drawer-header p{font-size:12px;color:var(--brown-pale);margin-top:4px}
-  .drawer-nav{flex:1;padding:16px 12px;overflow-y:auto}
-  .drawer-btn{width:100%;padding:14px 16px;background:white;border:1.5px solid var(--border-light);border-radius:14px;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;color:var(--brown-dark);cursor:pointer;display:flex;align-items:center;gap:12px;margin-bottom:10px;transition:all .2s;text-align:left}
-  .drawer-btn:active{background:var(--border-light)}
-  .drawer-btn .db-icon{font-size:20px;width:28px;text-align:center}
-  .drawer-btn .db-label{flex:1}
-  .drawer-btn .db-badge{background:var(--red-border);color:white;font-size:11px;font-weight:700;padding:2px 7px;border-radius:10px}
-  .drawer-divider{border:none;border-top:1px solid var(--border-light);margin:8px 0 16px}
-  .drawer-section-label{font-size:11px;font-weight:700;color:var(--brown-pale);letter-spacing:.8px;text-transform:uppercase;padding:0 4px;margin-bottom:8px}
-  .drawer-close{padding:16px 24px 32px;border-top:1px solid var(--border-light)}
-  .drawer-close-btn{width:100%;padding:14px;background:var(--border-light);border:none;border-radius:14px;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;color:var(--brown-mid);cursor:pointer}
-
-  /* ── QUICK ACTION BUTTONS ─────────────────────────── */
-  .quick-actions{display:flex;gap:8px;padding:10px 16px 6px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;flex-shrink:0;background:var(--cream);border-top:1px solid var(--border-light);position:sticky;bottom:72px;z-index:5}
-  .quick-actions::-webkit-scrollbar{display:none}
-  .qa-btn{padding:8px 14px;background:white;border:1.5px solid var(--border);border-radius:20px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;color:var(--brown-mid);cursor:pointer;white-space:nowrap;flex-shrink:0;transition:all .2s;display:flex;align-items:center;gap:5px}
-  .qa-btn:active{background:var(--terracotta);border-color:var(--terracotta);color:white}
-  .qa-btn.primary{background:var(--terracotta);border-color:var(--terracotta);color:white}
-
-  /* ── FULL SCREEN CHAT ─────────────────────────────── */
-  #tabChat{display:flex;flex-direction:column;height:calc(100vh - 240px);padding:0;min-height:300px}
-
+:root{--cream:#fdf6ee;--brown-dark:#3d2c1e;--brown-mid:#5c3d2e;--brown-light:#8a6550;--brown-pale:#a08070;--terra:#c4703a;--terra-light:#d4845a;--border:#e8d0b8;--border-light:#f0e0d0;--green-bg:#f0faf4;--green-border:#a8d5b5;--green-text:#2d6a4f;--orange-bg:#fff8f0;--orange-border:#f4a261;--red-bg:#fff5f5;--red-border:#e63946;--blue-bg:#e8eaf6;--blue-text:#3949ab;--nav-h:60px;--safe-bottom:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--brown-dark);overscroll-behavior:none;height:100dvh;display:flex;flex-direction:column}
+header{flex-shrink:0;background:linear-gradient(135deg,#e8d5c4 0%,#f5e6d3 60%,#fdf0e8 100%);padding:52px 20px 16px;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:20}
+main{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:calc(var(--nav-h) + var(--safe-bottom) + 16px)}
+nav{position:fixed;bottom:0;left:0;right:0;height:calc(var(--nav-h) + var(--safe-bottom));padding-bottom:var(--safe-bottom);background:white;border-top:1px solid var(--border-light);display:flex;align-items:stretch;z-index:20;box-shadow:0 -2px 16px rgba(61,44,30,.08)}
+.nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;border:none;background:transparent;font-family:'DM Sans',sans-serif;font-size:10px;font-weight:600;color:var(--brown-pale);cursor:pointer;transition:all .2s;padding:8px 4px;position:relative}
+.nav-btn .nav-icon{font-size:22px;line-height:1}
+.nav-btn.active{color:var(--terra)}
+.nav-btn.active::after{content:'';position:absolute;top:0;left:20%;right:20%;height:3px;background:var(--terra);border-radius:0 0 3px 3px}
+.nav-badge{position:absolute;top:6px;right:calc(50% - 18px);background:var(--red-border);color:white;font-size:10px;font-weight:700;min-width:18px;height:18px;border-radius:9px;display:flex;align-items:center;justify-content:center;padding:0 4px}
+.header-row{display:flex;justify-content:space-between;align-items:flex-start}
+.app-title{font-family:'Fraunces',serif;font-size:28px;font-weight:300;color:var(--brown-mid);line-height:1.1}
+.app-title em{font-style:italic;color:var(--terra)}
+.date-pill{background:var(--terra);color:white;font-size:11px;font-weight:600;padding:4px 12px;border-radius:20px;letter-spacing:.5px;text-transform:uppercase;margin-top:6px;display:inline-block}
+.header-btns{display:flex;gap:8px;align-items:center}
+.icon-btn{width:40px;height:40px;border-radius:12px;border:1.5px solid var(--border);background:none;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.icon-btn.granted{border-color:var(--green-border);background:var(--green-bg)}
+.all-done-banner{margin-top:12px;background:var(--green-bg);border:1px solid var(--green-border);color:var(--green-text);border-radius:12px;padding:10px 14px;font-size:14px;font-weight:600;display:flex;align-items:center;gap:8px}
+.page{display:none;padding:20px 16px}
+.page.active{display:block}
+#pagechat{display:none;padding:0;flex-direction:column;height:calc(100dvh - 130px - var(--nav-h) - var(--safe-bottom))}
+#pagechat.active{display:flex}
+.chat-messages{flex:1;overflow-y:auto;padding:16px 16px 8px;-webkit-overflow-scrolling:touch;display:flex;flex-direction:column;gap:12px}
+.chat-bubble{max-width:84%;padding:12px 16px;border-radius:20px;font-size:15px;line-height:1.55;animation:fadeUp .25s ease}
+.chat-bubble.ai{background:white;border:1.5px solid var(--border-light);color:var(--brown-dark);border-bottom-left-radius:5px;align-self:flex-start;box-shadow:0 2px 8px rgba(196,112,58,.07)}
+.chat-bubble.user{background:linear-gradient(135deg,var(--terra),var(--terra-light));color:white;border-bottom-right-radius:5px;align-self:flex-end}
+.chat-bubble.typing{background:white;border:1.5px solid var(--border-light);align-self:flex-start;padding:14px 18px}
+.typing-dots{display:flex;gap:5px;align-items:center}
+.typing-dots span{width:8px;height:8px;background:var(--brown-pale);border-radius:50%;animation:typingBounce 1.2s infinite}
+.typing-dots span:nth-child(2){animation-delay:.2s}
+.typing-dots span:nth-child(3){animation-delay:.4s}
+.quick-actions{flex-shrink:0;display:flex;gap:8px;padding:8px 16px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;border-top:1px solid var(--border-light);background:var(--cream)}
+.quick-actions::-webkit-scrollbar{display:none}
+.qa-btn{padding:8px 14px;background:white;border:1.5px solid var(--border);border-radius:20px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;color:var(--brown-mid);cursor:pointer;white-space:nowrap;flex-shrink:0;transition:all .15s}
+.qa-btn:active,.qa-btn.primary{background:var(--terra);border-color:var(--terra);color:white}
+.chat-input-row{flex-shrink:0;display:flex;gap:8px;padding:8px 16px 12px;border-top:1px solid var(--border-light);background:var(--cream)}
+.chat-input{flex:1;padding:12px 16px;border:1.5px solid var(--border);border-radius:24px;font-family:'DM Sans',sans-serif;font-size:15px;color:var(--brown-dark);outline:none;background:white;transition:border-color .2s}
+.chat-input:focus{border-color:var(--terra)}
+.chat-send{width:46px;height:46px;background:linear-gradient(135deg,var(--terra),var(--terra-light));border:none;border-radius:50%;cursor:pointer;font-size:20px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.chat-send:disabled{opacity:.4;cursor:default}
+.pill-card{background:white;border-radius:20px;padding:18px;margin-bottom:14px;box-shadow:0 2px 12px rgba(196,112,58,.07);border:1.5px solid var(--border-light);animation:fadeUp .3s ease both}
+.pill-card.taken{background:var(--green-bg);border-color:var(--green-border)}
+.pill-card.warn{border-color:var(--orange-border);background:var(--orange-bg)}
+.pill-card.crit{border-color:var(--red-border);background:var(--red-bg)}
+.pill-person{font-size:11px;font-weight:700;color:var(--terra);text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px}
+.pill-name{font-family:'Fraunces',serif;font-size:21px;font-weight:600;color:var(--brown-dark);margin-bottom:3px}
+.pill-sub{font-size:13px;color:var(--brown-light);margin-bottom:10px;line-height:1.5}
+.badges{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.badge{font-size:12px;padding:3px 10px;border-radius:20px;font-weight:600}
+.badge.supply{background:#e8f4ea;color:#2d6a4f}
+.badge.supply.warn{background:#fff0e0;color:#b85c00}
+.badge.supply.crit{background:#ffebeb;color:#c0392b}
+.badge.repeats{background:var(--blue-bg);color:var(--blue-text)}
+.take-btn{width:100%;padding:16px;border:none;border-radius:14px;font-family:'DM Sans',sans-serif;font-size:16px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .15s}
+.take-btn.untaken{background:linear-gradient(135deg,var(--terra),var(--terra-light));color:white;box-shadow:0 4px 16px rgba(196,112,58,.3)}
+.take-btn.untaken:active{transform:scale(.97)}
+.take-btn.done{background:var(--green-bg);color:var(--green-text);border:1.5px solid var(--green-border);cursor:default}
+.take-time{font-size:12px;opacity:.75;font-weight:400}
+.undo-link{margin-top:6px;background:none;border:none;font-size:12px;color:var(--brown-pale);cursor:pointer;text-decoration:underline;display:block}
+.person-filter{display:flex;gap:8px;padding:0 0 16px;overflow-x:auto;scrollbar-width:none}
+.person-filter::-webkit-scrollbar{display:none}
+.pf-chip{padding:6px 14px;border-radius:20px;border:1.5px solid var(--border);background:white;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;color:var(--brown-light);cursor:pointer;white-space:nowrap;transition:all .2s}
+.pf-chip.active{background:var(--terra);border-color:var(--terra);color:white}
+.empty-state{text-align:center;padding:60px 20px;color:var(--brown-pale)}
+.empty-state .icon{font-size:48px;margin-bottom:14px}
+.empty-state p{font-size:15px;line-height:1.7}
+.section-title{font-family:'Fraunces',serif;font-size:19px;font-weight:300;font-style:italic;color:var(--brown-mid);margin-bottom:14px}
+.add-btn{width:100%;padding:15px;border:2px dashed #d4a882;background:transparent;border-radius:16px;font-family:'DM Sans',sans-serif;font-size:15px;color:var(--terra);font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:14px}
+.add-btn:active{background:#fff5ee}
+.backup-row{display:flex;gap:10px;margin-bottom:20px}
+.bk-btn{flex:1;padding:12px 8px;border-radius:12px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px}
+.bk-btn.save{background:#fff5ee;border:1.5px solid var(--terra);color:var(--terra)}
+.bk-btn.load{background:#f0f4ff;border:1.5px solid var(--blue-text);color:var(--blue-text)}
+.manage-card{background:white;border-radius:16px;padding:16px 18px;margin-bottom:12px;border:1.5px solid var(--border-light);box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.mc-header{display:flex;justify-content:space-between;align-items:flex-start}
+.mc-name{font-family:'Fraunces',serif;font-size:17px;font-weight:600;color:var(--brown-dark)}
+.mc-person{font-size:11px;font-weight:700;color:var(--terra);text-transform:uppercase;letter-spacing:.4px;margin-top:2px}
+.mc-detail{font-size:13px;color:var(--brown-light);margin-top:3px}
+.mc-extra{font-size:12px;color:var(--brown-light);margin-top:4px;line-height:1.5}
+.mc-btns{display:flex;gap:6px;flex-shrink:0}
+.mc-btn{width:36px;height:36px;border-radius:10px;border:1.5px solid var(--border-light);background:white;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center}
+.mc-btn:active{background:var(--border-light)}
+.bar-wrap{margin-top:10px}
+.bar-bg{background:#f0e4d4;border-radius:6px;height:8px;overflow:hidden}
+.bar-fill{height:100%;border-radius:6px;transition:width .5s ease}
+.bar-label{display:flex;justify-content:space-between;font-size:12px;color:var(--brown-pale);margin-top:4px}
+.alert-card{background:white;border-radius:14px;padding:14px 16px;margin-bottom:12px;border-left:4px solid var(--terra);box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.alert-card.urgent{border-left-color:var(--red-border)}
+.alert-title{font-weight:600;font-size:15px;color:var(--brown-dark);margin-bottom:4px}
+.alert-detail{font-size:13px;color:var(--brown-light);line-height:1.6}
+.no-alerts{text-align:center;padding:50px 20px;color:var(--brown-pale)}
+.no-alerts .icon{font-size:44px;margin-bottom:12px}
+.overlay{position:fixed;inset:0;background:rgba(61,44,30,.55);z-index:100;display:flex;align-items:flex-end;animation:fadeIn .2s ease}
+.modal{background:var(--cream);border-radius:28px 28px 0 0;padding:28px 20px calc(32px + var(--safe-bottom));width:100%;max-width:430px;margin:0 auto;animation:slideUp .3s ease;max-height:90dvh;overflow-y:auto}
+.modal-title{font-family:'Fraunces',serif;font-size:22px;font-weight:300;font-style:italic;color:var(--brown-mid);margin-bottom:18px}
+.modal-tabs{display:flex;gap:8px;margin-bottom:18px}
+.m-tab{flex:1;padding:11px;border:1.5px solid var(--border);background:white;border-radius:12px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;color:var(--brown-light);cursor:pointer;text-align:center;transition:all .2s}
+.m-tab.active{border-color:var(--terra);background:#fff5ee;color:var(--terra)}
+.photo-zone{border:2px dashed #d4a882;border-radius:16px;padding:30px 20px;text-align:center;cursor:pointer;background:white;margin-bottom:14px}
+.photo-zone:active{background:#fff5ee}
+.photo-zone .pz-icon{font-size:40px;margin-bottom:10px}
+.photo-zone p{color:var(--brown-pale);font-size:14px;line-height:1.6}
+.photo-preview{width:100%;border-radius:12px;margin-bottom:12px;max-height:180px;object-fit:cover}
+.scan-btn{width:100%;padding:15px;background:linear-gradient(135deg,var(--terra),var(--terra-light));color:white;border:none;border-radius:14px;font-family:'DM Sans',sans-serif;font-size:16px;font-weight:600;cursor:pointer;margin-bottom:10px;display:flex;align-items:center;justify-content:center;gap:8px}
+.scan-btn:disabled{opacity:.55;cursor:default}
+.scan-msg{text-align:center;color:var(--brown-light);font-size:14px;padding:10px;animation:pulse 1.5s infinite}
+.scan-error{color:#c0392b;font-size:13px;background:#ffebeb;border-radius:10px;padding:10px;margin-top:8px}
+.multipack-banner{background:#fff8e8;border:1.5px solid #f4c261;border-radius:14px;padding:14px 16px;margin-bottom:14px}
+.multipack-banner h4{font-family:'Fraunces',serif;font-size:15px;font-weight:600;color:#7a5500;margin-bottom:6px}
+.multipack-banner p{font-size:13px;color:#8a6520;margin-bottom:10px;line-height:1.5}
+.multipack-btns{display:flex;flex-direction:column;gap:8px}
+.mp-btn{padding:11px;border-radius:11px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer;border:none;text-align:center}
+.mp-btn.scan{background:var(--terra);color:white}
+.mp-btn.manual{background:white;border:1.5px solid var(--terra);color:var(--terra)}
+.mp-btn.unopened{background:#e8f4ea;color:var(--green-text)}
+.field{margin-bottom:13px}
+.field label{display:block;font-size:11px;font-weight:700;color:var(--brown-mid);margin-bottom:6px;letter-spacing:.4px;text-transform:uppercase}
+.field input,.field select{width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:12px;background:white;font-family:'DM Sans',sans-serif;font-size:15px;color:var(--brown-dark);outline:none;transition:border-color .2s;-webkit-appearance:none}
+.field input:focus,.field select:focus{border-color:var(--terra)}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.time-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.time-chip{padding:10px 6px;border:1.5px solid var(--border);background:white;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;color:var(--brown-light);cursor:pointer;text-align:center;transition:all .15s}
+.time-chip.selected{border-color:var(--terra);background:#fff5ee;color:var(--terra);font-weight:600}
+.qty-stepper{display:flex;align-items:center;border:1.5px solid var(--border);border-radius:12px;overflow:hidden;background:white}
+.stepper-btn{width:50px;height:48px;border:none;background:#f7ede0;font-size:22px;color:var(--terra);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.stepper-btn:active{background:#ffe0cc}
+.stepper-val{flex:1;text-align:center;font-size:18px;font-weight:600;border:none;outline:none;background:transparent;font-family:'DM Sans',sans-serif;color:var(--brown-dark)}
+.qty-hint{font-size:12px;color:var(--brown-pale);margin-top:5px}
+.count-photo-btn{width:100%;padding:11px;border:1.5px dashed var(--border);border-radius:12px;background:transparent;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;color:var(--brown-light);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;margin-top:8px}
+.count-photo-btn:active{background:#fff5ee;border-color:var(--terra);color:var(--terra)}
+.counting-msg{text-align:center;font-size:13px;color:var(--brown-light);padding:8px;animation:pulse 1.5s infinite}
+.notif-row{display:flex;align-items:center;justify-content:space-between;background:white;border:1.5px solid var(--border);border-radius:12px;padding:12px 14px;margin-bottom:13px}
+.notif-row span{font-size:14px;color:var(--brown-mid);font-weight:500}
+.toggle{width:44px;height:26px;background:#ddd;border-radius:13px;border:none;cursor:pointer;position:relative;transition:background .2s;flex-shrink:0}
+.toggle.on{background:var(--terra)}
+.toggle::after{content:'';position:absolute;top:3px;left:3px;width:20px;height:20px;background:white;border-radius:50%;transition:transform .2s;box-shadow:0 1px 4px rgba(0,0,0,.2)}
+.toggle.on::after{transform:translateX(18px)}
+.save-btn{width:100%;padding:17px;background:linear-gradient(135deg,var(--terra),var(--terra-light));color:white;border:none;border-radius:16px;font-family:'DM Sans',sans-serif;font-size:17px;font-weight:600;cursor:pointer;margin-top:8px}
+.save-btn:active{opacity:.85}
+.cancel-link{width:100%;padding:13px;background:transparent;border:none;font-family:'DM Sans',sans-serif;font-size:15px;color:var(--brown-pale);cursor:pointer;margin-top:4px;display:block;text-align:center}
+.toast{position:fixed;bottom:calc(var(--nav-h) + var(--safe-bottom) + 12px);left:50%;transform:translateX(-50%);background:var(--brown-dark);color:white;padding:11px 22px;border-radius:28px;font-size:14px;font-weight:500;z-index:200;animation:toastIn .3s ease;white-space:nowrap;box-shadow:0 4px 20px rgba(0,0,0,.25)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.45}}
+@keyframes toastIn{from{opacity:0;transform:translateX(-50%) translateY(8px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+@keyframes typingBounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-6px)}}
 </style>
 </head>
 <body>
-<div class="app">
-  <div class="header">
-    <div class="header-top">
-      <div>
-        <div class="app-title">Gail's <em>pills</em></div>
-        <div class="date-pill" id="datePill"></div>
-        <script>document.getElementById("datePill").textContent=(function(){var d=new Date();return d.toLocaleDateString("en-AU",{weekday:"long",day:"numeric",month:"long"});})();</script>
-      </div>
-      <div style="display:flex;gap:8px;align-items:center">
-        <button class="notif-btn" id="notifBtn" onclick="requestNotifications()">🔔</button>
-        <button class="hamburger" onclick="openDrawer()" aria-label="Menu">
-          <span></span><span></span><span></span>
-        </button>
-      </div>
+<header>
+  <div class="header-row">
+    <div>
+      <div class="app-title">Gail's <em>pills</em></div>
+      <div class="date-pill" id="datePill"></div>
+      <script>document.getElementById('datePill').textContent=new Date().toLocaleDateString('en-AU',{weekday:'long',day:'numeric',month:'long'});</script>
     </div>
-    <div class="all-done-banner" id="allDoneBanner" style="display:none">✅ All done for today — great work!</div>
+    <div class="header-btns">
+      <button class="icon-btn" id="notifBtn" onclick="requestNotifications()">&#x1F514;</button>
+      <button class="icon-btn" onclick="changePrimaryUser()" title="Change name">&#x1F464;</button>
+    </div>
   </div>
-
-  <div class="content" id="mainContent">
-    <div id="tabToday" style="display:none"></div>
-    <div id="tabMedicines" style="display:none"></div>
-    <div id="tabAlerts" style="display:none"></div>
-    <div id="tabChat"></div>
+  <div class="all-done-banner" id="allDoneBanner" style="display:none">&#x2705; All done for today!</div>
+</header>
+<main>
+  <div id="pagechat" class="active">
+    <div class="chat-messages" id="chatMessages"></div>
+    <div class="quick-actions">
+      <button class="qa-btn primary" onclick="qaAction('status')">&#x1F48A; Today</button>
+      <button class="qa-btn" onclick="qaAction('medicines')">&#x1F4CB; Medicines</button>
+      <button class="qa-btn" onclick="qaAction('supplies')">&#x26A0;&#xFE0F; Supplies</button>
+      <button class="qa-btn" onclick="qaAction('add')">&#x2795; Add medicine</button>
+      <button class="qa-btn" onclick="qaAction('interactions')">&#x1F52C; Interactions</button>
+      <button class="qa-btn" onclick="qaAction('tips')">&#x1F4A1; Tips</button>
+    </div>
+    <div class="chat-input-row">
+      <input class="chat-input" id="chatInput" placeholder="Type a message&hellip;" onkeydown="if(event.key==='Enter')sendChat()">
+      <button class="chat-send" id="chatSendBtn" onclick="sendChat()">&#x27A4;</button>
+    </div>
   </div>
-
-  <!-- QUICK ACTIONS -->
-  <div class="quick-actions" id="quickActions" style="display:flex">
-    <button class="qa-btn primary" onclick="qaAction('status')">💊 Today</button>
-    <button class="qa-btn" onclick="qaAction('medicines')">📋 Medicines</button>
-    <button class="qa-btn" onclick="qaAction('supplies')">⚠️ Supplies</button>
-    <button class="qa-btn" onclick="qaAction('add')">➕ Add medicine</button>
-    <button class="qa-btn" onclick="qaAction('interactions')">🔬 Interactions</button>
-    <button class="qa-btn" onclick="qaAction('tips')">💡 Tips</button>
+  <div id="pagetoday" class="page">
+    <div class="person-filter" id="personFilter"></div>
+    <div id="todayCards"></div>
   </div>
-</div>
-
-<!-- DRAWER OVERLAY -->
-<div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
-
-<!-- SIDE DRAWER -->
-<div class="drawer" id="drawer">
-  <div class="drawer-header">
-    <h3>Gail's <em style="font-style:italic;color:var(--terracotta)">pills</em></h3>
-    <p>Manage your medicines</p>
+  <div id="pagemedicines" class="page">
+    <div class="section-title">Your medicines</div>
+    <button class="add-btn" onclick="openModal()">+ Add a medicine</button>
+    <div class="backup-row">
+      <button class="bk-btn save" onclick="manualExport()">&#x1F4BE; Save backup</button>
+      <button class="bk-btn load" onclick="document.getElementById('importInput').click()">&#x1F4C2; Restore backup</button>
+    </div>
+    <div id="medCards"></div>
   </div>
-  <div class="drawer-nav">
-    <div class="drawer-section-label">Views</div>
-    <button class="drawer-btn" onclick="openDrawerTab('today')">
-      <span class="db-icon">📅</span>
-      <span class="db-label">Today's checklist</span>
-    </button>
-    <button class="drawer-btn" onclick="openDrawerTab('medicines')">
-      <span class="db-icon">💊</span>
-      <span class="db-label">All medicines</span>
-    </button>
-    <button class="drawer-btn" id="drawerAlertsBtn" onclick="openDrawerTab('alerts')">
-      <span class="db-icon">⚠️</span>
-      <span class="db-label">Alerts</span>
-    </button>
-    <hr class="drawer-divider">
-    <div class="drawer-section-label">Actions</div>
-    <button class="drawer-btn" onclick="closeDrawer();openModal()">
-      <span class="db-icon">➕</span>
-      <span class="db-label">Add a medicine</span>
-    </button>
-    <button class="drawer-btn" onclick="closeDrawer();manualExport()">
-      <span class="db-icon">💾</span>
-      <span class="db-label">Save backup</span>
-    </button>
-    <button class="drawer-btn" onclick="closeDrawer();document.getElementById('importInput').click()">
-      <span class="db-icon">📂</span>
-      <span class="db-label">Restore backup</span>
-    </button>
-    <button class="drawer-btn" onclick="closeDrawer();requestNotifications()">
-      <span class="db-icon">🔔</span>
-      <span class="db-label">Notification settings</span>
-    </button>
-    <button class="drawer-btn" onclick="changePrimaryUser()">
-      <span class="db-icon">👤</span>
-      <span class="db-label" id="drawerUserLabel">My name</span>
-    </button>
+  <div id="pagealerts" class="page">
+    <div class="section-title">What needs attention</div>
+    <div id="alertCards"></div>
   </div>
-  <div class="drawer-close">
-    <button class="drawer-close-btn" onclick="closeDrawer()">Close menu</button>
-  </div>
-</div>
-
+</main>
+<nav>
+  <button class="nav-btn active" id="nav-chat" onclick="switchPage('chat')">
+    <span class="nav-icon">&#x1F4AC;</span>Chat
+  </button>
+  <button class="nav-btn" id="nav-today" onclick="switchPage('today')">
+    <span class="nav-icon">&#x1F4C5;</span>Today
+  </button>
+  <button class="nav-btn" id="nav-medicines" onclick="switchPage('medicines')">
+    <span class="nav-icon">&#x1F48A;</span>Medicines
+  </button>
+  <button class="nav-btn" id="nav-alerts" onclick="switchPage('alerts')">
+    <span class="nav-icon">&#x26A0;&#xFE0F;</span>Alerts
+    <span class="nav-badge" id="alertBadge" style="display:none">0</span>
+  </button>
+</nav>
+ 
 <!-- ADD MEDICINE MODAL -->
 <div class="overlay" id="modal" style="display:none" onclick="if(event.target===this)closeModal()">
   <div class="modal">
     <div class="modal-title">Add a medicine</div>
     <div class="modal-tabs">
-      <button class="m-tab active" onclick="switchModalTab('photo',this)">📷 Photo scan</button>
-      <button class="m-tab" onclick="switchModalTab('manual',this)">✏️ Type it in</button>
+      <button class="m-tab active" onclick="switchModalTab('photo',this)">&#x1F4F7; Photo scan</button>
+      <button class="m-tab" onclick="switchModalTab('manual',this)">&#x270F;&#xFE0F; Type it in</button>
     </div>
-
-    <!-- PHOTO TAB -->
     <div id="modalPhoto">
       <input type="file" id="photoInput" accept="image/*" capture="environment" style="display:none" onchange="handlePhoto(this)">
       <div id="photoZone" class="photo-zone" onclick="document.getElementById('photoInput').click()">
-        <div class="pz-icon">📷</div>
-        <p>Take a photo of the pharmacy sticker on the packet<br><br><strong>Tap to open camera</strong></p>
+        <div class="pz-icon">&#x1F4F7;</div>
+        <p>Take a photo of the pharmacy sticker<br><br><strong>Tap to open camera</strong></p>
       </div>
       <img id="photoPreview" class="photo-preview" style="display:none">
-      <button class="scan-btn" id="scanBtn" style="display:none" onclick="scanLabel()">🔍 Read the label</button>
+      <button class="scan-btn" id="scanBtn" style="display:none" onclick="scanLabel()">&#x1F50D; Read the label</button>
       <button class="cancel-link" id="retakeBtn" style="display:none" onclick="retakePhoto()">Take a different photo</button>
-      <div class="scan-msg" id="scanMsg" style="display:none">Reading your pharmacy label…</div>
+      <div class="scan-msg" id="scanMsg" style="display:none">Reading your pharmacy label&hellip;</div>
       <div class="scan-error" id="scanError" style="display:none"></div>
     </div>
-
-    <!-- MANUAL TAB -->
     <div id="modalManual" style="display:none">
-
-      <!-- MULTI-PACKET BANNER (shown when packetNumber detected) -->
       <div class="multipack-banner" id="multipackBanner" style="display:none">
-        <h4 id="multipackTitle">📦 Multiple packets detected</h4>
+        <h4 id="multipackTitle">&#x1F4E6; Multiple packets detected</h4>
         <p id="multipackMsg"></p>
         <div class="multipack-btns">
-          <button class="mp-btn scan" onclick="scanSecondPacket()">📷 Scan the other packet now</button>
-          <button class="mp-btn manual" onclick="enterSecondPacketManually()">✏️ Enter remaining qty manually</button>
-          <button class="mp-btn unopened" onclick="addFullSecondPacket()">📦 Other packet is unopened</button>
+          <button class="mp-btn scan" onclick="scanSecondPacket()">&#x1F4F7; Scan the other packet</button>
+          <button class="mp-btn manual" onclick="enterSecondPacketManually()">&#x270F;&#xFE0F; Enter qty manually</button>
+          <button class="mp-btn unopened" onclick="addFullSecondPacket()">&#x1F4E6; Other packet is unopened</button>
         </div>
       </div>
-
-      <div class="field">
-        <label>For</label>
-        <input id="fPerson" placeholder="e.g. Gail, Tom, Jack…">
-      </div>
-      <div class="field">
-        <label>Medicine name *</label>
-        <input id="fName" placeholder="e.g. Metformin">
-      </div>
+      <div class="field"><label>For</label><input id="fPerson" placeholder="e.g. Gail, Tom&hellip;"></div>
+      <div class="field"><label>Medicine name *</label><input id="fName" placeholder="e.g. Metformin"></div>
       <div class="row2">
-        <div class="field">
-          <label>Strength</label>
-          <input id="fStrength" placeholder="e.g. 500mg">
-        </div>
-        <div class="field">
-          <label>Tablets per dose</label>
-          <input id="fPPD" type="number" min="0.5" step="0.5" value="1">
-        </div>
+        <div class="field"><label>Strength</label><input id="fStrength" placeholder="e.g. 500mg"></div>
+        <div class="field"><label>Tablets per dose</label><input id="fPPD" type="number" min="0.5" step="0.5" value="1"></div>
       </div>
-      <div class="field">
-        <label>How often</label>
-        <select id="fFreq">
-          <option>Once daily</option>
-          <option>Twice daily</option>
-          <option>Three times daily</option>
-          <option>Every other day</option>
-          <option>Weekly</option>
-        </select>
+      <div class="field"><label>How often</label>
+        <select id="fFreq"><option>Once daily</option><option>Twice daily</option><option>Three times daily</option><option>Every other day</option><option>Weekly</option></select>
       </div>
+      <div class="field"><label>Reminder time(s)</label><div class="time-grid" id="timeChips"></div></div>
       <div class="field">
-        <label>Reminder time(s)</label>
-        <div class="time-grid" id="timeChips"></div>
-      </div>
-
-      <!-- QUANTITY STEPPER -->
-      <div class="field">
-        <label>Tablets remaining in this packet</label>
-        <div class="qty-stepper">
-          <button class="stepper-btn" onclick="stepQty(-1)">−</button>
-          <input class="stepper-val" id="fQty" type="number" value="" placeholder="?">
-          <button class="stepper-btn" onclick="stepQty(1)">+</button>
-        </div>
+        <label>Tablets remaining</label>
+        <div class="qty-stepper"><button class="stepper-btn" onclick="stepQty(-1)">&#x2212;</button><input class="stepper-val" id="fQty" type="number" placeholder="?"><button class="stepper-btn" onclick="stepQty(1)">+</button></div>
         <div class="qty-hint">Adjust if the packet is partly used</div>
-        <!-- COUNT PHOTO OPTION -->
         <input type="file" id="countPhotoInput" accept="image/*" capture="environment" style="display:none" onchange="handleCountPhoto(this)">
-        <button class="count-photo-btn" onclick="document.getElementById('countPhotoInput').click()">📷 Or photo the remaining tablets to count them</button>
-        <div class="counting-msg" id="countingMsg" style="display:none">Counting tablets…</div>
+        <button class="count-photo-btn" onclick="document.getElementById('countPhotoInput').click()">&#x1F4F7; Or photo remaining tablets to count them</button>
+        <div class="counting-msg" id="countingMsg" style="display:none">Counting tablets&hellip;</div>
       </div>
-
-      <!-- SECOND PACKET QTY (shown after multi-packet flow) -->
       <div id="secondPacketField" style="display:none">
-        <div class="field">
-          <label>Tablets in second packet</label>
-          <div class="qty-stepper">
-            <button class="stepper-btn" onclick="stepQty2(-1)">−</button>
-            <input class="stepper-val" id="fQty2" type="number" value="" placeholder="?">
-            <button class="stepper-btn" onclick="stepQty2(1)">+</button>
-          </div>
-          <div class="qty-hint">Total will be combined automatically</div>
+        <div class="field"><label>Tablets in second packet</label>
+          <div class="qty-stepper"><button class="stepper-btn" onclick="stepQty2(-1)">&#x2212;</button><input class="stepper-val" id="fQty2" type="number" placeholder="?"><button class="stepper-btn" onclick="stepQty2(1)">+</button></div>
         </div>
-      </div>
-
-      <div class="row2">
-        <div class="field">
-          <label>Repeats left</label>
-          <input id="fRepeats" type="number" placeholder="e.g. 5">
-        </div>
-        <div class="field">
-          <label>Dispensed date</label>
-          <input id="fDispensedDate" placeholder="e.g. 27/03/26">
-        </div>
-      </div>
-      <div class="field">
-        <label>Doctor</label>
-        <input id="fDoctor" placeholder="e.g. Dr D. Smith">
-      </div>
-      <div class="field">
-        <label>Pharmacy name</label>
-        <input id="fPharmacyName" placeholder="e.g. Pharmacy 777 Baldivis">
       </div>
       <div class="row2">
-        <div class="field">
-          <label>Pharmacy phone</label>
-          <input id="fPharmacyPhone" type="tel" placeholder="e.g. 08 6119 9127">
-        </div>
-        <div class="field">
-          <label>Packet</label>
-          <input id="fPacketInfo" placeholder="e.g. 1 of 2" readonly style="background:#f8f8f8;color:var(--brown-pale)">
-        </div>
+        <div class="field"><label>Repeats left</label><input id="fRepeats" type="number" placeholder="e.g. 5"></div>
+        <div class="field"><label>Dispensed date</label><input id="fDispensedDate" placeholder="DD/MM/YY"></div>
       </div>
-      <div class="field">
-        <label>Pharmacy address</label>
-        <input id="fPharmacyAddress" placeholder="e.g. 114 Amazon Drive, Baldivis WA 6171">
+      <div class="field"><label>Doctor</label><input id="fDoctor" placeholder="e.g. Dr D. Smith"></div>
+      <div class="field"><label>Pharmacy name</label><input id="fPharmacyName" placeholder="e.g. Pharmacy 777 Baldivis"></div>
+      <div class="row2">
+        <div class="field"><label>Pharmacy phone</label><input id="fPharmacyPhone" type="tel"></div>
+        <div class="field"><label>Packet</label><input id="fPacketInfo" placeholder="e.g. 1 of 2" readonly style="background:#f8f8f8;color:var(--brown-pale)"></div>
       </div>
-      <div class="notif-row">
-        <span>🔔 Daily reminders</span>
-        <button class="toggle on" id="notifToggle" onclick="this.classList.toggle('on')"></button>
-      </div>
+      <div class="field"><label>Pharmacy address</label><input id="fPharmacyAddress"></div>
+      <div class="notif-row"><span>&#x1F514; Daily reminders</span><button class="toggle on" id="notifToggle" onclick="this.classList.toggle('on')"></button></div>
       <button class="save-btn" onclick="saveMed()">Save medicine</button>
       <button class="cancel-link" onclick="closeModal()">Cancel</button>
     </div>
   </div>
 </div>
-
-<!-- FILE INPUTS -->
+<!-- EDIT MODAL -->
+<div class="overlay" id="editModal" style="display:none" onclick="if(event.target===this)closeEditModal()">
+  <div class="modal">
+    <div class="modal-title">Edit medicine</div>
+    <div class="field"><label>For</label><input id="eName" placeholder="e.g. Gail"></div>
+    <div class="field"><label>Medicine name *</label><input id="eMedName" placeholder="e.g. Metformin"></div>
+    <div class="row2">
+      <div class="field"><label>Strength</label><input id="eStrength" placeholder="e.g. 500mg"></div>
+      <div class="field"><label>Tablets per dose</label><input id="ePPD" type="number" min="0.5" step="0.5"></div>
+    </div>
+    <div class="field"><label>How often</label>
+      <select id="eFreq"><option>Once daily</option><option>Twice daily</option><option>Three times daily</option><option>Every other day</option><option>Weekly</option></select>
+    </div>
+    <div class="row2">
+      <div class="field"><label>Tablets remaining</label>
+        <div class="qty-stepper"><button class="stepper-btn" onclick="editStepQty(-1)">&#x2212;</button><input class="stepper-val" id="eQty" type="number" placeholder="?"><button class="stepper-btn" onclick="editStepQty(1)">+</button></div>
+      </div>
+      <div class="field"><label>Repeats left</label><input id="eRepeats" type="number" placeholder="e.g. 5"></div>
+    </div>
+    <div class="field"><label>Doctor</label><input id="eDoctor" placeholder="e.g. Dr D. Smith"></div>
+    <div class="field"><label>Pharmacy name</label><input id="ePharmacyName"></div>
+    <div class="row2">
+      <div class="field"><label>Pharmacy phone</label><input id="ePharmacyPhone" type="tel"></div>
+      <div class="field"><label>Dispensed date</label><input id="eDispensedDate" placeholder="DD/MM/YY"></div>
+    </div>
+    <div class="field"><label>Pharmacy address</label><input id="ePharmacyAddress"></div>
+    <div class="notif-row"><span>&#x1F514; Daily reminders</span><button class="toggle on" id="eNotifToggle" onclick="this.classList.toggle('on')"></button></div>
+    <button class="save-btn" onclick="saveEditMed()">Save changes</button>
+    <button class="cancel-link" style="color:var(--red-border)" onclick="confirmDeleteMed()">&#x1F5D1; Delete this medicine</button>
+    <button class="cancel-link" onclick="closeEditModal()">Cancel</button>
+  </div>
+</div>
 <input type="file" id="importInput" accept=".json" style="display:none" onchange="importBackup(this)">
 <input type="file" id="secondPacketInput" accept="image/*" capture="environment" style="display:none" onchange="handleSecondPacketPhoto(this)">
-
+ 
 <script>
+ 
 // ─── CONFIG ───────────────────────────────────────────────────
 const LS_MEDS   = 'gails-pills-meds-v3';
 const LS_CHECKS = 'gails-pills-checks-v3';
 const LS_USER   = 'gails-pills-user-v1';
 const TIME_OPTIONS = ['Morning','Midday','Afternoon','Night'];
 const TIME_HOURS   = {Morning:8,Midday:12,Afternoon:15,Night:21};
-
+ 
 // ─── STATE ────────────────────────────────────────────────────
 let meds            = JSON.parse(localStorage.getItem(LS_MEDS)   || '[]');
 let checks          = JSON.parse(localStorage.getItem(LS_CHECKS) || '{}');
@@ -504,7 +356,7 @@ let photoMime    = null;
 let scannedPacketNumber  = null;
 let scannedTotalPackets  = null;
 let scannedPacketQty     = null;
-
+ 
 // ─── HELPERS ──────────────────────────────────────────────────
 function todayKey(){ return new Date().toISOString().slice(0,10); }
 function fmtDate(d){ return d.toLocaleDateString('en-AU',{weekday:'long',day:'numeric',month:'long'}); }
@@ -535,7 +387,7 @@ function filteredMeds(){
   if(activePerson==='All') return meds;
   return meds.filter(m=>(m.person||'')=== activePerson);
 }
-
+ 
 // ─── PERSIST ──────────────────────────────────────────────────
 function persist(){
   localStorage.setItem(LS_MEDS,  JSON.stringify(meds));
@@ -565,7 +417,7 @@ function importBackup(input){
   };
   reader.readAsText(file); input.value='';
 }
-
+ 
 // ─── NOTIFICATIONS ────────────────────────────────────────────
 function updateNotifBtn(){
   const btn=document.getElementById('notifBtn');
@@ -600,29 +452,23 @@ function scheduleNotif(med,timeName){
     });
   },fire-now));
 }
-
+ 
 // ─── RENDER ───────────────────────────────────────────────────
 function render(){
   var dp=document.getElementById('datePill'); if(dp) dp.textContent=fmtDate(new Date());
   document.getElementById('allDoneBanner').style.display=allTakenToday()?'flex':'none';
-  renderAlertsCount();
-  if(currentTab==='today')     renderToday();
-  if(currentTab==='medicines') renderMedicines();
-  if(currentTab==='alerts')    renderAlerts();
+  updateAlertBadge();
+  if(currentPage==='today')     renderToday();
+  if(currentPage==='medicines') renderMedicines();
+  if(currentPage==='alerts')    renderAlerts();
 }
-
-function renderAlertsCount(){
+function renderAll(){ render(); }
+function updateAlertBadge(){
   var n=getAlerts().length;
-  // Update drawer badge if drawer exists
-  var btn=document.getElementById('drawerAlertsBtn');
-  if(!btn) return;
-  var badge=btn.querySelector('.db-badge');
-  if(n>0){
-    if(!badge){ badge=document.createElement('span'); badge.className='db-badge'; btn.appendChild(badge); }
-    badge.textContent=n;
-  } else if(badge){ badge.remove(); }
+  var badge=document.getElementById('alertBadge');
+  if(badge){ badge.textContent=n; badge.style.display=n?'flex':'none'; }
 }
-
+ 
 function renderPersonFilter(){
   const persons=getPersons();
   const el=document.getElementById('personFilter');
@@ -631,11 +477,11 @@ function renderPersonFilter(){
   const all=['All',...persons];
   el.innerHTML=all.map(p=>`<button class="pf-chip${activePerson===p?' active':''}" onclick="setActivePerson('${p}')">${p}</button>`).join('');
 }
-
+ 
 function setActivePerson(p){ activePerson=p; render(); }
-
+ 
 function renderToday(){
-  const el=document.getElementById('tabToday');
+  const el=document.getElementById('todayCards') || document.getElementById('tabToday');
   const fm=filteredMeds();
   if(!meds.length){
     el.innerHTML=`<div class="empty-state"><div class="icon">💊</div><p>No medicines added yet.<br>Go to <strong>Medicines</strong> to add your first one.</p></div>`;
@@ -667,9 +513,9 @@ function renderToday(){
     </div>`;
   }).join('');
 }
-
+ 
 function renderMedicines(){
-  const el=document.getElementById('tabMedicines');
+  const el=document.getElementById('medCards') || document.getElementById('tabMedicines');
   const cards=meds.map(med=>{
     const days=daysSupply(med);
     const bar=days!==null?`<div class="bar-wrap"><div class="bar-bg"><div class="bar-fill" style="width:${Math.min(100,(days/30)*100)}%;background:${supplyColor(days)}"></div></div><div class="bar-label"><span>${days} days remaining</span><span>${med.repeatsLeft?med.repeatsLeft+' repeat'+(med.repeatsLeft!=='1'?'s':''):'no repeats'}</span></div></div>`:'';
@@ -705,20 +551,17 @@ function renderMedicines(){
     ${cards||'<div class="empty-state" style="padding:30px 20px"><p>No medicines yet.</p></div>'}
   `;
 }
-
+ 
 function renderAlerts(){
   const alerts=getAlerts();
-  const el=document.getElementById('tabAlerts');
+  const el=document.getElementById('alertCards') || document.getElementById('tabAlerts');
   el.innerHTML=`<div class="section-title">What needs attention</div>`+(alerts.length
     ?alerts.map(a=>`<div class="alert-card ${a.type}"><div class="alert-title">${a.title}${a.person?' <span style="font-size:12px;color:var(--brown-pale)">· ${a.person}</span>':''}</div><div class="alert-detail">${a.msg}</div></div>`).join('')
     :`<div class="no-alerts"><div class="icon">🌿</div><p>All supplies are looking good.<br>No action needed right now.</p></div>`);
 }
-
-function renderAlertsCount(){
-  const n=getAlerts().length;
-  // alerts count shown in drawer badge
-}
-
+ 
+ 
+ 
 function getAlerts(){
   const out=[];
   meds.forEach(med=>{
@@ -734,7 +577,7 @@ function getAlerts(){
   });
   return out;
 }
-
+ 
 // ─── PILL ACTIONS ─────────────────────────────────────────────
 function takePill(id){
   const today=todayKey();
@@ -757,10 +600,10 @@ function deleteMed(id){
   meds=meds.filter(m=>m.id!==id);
   persist(); scheduleAllNotifications(); render();
 }
-
+ 
 // ─── TABS ─────────────────────────────────────────────────────
 function switchTab(name){
-  currentTab=name;
+  currentPage=name;
   ['today','medicines','alerts','chat'].forEach(function(t){
     var el=document.getElementById('tab'+t.charAt(0).toUpperCase()+t.slice(1));
     if(el) el.style.display=(t===name)?'':'none';
@@ -773,12 +616,12 @@ function switchTab(name){
   if(name==='chat') renderChat();
   else render();
 }
-
-function openDrawerTab(name){
+ 
+function switchPage(name){
   closeDrawer();
   setTimeout(function(){ switchTab(name); },200);
 }
-
+ 
 // ─── MODAL ────────────────────────────────────────────────────
 function openModal(){ resetModal(); document.getElementById('modal').style.display='flex'; }
 function closeModal(){ document.getElementById('modal').style.display='none'; resetModal(); }
@@ -823,7 +666,7 @@ function toggleTime(name,el){
   if(selectedTimes.includes(name)){ if(selectedTimes.length===1) return; selectedTimes=selectedTimes.filter(t=>t!==name); el.classList.remove('selected'); }
   else{ selectedTimes.push(name); el.classList.add('selected'); }
 }
-
+ 
 // ─── STEPPER ──────────────────────────────────────────────────
 function stepQty(delta){
   const el=document.getElementById('fQty');
@@ -835,7 +678,7 @@ function stepQty2(delta){
   const val=Math.max(0,(parseFloat(el.value)||0)+delta);
   el.value=val;
 }
-
+ 
 // ─── PHOTO / SCAN ─────────────────────────────────────────────
 function handlePhoto(input){
   const file=input.files[0]; if(!file) return;
@@ -861,7 +704,7 @@ function retakePhoto(){
   document.getElementById('retakeBtn').style.display='none';
   document.getElementById('scanError').style.display='none';
 }
-
+ 
 async function scanLabel(){
   if(!photoB64) return;
   document.getElementById('scanBtn').disabled=true;
@@ -887,7 +730,7 @@ Use empty string for unclear fields. Do not guess.`}
     const text=(data.content||[]).find(b=>b.type==='text')?.text||'';
     const clean=text.replace(/```json|```/g,'').trim();
     const p=JSON.parse(clean);
-
+ 
     // Fill standard fields
     document.getElementById('fName').value          =p.name          ||'';
     document.getElementById('fStrength').value      =p.strength      ||'';
@@ -900,7 +743,7 @@ Use empty string for unclear fields. Do not guess.`}
     document.getElementById('fPharmacyPhone').value =p.pharmacyPhone ||'';
     document.getElementById('fPharmacyAddress').value=p.pharmacyAddress||'';
     document.getElementById('fDispensedDate').value =p.dispensedDate ||'';
-
+ 
     // Multi-packet handling
     if(p.packetNumber && p.totalPackets && p.totalPackets!=='1'){
       scannedPacketNumber=parseInt(p.packetNumber);
@@ -915,12 +758,12 @@ Use empty string for unclear fields. Do not guess.`}
           : `This is the last packet (${p.packetNumber} of ${p.totalPackets}). Has the previous packet already been started?`;
       banner.style.display='';
     }
-
+ 
     // Switch to manual tab
     document.querySelectorAll('.m-tab').forEach((t,i)=>t.classList.toggle('active',i===1));
     document.getElementById('modalPhoto').style.display='none';
     document.getElementById('modalManual').style.display='';
-
+ 
   }catch(err){
     document.getElementById('scanError').textContent='Error: '+err.message;
     document.getElementById('scanError').style.display='';
@@ -932,13 +775,13 @@ Use empty string for unclear fields. Do not guess.`}
     document.getElementById('scanMsg').style.display='none';
   }
 }
-
+ 
 // ─── MULTI-PACKET ACTIONS ─────────────────────────────────────
 function scanSecondPacket(){
   document.getElementById('multipackBanner').style.display='none';
   document.getElementById('secondPacketInput').click();
 }
-
+ 
 async function handleSecondPacketPhoto(input){
   const file=input.files[0]; if(!file) return;
   const mime=file.type||'image/jpeg';
@@ -968,12 +811,12 @@ async function handleSecondPacketPhoto(input){
   };
   reader.readAsDataURL(file);
 }
-
+ 
 function enterSecondPacketManually(){
   document.getElementById('multipackBanner').style.display='none';
   document.getElementById('secondPacketField').style.display='';
 }
-
+ 
 function addFullSecondPacket(){
   // Add the same qty as the scanned packet (unopened = full packet)
   document.getElementById('fQty2').value=scannedPacketQty||'';
@@ -981,7 +824,7 @@ function addFullSecondPacket(){
   document.getElementById('multipackBanner').style.display='none';
   showToast('Full second packet added');
 }
-
+ 
 // ─── COUNT PHOTO ──────────────────────────────────────────────
 async function handleCountPhoto(input){
   const file=input.files[0]; if(!file) return;
@@ -1012,7 +855,7 @@ async function handleCountPhoto(input){
   };
   reader.readAsDataURL(file);
 }
-
+ 
 // ─── SAVE MED ─────────────────────────────────────────────────
 function saveMed(){
   const name=document.getElementById('fName').value.trim();
@@ -1045,7 +888,7 @@ function saveMed(){
   switchTab('today',document.querySelector('.tab')); render();
   showToast('💊 '+(med.person?med.person+': ':'')+name+' added!');
 }
-
+ 
 // ─── TOAST ────────────────────────────────────────────────────
 function showToast(msg){
   let t=document.querySelector('.toast'); if(t) t.remove();
@@ -1054,20 +897,20 @@ function showToast(msg){
   document.body.appendChild(t);
   toastTimer=setTimeout(()=>t&&t.remove(),2500);
 }
-
+ 
 // ─── INIT ─────────────────────────────────────────────────────
-
-
+ 
+ 
 // CHAT STATE
 var chatHistory = [];
 var chatReady   = false;
 var chatWaiting = false;
-
+ 
 function buildSystemPrompt() {
   var today = todayKey();
   var tc    = checks[today] || {};
   var nameGuess = primaryUserName || '';
-
+ 
   var medLines = [];
   for(var i=0;i<meds.length;i++){
     var m=meds[i];
@@ -1077,10 +920,10 @@ function buildSystemPrompt() {
     var rpts  = m.repeatsLeft ? m.repeatsLeft+' repeats left' : 'no repeats';
     medLines.push('- '+m.name+(m.strength?' '+m.strength:'')+' ('+m.frequency+')'+(m.person?' for '+m.person:'')+': '+taken+'. '+supply+', '+rpts+'.'+(m.doctor?' Doctor: '+m.doctor+'.':'')+(m.pharmacyPhone?' Pharmacy: '+m.pharmacyPhone+'.':''));
   }
-
+ 
   var hour=new Date().getHours();
   var timeOfDay=hour<12?'morning':hour<17?'afternoon':'evening';
-
+ 
   var systemPrompt = [
     'You are a warm, caring medication helper app called "Gail\'s Pills".',
     'You are like a knowledgeable, trusted friend — warm and approachable, never clinical or bossy.',
@@ -1108,10 +951,11 @@ function buildSystemPrompt() {
     'RESEARCH & DOCTOR CONVERSATIONS: If aware of relevant recent research or updated guidelines, mention as something to raise at their next appointment. Use phrases like "Something worth asking your doctor about..." Never present as established fact or reason to change their prescription.',
     '',
     '== RULES ==',
-    '- A one-time disclaimer is shown at the start of every session. Do NOT repeat it — do not say "I\'m not a doctor", "consult your doctor", "this is not medical advice", or similar phrases in your responses unless something is genuinely urgent.',
-    '- Talk naturally, like a knowledgeable friend. Share useful information directly and conversationally.',
+    '- Frame ALL health information as informational, never medical advice.',
+    '- Always defer to their prescribing doctor and pharmacist.',
+    '- Use phrases like: "Worth mentioning to your doctor", "Your pharmacist would know more".',
     '- Never suggest changing doses, stopping medicines, or self-diagnosing.',
-    '- If something sounds genuinely urgent, calmly suggest they contact their doctor or pharmacist — but only then.',
+    '- If something sounds urgent, calmly suggest contacting doctor or pharmacist.',
     '- Keep routine check-in responses SHORT (2-4 sentences). Slightly longer for health topics if genuinely useful.',
     '- Use their name naturally but not every message.',
     '- Celebrate warmly when all medicines are taken.',
@@ -1122,7 +966,7 @@ function buildSystemPrompt() {
   ].join('\n');
   return systemPrompt;
 }
-
+ 
 function buildOpeningMessage() {
   var today   = todayKey();
   var tc      = checks[today] || {};
@@ -1132,18 +976,17 @@ function buildOpeningMessage() {
   var greeting = name ? 'Hi '+name+'! \uD83D\uDC4B' : 'Hi there! \uD83D\uDC4B';
   var hour = new Date().getHours();
   var timeGreet = hour<12?'Good morning!':hour<17?'Good afternoon!':'Good evening!';
-
-  var disclaimer = '\n\n_Just a note: I\'m an app, not a medical professional — anything I share is for information only. Always follow your doctor\'s or pharmacist\'s advice._';
+ 
   if(!meds.length){
-    return greeting+' '+timeGreet+' I\'m your medication helper.\n\nIt looks like no medicines have been added yet. Tap **➕ Add medicine** below to get started, or if you have a backup file, tap the menu (≡) and choose Restore backup.'+disclaimer;
+    return greeting+' '+timeGreet+' I\'m your medication helper.\n\nIt looks like no medicines have been added yet. Tap **➕ Add medicine** below to get started, or if you have a backup file, tap the menu (≡) and choose Restore backup.';
   }
   if(untaken.length===0){
-    return greeting+' '+timeGreet+" You've taken all your medicines today \u2014 well done! \u{1F31F} Let me know if you need anything."+disclaimer;
+    return greeting+' '+timeGreet+" You've taken all your medicines today \u2014 well done! \u{1F31F} Let me know if you need anything.";
   }
-
+ 
   var alerts=getAlerts();
   var msg=greeting+' '+timeGreet;
-
+ 
   if(untaken.length===meds.length){
     msg+=" Here's what's on your list today:\n\n";
     msg+=untaken.map(function(m){ return '\uD83D\uDC8A **'+m.name+'**'+(m.strength?' '+m.strength:'')+' \u2014 '+m.frequency+(m.person&&m.person!==name?' (for '+m.person+')':''); }).join('\n');
@@ -1160,9 +1003,9 @@ function buildOpeningMessage() {
     var urgent=alerts.filter(function(a){ return a.type==='urgent'; });
     if(urgent.length) msg+='\n\n\u26A0\uFE0F Also \u2014 '+urgent[0].title+' is running very low. Worth sorting soon.';
   }
-  return msg+disclaimer;
+  return msg;
 }
-
+ 
 function buildQuickReplies() {
   var today   = todayKey();
   var tc      = checks[today] || {};
@@ -1181,7 +1024,7 @@ function buildQuickReplies() {
   replies.push('Add a new medicine');
   return replies.slice(0,5);
 }
-
+ 
 function renderChat() {
   var el=document.getElementById('tabChat');
   el.innerHTML='<div class="chat-messages" id="chatMessages"></div><div class="chat-input-row"><input class="chat-input" id="chatInput" placeholder="Type a message\u2026" onkeydown="if(event.key===\'Enter\')sendChat()"><button class="chat-send-btn" id="chatSendBtn" onclick="sendChat()">\u27A4</button></div>';
@@ -1195,7 +1038,7 @@ function renderChat() {
   }
   scrollChatToBottom();
 }
-
+ 
 function appendChatBubble(role,text){
   var messages=document.getElementById('chatMessages');
   if(!messages) return;
@@ -1205,7 +1048,7 @@ function appendChatBubble(role,text){
   messages.appendChild(div);
   scrollChatToBottom();
 }
-
+ 
 function showTyping(){
   var messages=document.getElementById('chatMessages');
   if(!messages) return;
@@ -1214,16 +1057,16 @@ function showTyping(){
   div.innerHTML='<div class="typing-dots"><span></span><span></span><span></span></div>';
   messages.appendChild(div); scrollChatToBottom();
 }
-
+ 
 function hideTyping(){ var el=document.getElementById('typingIndicator'); if(el) el.remove(); }
-
+ 
 function scrollChatToBottom(){
   setTimeout(function(){
     var el=document.getElementById('chatMessages');
     if(el) el.scrollTop=el.scrollHeight;
   },50);
 }
-
+ 
 function renderQuickReplies(){
   var el=document.getElementById('quickReplies');
   if(!el) return;
@@ -1232,7 +1075,7 @@ function renderQuickReplies(){
     return '<button class="qr-btn" onclick="sendChatMessage(\''+r.replace(/'/g,"\\'")+'\')">'+ r +'</button>';
   }).join('');
 }
-
+ 
 function sendChat(){
   var input=document.getElementById('chatInput');
   if(!input) return;
@@ -1241,7 +1084,7 @@ function sendChat(){
   input.value='';
   sendChatMessage(text);
 }
-
+ 
 async function sendChatMessage(text){
   if(chatWaiting) return;
   chatWaiting=true;
@@ -1279,7 +1122,7 @@ async function sendChatMessage(text){
     if(sendBtn) sendBtn.disabled=false;
   }
 }
-
+ 
 function checkForMedConfirmations(text){
   var lower=text.toLowerCase();
   var takenPhrases=['taken','took','had','already','done','yes'];
@@ -1301,8 +1144,8 @@ function checkForMedConfirmations(text){
     document.getElementById('allDoneBanner').style.display=allTakenToday()?'flex':'none';
   }
 }
-
-
+ 
+ 
 // ─── DRAWER ───────────────────────────────────────────────────
 function openDrawer(){
   updateDrawerUserLabel();
@@ -1321,7 +1164,7 @@ function closeDrawer(){
   document.getElementById('drawerOverlay').classList.remove('open');
   document.body.style.overflow='';
 }
-
+ 
 // ─── QUICK ACTIONS ────────────────────────────────────────────
 function qaAction(type){
   var msgs={
@@ -1342,39 +1185,30 @@ function qaAction(type){
   }
   sendChatMessage(msg);
 }
-
-
+ 
+ 
 // ─── INIT ─────────────────────────────────────────────────────
 window.addEventListener('DOMContentLoaded', function() {
   updateNotifBtn();
   buildTimeChips();
   scheduleAllNotifications();
-  // Set date immediately so it shows before any render
-  var dp=document.getElementById('datePill'); if(dp) dp.textContent=fmtDate(new Date());
-  // Ask for primary user's name on first launch
-  if(!primaryUserName) {
-    setTimeout(function() {
-      var n = prompt("Welcome to Gail's Pills!\n\nWhat's your name?");
-      if(n && n.trim()) {
-        primaryUserName = n.trim();
-        localStorage.setItem(LS_USER, primaryUserName);
-      }
-      switchTab('chat');
-    }, 300);
-  } else {
-    switchTab('chat');
-  }
-  if('Notification' in window && Notification.permission === 'default') {
-    setTimeout(function() {
-      if(confirm("Can Gail's Pills send reminders when it's time to take medicine?")) {
-        requestNotifications();
-      }
-    }, 2500);
+  updateAlertBadge();
+  if(!primaryUserName){
+    setTimeout(function(){
+      var n=prompt("Welcome to Gail's Pills!\n\nWhat's your name?");
+      if(n&&n.trim()){primaryUserName=n.trim();localStorage.setItem(LS_USER,primaryUserName);}
+      renderChat();
+    },300);
+  } else { renderChat(); }
+  if('Notification' in window && Notification.permission==='default'){
+    setTimeout(function(){
+      if(confirm("Can Gail's Pills send reminders?")) requestNotifications();
+    },2500);
   }
 });
-
+ 
 // ─── EDIT MEDICINE ────────────────────────────────────────────
-
+ 
 function openEditModal(id) {
   var med = meds.find(function(m){ return m.id === id; });
   if(!med) return;
@@ -1395,17 +1229,17 @@ function openEditModal(id) {
   if(med.reminders) toggle.classList.add('on'); else toggle.classList.remove('on');
   document.getElementById('editModal').style.display = 'flex';
 }
-
+ 
 function closeEditModal() {
   document.getElementById('editModal').style.display = 'none';
   editingMedId = null;
 }
-
+ 
 function editStepQty(delta) {
   var el = document.getElementById('eQty');
   el.value = Math.max(0, (parseFloat(el.value) || 0) + delta);
 }
-
+ 
 function saveEditMed() {
   if(!editingMedId) return;
   var name = document.getElementById('eMedName').value.trim();
@@ -1438,7 +1272,7 @@ function saveEditMed() {
   showToast('✓ ' + name + ' updated');
   if(currentTab === 'medicines') renderMedicines();
 }
-
+ 
 function confirmDeleteMed() {
   if(!editingMedId) return;
   var med = meds.find(function(m){ return m.id === editingMedId; });
@@ -1452,8 +1286,8 @@ function confirmDeleteMed() {
     if(currentTab === 'medicines') renderMedicines();
   }
 }
-
-
+ 
+ 
 // ─── PRIMARY USER ─────────────────────────────────────────────
 function changePrimaryUser() {
   closeDrawer();
@@ -1467,58 +1301,13 @@ function changePrimaryUser() {
     if(currentTab === 'chat') renderChat();
   }
 }
-
+ 
 function updateDrawerUserLabel() {
   var el = document.getElementById('drawerUserLabel');
   if(el) el.textContent = primaryUserName ? 'My name: ' + primaryUserName : 'Set my name';
 }
-
+ 
+ 
 </script>
-
-<!-- EDIT MEDICINE MODAL -->
-<div class="overlay" id="editModal" style="display:none" onclick="if(event.target===this)closeEditModal()">
-  <div class="modal">
-    <div class="modal-title">Edit medicine</div>
-    <div id="editForm">
-      <div class="field"><label>For</label><input id="eName" placeholder="e.g. Gail"></div>
-      <div class="field"><label>Medicine name *</label><input id="eMedName" placeholder="e.g. Metformin"></div>
-      <div class="row2">
-        <div class="field"><label>Strength</label><input id="eStrength" placeholder="e.g. 500mg"></div>
-        <div class="field"><label>Tablets per dose</label><input id="ePPD" type="number" min="0.5" step="0.5"></div>
-      </div>
-      <div class="field"><label>How often</label>
-        <select id="eFreq">
-          <option>Once daily</option><option>Twice daily</option>
-          <option>Three times daily</option><option>Every other day</option><option>Weekly</option>
-        </select>
-      </div>
-      <div class="row2">
-        <div class="field"><label>Tablets remaining</label>
-          <div class="qty-stepper">
-            <button class="stepper-btn" onclick="editStepQty(-1)">−</button>
-            <input class="stepper-val" id="eQty" type="number" placeholder="?">
-            <button class="stepper-btn" onclick="editStepQty(1)">+</button>
-          </div>
-        </div>
-        <div class="field"><label>Repeats left</label><input id="eRepeats" type="number" placeholder="e.g. 5"></div>
-      </div>
-      <div class="field"><label>Doctor</label><input id="eDoctor" placeholder="e.g. Dr D. Smith"></div>
-      <div class="field"><label>Pharmacy name</label><input id="ePharmacyName" placeholder="e.g. Pharmacy 777"></div>
-      <div class="row2">
-        <div class="field"><label>Pharmacy phone</label><input id="ePharmacyPhone" type="tel"></div>
-        <div class="field"><label>Dispensed date</label><input id="eDispensedDate" placeholder="DD/MM/YY"></div>
-      </div>
-      <div class="field"><label>Pharmacy address</label><input id="ePharmacyAddress"></div>
-      <div class="notif-row">
-        <span>🔔 Daily reminders</span>
-        <button class="toggle on" id="eNotifToggle" onclick="this.classList.toggle('on')"></button>
-      </div>
-      <button class="save-btn" onclick="saveEditMed()">Save changes</button>
-      <button class="cancel-link" style="color:var(--red-border);margin-top:8px" onclick="confirmDeleteMed()">🗑 Delete this medicine</button>
-      <button class="cancel-link" onclick="closeEditModal()">Cancel</button>
-    </div>
-  </div>
-</div>
-
 </body>
 </html>
