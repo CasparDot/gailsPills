@@ -343,9 +343,10 @@ const TIME_HOURS   = {Morning:8,Midday:12,Afternoon:15,Night:21};
  
 // ─── STATE ────────────────────────────────────────────────────
 let meds            = JSON.parse(localStorage.getItem(LS_MEDS)   || '[]');
+let currentPage     = 'chat';
 let checks          = JSON.parse(localStorage.getItem(LS_CHECKS) || '{}');
 let primaryUserName = localStorage.getItem(LS_USER) || '';
-let currentTab   = 'today';
+ 
 let selectedTimes= ['Morning'];
 let activePerson = 'All';
 let toastTimer   = null;
@@ -481,7 +482,7 @@ function renderPersonFilter(){
 function setActivePerson(p){ activePerson=p; render(); }
  
 function renderToday(){
-  const el=document.getElementById('todayCards') || document.getElementById('tabToday');
+  const el=document.getElementById('todayCards') || document.getElementById('todayCards');
   const fm=filteredMeds();
   if(!meds.length){
     el.innerHTML=`<div class="empty-state"><div class="icon">💊</div><p>No medicines added yet.<br>Go to <strong>Medicines</strong> to add your first one.</p></div>`;
@@ -515,7 +516,7 @@ function renderToday(){
 }
  
 function renderMedicines(){
-  const el=document.getElementById('medCards') || document.getElementById('tabMedicines');
+  const el=document.getElementById('medCards') || document.getElementById('medCards');
   const cards=meds.map(med=>{
     const days=daysSupply(med);
     const bar=days!==null?`<div class="bar-wrap"><div class="bar-bg"><div class="bar-fill" style="width:${Math.min(100,(days/30)*100)}%;background:${supplyColor(days)}"></div></div><div class="bar-label"><span>${days} days remaining</span><span>${med.repeatsLeft?med.repeatsLeft+' repeat'+(med.repeatsLeft!=='1'?'s':''):'no repeats'}</span></div></div>`:'';
@@ -554,7 +555,7 @@ function renderMedicines(){
  
 function renderAlerts(){
   const alerts=getAlerts();
-  const el=document.getElementById('alertCards') || document.getElementById('tabAlerts');
+  const el=document.getElementById('alertCards') || document.getElementById('alertCards');
   el.innerHTML=`<div class="section-title">What needs attention</div>`+(alerts.length
     ?alerts.map(a=>`<div class="alert-card ${a.type}"><div class="alert-title">${a.title}${a.person?' <span style="font-size:12px;color:var(--brown-pale)">· ${a.person}</span>':''}</div><div class="alert-detail">${a.msg}</div></div>`).join('')
     :`<div class="no-alerts"><div class="icon">🌿</div><p>All supplies are looking good.<br>No action needed right now.</p></div>`);
@@ -602,24 +603,10 @@ function deleteMed(id){
 }
  
 // ─── TABS ─────────────────────────────────────────────────────
-function switchTab(name){
-  currentPage=name;
-  ['today','medicines','alerts','chat'].forEach(function(t){
-    var el=document.getElementById('tab'+t.charAt(0).toUpperCase()+t.slice(1));
-    if(el) el.style.display=(t===name)?'':'none';
-  });
-  var qa=document.getElementById('quickActions');
-  if(qa) qa.style.display=(name==='chat')?'flex':'none';
-  // Keep content area scrollable
-  var mc=document.getElementById('mainContent');
-  if(mc) mc.style.paddingBottom=(name==='chat')?'0':'20px';
-  if(name==='chat') renderChat();
-  else render();
-}
+// switchPage handles navigation
  
 function switchPage(name){
-  closeDrawer();
-  setTimeout(function(){ switchTab(name); },200);
+  setTimeout(function(){ switchPage(name); },200);
 }
  
 // ─── MODAL ────────────────────────────────────────────────────
@@ -885,7 +872,7 @@ function saveMed(){
   };
   meds.push(med);
   persist(); scheduleAllNotifications(); closeModal();
-  switchTab('today',document.querySelector('.tab')); render();
+  switchPage('today'); render();
   showToast('💊 '+(med.person?med.person+': ':'')+name+' added!');
 }
  
@@ -1026,15 +1013,18 @@ function buildQuickReplies() {
 }
  
 function renderChat() {
-  var el=document.getElementById('tabChat');
-  el.innerHTML='<div class="chat-messages" id="chatMessages"></div><div class="chat-input-row"><input class="chat-input" id="chatInput" placeholder="Type a message\u2026" onkeydown="if(event.key===\'Enter\')sendChat()"><button class="chat-send-btn" id="chatSendBtn" onclick="sendChat()">\u27A4</button></div>';
+  var msgs = document.getElementById('chatMessages');
+  if(!msgs) return;
+  msgs.innerHTML = '';
   if(!chatReady){
-    chatReady=true; chatHistory=[];
-    var opening=buildOpeningMessage();
-    appendChatBubble('ai',opening);
-    chatHistory.push({role:'assistant',content:opening});
+    chatReady = true; chatHistory = [];
+    var opening = buildOpeningMessage();
+    appendChatBubble('ai', opening);
+    chatHistory.push({role:'assistant', content:opening});
   } else {
-    chatHistory.forEach(function(m){ appendChatBubble(m.role==='assistant'?'ai':'user',m.content); });
+    chatHistory.forEach(function(m){
+      appendChatBubble(m.role==='assistant'?'ai':'user', m.content);
+    });
   }
   scrollChatToBottom();
 }
@@ -1146,26 +1136,6 @@ function checkForMedConfirmations(text){
 }
  
  
-// ─── DRAWER ───────────────────────────────────────────────────
-function openDrawer(){
-  updateDrawerUserLabel();
-  var n=getAlerts().length;
-  var badge=document.getElementById('drawerAlertsBtn').querySelector('.db-badge');
-  if(n>0){
-    if(!badge){ badge=document.createElement('span'); badge.className='db-badge'; document.getElementById('drawerAlertsBtn').appendChild(badge); }
-    badge.textContent=n;
-  } else if(badge){ badge.remove(); }
-  document.getElementById('drawer').classList.add('open');
-  document.getElementById('drawerOverlay').classList.add('open');
-  document.body.style.overflow='hidden';
-}
-function closeDrawer(){
-  document.getElementById('drawer').classList.remove('open');
-  document.getElementById('drawerOverlay').classList.remove('open');
-  document.body.style.overflow='';
-}
- 
-// ─── QUICK ACTIONS ────────────────────────────────────────────
 function qaAction(type){
   var msgs={
     status:   "What medicines do I still need to take today?",
@@ -1270,7 +1240,7 @@ function saveEditMed() {
   scheduleAllNotifications();
   closeEditModal();
   showToast('✓ ' + name + ' updated');
-  if(currentTab === 'medicines') renderMedicines();
+  if(currentPage === 'medicines') renderMedicines();
 }
  
 function confirmDeleteMed() {
@@ -1283,29 +1253,24 @@ function confirmDeleteMed() {
     scheduleAllNotifications();
     closeEditModal();
     showToast('Removed ' + med.name);
-    if(currentTab === 'medicines') renderMedicines();
+    if(currentPage === 'medicines') renderMedicines();
   }
 }
  
  
 // ─── PRIMARY USER ─────────────────────────────────────────────
 function changePrimaryUser() {
-  closeDrawer();
   var n = prompt("What's your name?", primaryUserName || '');
   if(n !== null && n.trim()) {
     primaryUserName = n.trim();
     localStorage.setItem(LS_USER, primaryUserName);
-    updateDrawerUserLabel();
-    chatReady = false; // Reset chat so greeting uses new name
+    chatReady = false;
     showToast('Hi ' + primaryUserName + '!');
-    if(currentTab === 'chat') renderChat();
+    if(currentPage === 'chat') renderChat();
   }
 }
  
-function updateDrawerUserLabel() {
-  var el = document.getElementById('drawerUserLabel');
-  if(el) el.textContent = primaryUserName ? 'My name: ' + primaryUserName : 'Set my name';
-}
+ 
  
  
 </script>
