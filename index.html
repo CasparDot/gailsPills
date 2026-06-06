@@ -2,1295 +2,634 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="Gail's Pills">
-<meta name="theme-color" content="#e8d5c4">
+<meta name="apple-mobile-web-app-title" content="Gail Pills">
 <title>Gail's Pills</title>
-<script>const WORKER_URL="https://gails-pills-proxy.casparlewis.workers.dev";</script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Fraunces:ital,wght@0,300;0,600;1,300&display=swap" rel="stylesheet">
 <style>
-:root{--cream:#fdf6ee;--brown-dark:#3d2c1e;--brown-mid:#5c3d2e;--brown-light:#8a6550;--brown-pale:#a08070;--terra:#c4703a;--terra-light:#d4845a;--border:#e8d0b8;--border-light:#f0e0d0;--green-bg:#f0faf4;--green-border:#a8d5b5;--green-text:#2d6a4f;--orange-bg:#fff8f0;--orange-border:#f4a261;--red-bg:#fff5f5;--red-border:#e63946;--blue-bg:#e8eaf6;--blue-text:#3949ab;--nav-h:60px;--safe-bottom:env(safe-area-inset-bottom,0px)}
+:root{--cream:#fdf6ee;--mid:#5c3d2e;--light:#8a6550;--pale:#a08070;--terra:#c4703a;--terra2:#d4845a;--bdr:#e8d0b8;--bdr2:#f0e0d0;--gbg:#f0faf4;--gbdr:#a8d5b5;--gtxt:#2d6a4f;--obg:#fff8f0;--obdr:#f4a261;--rbg:#fff5f5;--rbdr:#e63946;--bbg:#e8eaf6;--btxt:#3949ab;--nav:60px}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--brown-dark);overscroll-behavior:none;height:100dvh;display:flex;flex-direction:column}
-header{flex-shrink:0;background:linear-gradient(135deg,#e8d5c4 0%,#f5e6d3 60%,#fdf0e8 100%);padding:52px 20px 16px;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:20}
-main{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:calc(var(--nav-h) + var(--safe-bottom) + 16px)}
-nav{position:fixed;bottom:0;left:0;right:0;height:calc(var(--nav-h) + var(--safe-bottom));padding-bottom:var(--safe-bottom);background:white;border-top:1px solid var(--border-light);display:flex;align-items:stretch;z-index:20;box-shadow:0 -2px 16px rgba(61,44,30,.08)}
-.nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;border:none;background:transparent;font-family:'DM Sans',sans-serif;font-size:10px;font-weight:600;color:var(--brown-pale);cursor:pointer;transition:all .2s;padding:8px 4px;position:relative}
-.nav-btn .nav-icon{font-size:22px;line-height:1}
-.nav-btn.active{color:var(--terra)}
-.nav-btn.active::after{content:'';position:absolute;top:0;left:20%;right:20%;height:3px;background:var(--terra);border-radius:0 0 3px 3px}
-.nav-badge{position:absolute;top:6px;right:calc(50% - 18px);background:var(--red-border);color:white;font-size:10px;font-weight:700;min-width:18px;height:18px;border-radius:9px;display:flex;align-items:center;justify-content:center;padding:0 4px}
-.header-row{display:flex;justify-content:space-between;align-items:flex-start}
-.app-title{font-family:'Fraunces',serif;font-size:28px;font-weight:300;color:var(--brown-mid);line-height:1.1}
-.app-title em{font-style:italic;color:var(--terra)}
-.date-pill{background:var(--terra);color:white;font-size:11px;font-weight:600;padding:4px 12px;border-radius:20px;letter-spacing:.5px;text-transform:uppercase;margin-top:6px;display:inline-block}
-.header-btns{display:flex;gap:8px;align-items:center}
-.icon-btn{width:40px;height:40px;border-radius:12px;border:1.5px solid var(--border);background:none;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;transition:all .2s}
-.icon-btn.granted{border-color:var(--green-border);background:var(--green-bg)}
-.all-done-banner{margin-top:12px;background:var(--green-bg);border:1px solid var(--green-border);color:var(--green-text);border-radius:12px;padding:10px 14px;font-size:14px;font-weight:600;display:flex;align-items:center;gap:8px}
+body{font-family:'DM Sans',system-ui,sans-serif;background:var(--cream);color:#3d2c1e;overscroll-behavior:none}
+header{background:linear-gradient(135deg,#e8d5c4,#f5e6d3,#fdf0e8);padding:50px 20px 14px;border-bottom:1px solid var(--bdr);position:sticky;top:0;z-index:20}
+.hr{display:flex;justify-content:space-between;align-items:flex-start}
+.title{font-family:'Fraunces',serif;font-size:28px;font-weight:300;color:var(--mid);line-height:1.1}
+.title em{font-style:italic;color:var(--terra)}
+.dpill{background:var(--terra);color:#fff;font-size:11px;font-weight:600;padding:4px 12px;border-radius:20px;text-transform:uppercase;letter-spacing:.5px;margin-top:5px;display:inline-block}
+.hbtns{display:flex;gap:8px}
+.ibtn{width:40px;height:40px;border-radius:12px;border:1.5px solid var(--bdr);background:none;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center}
+.done{margin-top:10px;background:var(--gbg);border:1px solid var(--gbdr);color:var(--gtxt);border-radius:12px;padding:10px 14px;font-size:14px;font-weight:600;display:none;align-items:center;gap:8px}
+main{padding-bottom:calc(var(--nav) + env(safe-area-inset-bottom,0px) + 10px)}
 .page{display:none;padding:20px 16px}
 .page.active{display:block}
-#pagechat{display:none;padding:0;flex-direction:column;height:calc(100dvh - 130px - var(--nav-h) - var(--safe-bottom))}
-#pagechat.active{display:flex}
-.chat-messages{flex:1;overflow-y:auto;padding:16px 16px 8px;-webkit-overflow-scrolling:touch;display:flex;flex-direction:column;gap:12px}
-.chat-bubble{max-width:84%;padding:12px 16px;border-radius:20px;font-size:15px;line-height:1.55;animation:fadeUp .25s ease}
-.chat-bubble.ai{background:white;border:1.5px solid var(--border-light);color:var(--brown-dark);border-bottom-left-radius:5px;align-self:flex-start;box-shadow:0 2px 8px rgba(196,112,58,.07)}
-.chat-bubble.user{background:linear-gradient(135deg,var(--terra),var(--terra-light));color:white;border-bottom-right-radius:5px;align-self:flex-end}
-.chat-bubble.typing{background:white;border:1.5px solid var(--border-light);align-self:flex-start;padding:14px 18px}
-.typing-dots{display:flex;gap:5px;align-items:center}
-.typing-dots span{width:8px;height:8px;background:var(--brown-pale);border-radius:50%;animation:typingBounce 1.2s infinite}
-.typing-dots span:nth-child(2){animation-delay:.2s}
-.typing-dots span:nth-child(3){animation-delay:.4s}
-.quick-actions{flex-shrink:0;display:flex;gap:8px;padding:8px 16px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;border-top:1px solid var(--border-light);background:var(--cream)}
-.quick-actions::-webkit-scrollbar{display:none}
-.qa-btn{padding:8px 14px;background:white;border:1.5px solid var(--border);border-radius:20px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;color:var(--brown-mid);cursor:pointer;white-space:nowrap;flex-shrink:0;transition:all .15s}
-.qa-btn:active,.qa-btn.primary{background:var(--terra);border-color:var(--terra);color:white}
-.chat-input-row{flex-shrink:0;display:flex;gap:8px;padding:8px 16px 12px;border-top:1px solid var(--border-light);background:var(--cream)}
-.chat-input{flex:1;padding:12px 16px;border:1.5px solid var(--border);border-radius:24px;font-family:'DM Sans',sans-serif;font-size:15px;color:var(--brown-dark);outline:none;background:white;transition:border-color .2s}
-.chat-input:focus{border-color:var(--terra)}
-.chat-send{width:46px;height:46px;background:linear-gradient(135deg,var(--terra),var(--terra-light));border:none;border-radius:50%;cursor:pointer;font-size:20px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.chat-send:disabled{opacity:.4;cursor:default}
-.pill-card{background:white;border-radius:20px;padding:18px;margin-bottom:14px;box-shadow:0 2px 12px rgba(196,112,58,.07);border:1.5px solid var(--border-light);animation:fadeUp .3s ease both}
-.pill-card.taken{background:var(--green-bg);border-color:var(--green-border)}
-.pill-card.warn{border-color:var(--orange-border);background:var(--orange-bg)}
-.pill-card.crit{border-color:var(--red-border);background:var(--red-bg)}
-.pill-person{font-size:11px;font-weight:700;color:var(--terra);text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px}
-.pill-name{font-family:'Fraunces',serif;font-size:21px;font-weight:600;color:var(--brown-dark);margin-bottom:3px}
-.pill-sub{font-size:13px;color:var(--brown-light);margin-bottom:10px;line-height:1.5}
-.badges{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
-.badge{font-size:12px;padding:3px 10px;border-radius:20px;font-weight:600}
-.badge.supply{background:#e8f4ea;color:#2d6a4f}
-.badge.supply.warn{background:#fff0e0;color:#b85c00}
-.badge.supply.crit{background:#ffebeb;color:#c0392b}
-.badge.repeats{background:var(--blue-bg);color:var(--blue-text)}
-.take-btn{width:100%;padding:16px;border:none;border-radius:14px;font-family:'DM Sans',sans-serif;font-size:16px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .15s}
-.take-btn.untaken{background:linear-gradient(135deg,var(--terra),var(--terra-light));color:white;box-shadow:0 4px 16px rgba(196,112,58,.3)}
-.take-btn.untaken:active{transform:scale(.97)}
-.take-btn.done{background:var(--green-bg);color:var(--green-text);border:1.5px solid var(--green-border);cursor:default}
-.take-time{font-size:12px;opacity:.75;font-weight:400}
-.undo-link{margin-top:6px;background:none;border:none;font-size:12px;color:var(--brown-pale);cursor:pointer;text-decoration:underline;display:block}
-.person-filter{display:flex;gap:8px;padding:0 0 16px;overflow-x:auto;scrollbar-width:none}
-.person-filter::-webkit-scrollbar{display:none}
-.pf-chip{padding:6px 14px;border-radius:20px;border:1.5px solid var(--border);background:white;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;color:var(--brown-light);cursor:pointer;white-space:nowrap;transition:all .2s}
-.pf-chip.active{background:var(--terra);border-color:var(--terra);color:white}
-.empty-state{text-align:center;padding:60px 20px;color:var(--brown-pale)}
-.empty-state .icon{font-size:48px;margin-bottom:14px}
-.empty-state p{font-size:15px;line-height:1.7}
-.section-title{font-family:'Fraunces',serif;font-size:19px;font-weight:300;font-style:italic;color:var(--brown-mid);margin-bottom:14px}
-.add-btn{width:100%;padding:15px;border:2px dashed #d4a882;background:transparent;border-radius:16px;font-family:'DM Sans',sans-serif;font-size:15px;color:var(--terra);font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:14px}
-.add-btn:active{background:#fff5ee}
-.backup-row{display:flex;gap:10px;margin-bottom:20px}
-.bk-btn{flex:1;padding:12px 8px;border-radius:12px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px}
-.bk-btn.save{background:#fff5ee;border:1.5px solid var(--terra);color:var(--terra)}
-.bk-btn.load{background:#f0f4ff;border:1.5px solid var(--blue-text);color:var(--blue-text)}
-.manage-card{background:white;border-radius:16px;padding:16px 18px;margin-bottom:12px;border:1.5px solid var(--border-light);box-shadow:0 2px 8px rgba(0,0,0,.04)}
-.mc-header{display:flex;justify-content:space-between;align-items:flex-start}
-.mc-name{font-family:'Fraunces',serif;font-size:17px;font-weight:600;color:var(--brown-dark)}
-.mc-person{font-size:11px;font-weight:700;color:var(--terra);text-transform:uppercase;letter-spacing:.4px;margin-top:2px}
-.mc-detail{font-size:13px;color:var(--brown-light);margin-top:3px}
-.mc-extra{font-size:12px;color:var(--brown-light);margin-top:4px;line-height:1.5}
-.mc-btns{display:flex;gap:6px;flex-shrink:0}
-.mc-btn{width:36px;height:36px;border-radius:10px;border:1.5px solid var(--border-light);background:white;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center}
-.mc-btn:active{background:var(--border-light)}
-.bar-wrap{margin-top:10px}
-.bar-bg{background:#f0e4d4;border-radius:6px;height:8px;overflow:hidden}
-.bar-fill{height:100%;border-radius:6px;transition:width .5s ease}
-.bar-label{display:flex;justify-content:space-between;font-size:12px;color:var(--brown-pale);margin-top:4px}
-.alert-card{background:white;border-radius:14px;padding:14px 16px;margin-bottom:12px;border-left:4px solid var(--terra);box-shadow:0 2px 8px rgba(0,0,0,.04)}
-.alert-card.urgent{border-left-color:var(--red-border)}
-.alert-title{font-weight:600;font-size:15px;color:var(--brown-dark);margin-bottom:4px}
-.alert-detail{font-size:13px;color:var(--brown-light);line-height:1.6}
-.no-alerts{text-align:center;padding:50px 20px;color:var(--brown-pale)}
-.no-alerts .icon{font-size:44px;margin-bottom:12px}
-.overlay{position:fixed;inset:0;background:rgba(61,44,30,.55);z-index:100;display:flex;align-items:flex-end;animation:fadeIn .2s ease}
-.modal{background:var(--cream);border-radius:28px 28px 0 0;padding:28px 20px calc(32px + var(--safe-bottom));width:100%;max-width:430px;margin:0 auto;animation:slideUp .3s ease;max-height:90dvh;overflow-y:auto}
-.modal-title{font-family:'Fraunces',serif;font-size:22px;font-weight:300;font-style:italic;color:var(--brown-mid);margin-bottom:18px}
-.modal-tabs{display:flex;gap:8px;margin-bottom:18px}
-.m-tab{flex:1;padding:11px;border:1.5px solid var(--border);background:white;border-radius:12px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;color:var(--brown-light);cursor:pointer;text-align:center;transition:all .2s}
-.m-tab.active{border-color:var(--terra);background:#fff5ee;color:var(--terra)}
-.photo-zone{border:2px dashed #d4a882;border-radius:16px;padding:30px 20px;text-align:center;cursor:pointer;background:white;margin-bottom:14px}
-.photo-zone:active{background:#fff5ee}
-.photo-zone .pz-icon{font-size:40px;margin-bottom:10px}
-.photo-zone p{color:var(--brown-pale);font-size:14px;line-height:1.6}
-.photo-preview{width:100%;border-radius:12px;margin-bottom:12px;max-height:180px;object-fit:cover}
-.scan-btn{width:100%;padding:15px;background:linear-gradient(135deg,var(--terra),var(--terra-light));color:white;border:none;border-radius:14px;font-family:'DM Sans',sans-serif;font-size:16px;font-weight:600;cursor:pointer;margin-bottom:10px;display:flex;align-items:center;justify-content:center;gap:8px}
-.scan-btn:disabled{opacity:.55;cursor:default}
-.scan-msg{text-align:center;color:var(--brown-light);font-size:14px;padding:10px;animation:pulse 1.5s infinite}
-.scan-error{color:#c0392b;font-size:13px;background:#ffebeb;border-radius:10px;padding:10px;margin-top:8px}
-.multipack-banner{background:#fff8e8;border:1.5px solid #f4c261;border-radius:14px;padding:14px 16px;margin-bottom:14px}
-.multipack-banner h4{font-family:'Fraunces',serif;font-size:15px;font-weight:600;color:#7a5500;margin-bottom:6px}
-.multipack-banner p{font-size:13px;color:#8a6520;margin-bottom:10px;line-height:1.5}
-.multipack-btns{display:flex;flex-direction:column;gap:8px}
-.mp-btn{padding:11px;border-radius:11px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer;border:none;text-align:center}
-.mp-btn.scan{background:var(--terra);color:white}
-.mp-btn.manual{background:white;border:1.5px solid var(--terra);color:var(--terra)}
-.mp-btn.unopened{background:#e8f4ea;color:var(--green-text)}
-.field{margin-bottom:13px}
-.field label{display:block;font-size:11px;font-weight:700;color:var(--brown-mid);margin-bottom:6px;letter-spacing:.4px;text-transform:uppercase}
-.field input,.field select{width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:12px;background:white;font-family:'DM Sans',sans-serif;font-size:15px;color:var(--brown-dark);outline:none;transition:border-color .2s;-webkit-appearance:none}
-.field input:focus,.field select:focus{border-color:var(--terra)}
-.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.time-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.time-chip{padding:10px 6px;border:1.5px solid var(--border);background:white;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;color:var(--brown-light);cursor:pointer;text-align:center;transition:all .15s}
-.time-chip.selected{border-color:var(--terra);background:#fff5ee;color:var(--terra);font-weight:600}
-.qty-stepper{display:flex;align-items:center;border:1.5px solid var(--border);border-radius:12px;overflow:hidden;background:white}
-.stepper-btn{width:50px;height:48px;border:none;background:#f7ede0;font-size:22px;color:var(--terra);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.stepper-btn:active{background:#ffe0cc}
-.stepper-val{flex:1;text-align:center;font-size:18px;font-weight:600;border:none;outline:none;background:transparent;font-family:'DM Sans',sans-serif;color:var(--brown-dark)}
-.qty-hint{font-size:12px;color:var(--brown-pale);margin-top:5px}
-.count-photo-btn{width:100%;padding:11px;border:1.5px dashed var(--border);border-radius:12px;background:transparent;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;color:var(--brown-light);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;margin-top:8px}
-.count-photo-btn:active{background:#fff5ee;border-color:var(--terra);color:var(--terra)}
-.counting-msg{text-align:center;font-size:13px;color:var(--brown-light);padding:8px;animation:pulse 1.5s infinite}
-.notif-row{display:flex;align-items:center;justify-content:space-between;background:white;border:1.5px solid var(--border);border-radius:12px;padding:12px 14px;margin-bottom:13px}
-.notif-row span{font-size:14px;color:var(--brown-mid);font-weight:500}
-.toggle{width:44px;height:26px;background:#ddd;border-radius:13px;border:none;cursor:pointer;position:relative;transition:background .2s;flex-shrink:0}
-.toggle.on{background:var(--terra)}
-.toggle::after{content:'';position:absolute;top:3px;left:3px;width:20px;height:20px;background:white;border-radius:50%;transition:transform .2s;box-shadow:0 1px 4px rgba(0,0,0,.2)}
-.toggle.on::after{transform:translateX(18px)}
-.save-btn{width:100%;padding:17px;background:linear-gradient(135deg,var(--terra),var(--terra-light));color:white;border:none;border-radius:16px;font-family:'DM Sans',sans-serif;font-size:17px;font-weight:600;cursor:pointer;margin-top:8px}
-.save-btn:active{opacity:.85}
-.cancel-link{width:100%;padding:13px;background:transparent;border:none;font-family:'DM Sans',sans-serif;font-size:15px;color:var(--brown-pale);cursor:pointer;margin-top:4px;display:block;text-align:center}
-.toast{position:fixed;bottom:calc(var(--nav-h) + var(--safe-bottom) + 12px);left:50%;transform:translateX(-50%);background:var(--brown-dark);color:white;padding:11px 22px;border-radius:28px;font-size:14px;font-weight:500;z-index:200;animation:toastIn .3s ease;white-space:nowrap;box-shadow:0 4px 20px rgba(0,0,0,.25)}
-@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
-@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
-@keyframes fadeIn{from{opacity:0}to{opacity:1}}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.45}}
-@keyframes toastIn{from{opacity:0;transform:translateX(-50%) translateY(8px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
-@keyframes typingBounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-6px)}}
+#pgc{display:none;flex-direction:column;height:calc(100dvh - 128px - var(--nav) - env(safe-area-inset-bottom,0px))}
+#pgc.active{display:flex}
+.msgs{flex:1;overflow-y:auto;padding:14px 16px 6px;display:flex;flex-direction:column;gap:10px;-webkit-overflow-scrolling:touch}
+.bbl{max-width:84%;padding:11px 15px;border-radius:18px;font-size:15px;line-height:1.55}
+.bbl.ai{background:#fff;border:1.5px solid var(--bdr2);align-self:flex-start;border-bottom-left-radius:4px;box-shadow:0 2px 8px rgba(196,112,58,.07)}
+.bbl.me{background:linear-gradient(135deg,var(--terra),var(--terra2));color:#fff;align-self:flex-end;border-bottom-right-radius:4px}
+.bbl.dots-wrap{background:#fff;border:1.5px solid var(--bdr2);align-self:flex-start;padding:13px 16px}
+.dots{display:flex;gap:4px;align-items:center}
+.dots span{width:8px;height:8px;background:var(--pale);border-radius:50%;animation:bop 1.2s infinite}
+.dots span:nth-child(2){animation-delay:.2s}.dots span:nth-child(3){animation-delay:.4s}
+.qa{flex-shrink:0;display:flex;gap:8px;padding:8px 16px;overflow-x:auto;border-top:1px solid var(--bdr2);background:var(--cream);scrollbar-width:none}
+.qa::-webkit-scrollbar{display:none}
+.qab{padding:8px 14px;background:#fff;border:1.5px solid var(--bdr);border-radius:20px;font-family:inherit;font-size:13px;font-weight:600;color:#5c3d2e;cursor:pointer;white-space:nowrap;flex-shrink:0}
+.qab.hi{background:var(--terra);border-color:var(--terra);color:#fff}
+.inrow{flex-shrink:0;display:flex;gap:8px;padding:8px 16px 12px;border-top:1px solid var(--bdr2);background:var(--cream)}
+.cin{flex:1;padding:12px 16px;border:1.5px solid var(--bdr);border-radius:24px;font-family:inherit;font-size:15px;color:#3d2c1e;outline:none;background:#fff}
+.cin:focus{border-color:var(--terra)}
+.sbtn{width:46px;height:46px;background:linear-gradient(135deg,var(--terra),var(--terra2));border:none;border-radius:50%;cursor:pointer;font-size:20px;color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.sbtn:disabled{opacity:.4}
+.pc{background:#fff;border-radius:18px;padding:18px;margin-bottom:12px;border:1.5px solid var(--bdr2);box-shadow:0 2px 10px rgba(196,112,58,.07)}
+.pc.taken{background:var(--gbg);border-color:var(--gbdr)}
+.pc.warn{border-color:var(--obdr);background:var(--obg)}
+.pc.crit{border-color:var(--rbdr);background:var(--rbg)}
+.pwho{font-size:11px;font-weight:700;color:var(--terra);text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px}
+.pname{font-family:'Fraunces',serif;font-size:20px;font-weight:600;margin-bottom:3px}
+.psub{font-size:13px;color:var(--light);margin-bottom:10px;line-height:1.5}
+.bdgs{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px}
+.bdg{font-size:12px;padding:3px 10px;border-radius:20px;font-weight:600}
+.bdg.sup{background:#e8f4ea;color:#2d6a4f}
+.bdg.sup.warn{background:#fff0e0;color:#b85c00}
+.bdg.sup.crit{background:#ffebeb;color:#c0392b}
+.bdg.rep{background:var(--bbg);color:var(--btxt)}
+.tbtn{width:100%;padding:15px;border:none;border-radius:13px;font-family:inherit;font-size:16px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px}
+.tbtn.go{background:linear-gradient(135deg,var(--terra),var(--terra2));color:#fff;box-shadow:0 4px 14px rgba(196,112,58,.3)}
+.tbtn.go:active{transform:scale(.97)}
+.tbtn.dn{background:var(--gbg);color:var(--gtxt);border:1.5px solid var(--gbdr);cursor:default}
+.ttm{font-size:12px;opacity:.75;font-weight:400}
+.ulnk{margin-top:6px;background:none;border:none;font-size:12px;color:var(--pale);cursor:pointer;text-decoration:underline;display:block}
+.pfl{display:flex;gap:8px;padding:0 0 14px;overflow-x:auto;scrollbar-width:none}
+.pfl::-webkit-scrollbar{display:none}
+.pfc{padding:6px 14px;border-radius:20px;border:1.5px solid var(--bdr);background:#fff;font-family:inherit;font-size:13px;font-weight:600;color:var(--light);cursor:pointer;white-space:nowrap}
+.pfc.on{background:var(--terra);border-color:var(--terra);color:#fff}
+.emp{text-align:center;padding:50px 20px;color:var(--pale)}
+.emp .ico{font-size:46px;margin-bottom:12px}
+.stitle{font-family:'Fraunces',serif;font-size:18px;font-weight:300;font-style:italic;color:var(--mid);margin-bottom:14px}
+.addbtn{width:100%;padding:14px;border:2px dashed #d4a882;background:transparent;border-radius:14px;font-family:inherit;font-size:15px;color:var(--terra);font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:14px}
+.bkrow{display:flex;gap:10px;margin-bottom:18px}
+.bkb{flex:1;padding:12px 8px;border-radius:11px;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px}
+.bkb.sv{background:#fff5ee;border:1.5px solid var(--terra);color:var(--terra)}
+.bkb.ld{background:#f0f4ff;border:1.5px solid var(--btxt);color:var(--btxt)}
+.mc{background:#fff;border-radius:14px;padding:14px 16px;margin-bottom:10px;border:1.5px solid var(--bdr2);box-shadow:0 2px 6px rgba(0,0,0,.04)}
+.mchdr{display:flex;justify-content:space-between;align-items:flex-start}
+.mcname{font-family:'Fraunces',serif;font-size:16px;font-weight:600}
+.mcwho{font-size:11px;font-weight:700;color:var(--terra);text-transform:uppercase;letter-spacing:.4px;margin-top:2px}
+.mcdet{font-size:13px;color:var(--light);margin-top:2px}
+.mcext{font-size:12px;color:var(--light);margin-top:3px;line-height:1.5}
+.mcbtns{display:flex;gap:5px;flex-shrink:0}
+.mcb{width:34px;height:34px;border-radius:9px;border:1.5px solid var(--bdr2);background:#fff;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center}
+.bw{margin-top:9px}
+.bg{background:#f0e4d4;border-radius:5px;height:7px;overflow:hidden}
+.bf{height:100%;border-radius:5px}
+.bl{display:flex;justify-content:space-between;font-size:11px;color:var(--pale);margin-top:3px}
+.ac{background:#fff;border-radius:13px;padding:13px 15px;margin-bottom:10px;border-left:4px solid var(--terra);box-shadow:0 2px 6px rgba(0,0,0,.04)}
+.ac.urg{border-left-color:var(--rbdr)}
+.at{font-weight:600;font-size:15px;margin-bottom:3px}
+.ad{font-size:13px;color:var(--light);line-height:1.5}
+nav{position:fixed;bottom:0;left:0;right:0;height:calc(var(--nav) + env(safe-area-inset-bottom,0px));padding-bottom:env(safe-area-inset-bottom,0px);background:#fff;border-top:1px solid var(--bdr2);display:flex;align-items:stretch;z-index:20;box-shadow:0 -2px 14px rgba(61,44,30,.08)}
+.nb{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;border:none;background:transparent;font-family:inherit;font-size:10px;font-weight:600;color:var(--pale);cursor:pointer;position:relative;padding:8px 4px}
+.ni{font-size:21px;line-height:1}
+.nb.on{color:var(--terra)}
+.nb.on::after{content:'';position:absolute;top:0;left:22%;right:22%;height:3px;background:var(--terra);border-radius:0 0 3px 3px}
+.nbdg{position:absolute;top:5px;right:calc(50% - 20px);background:var(--rbdr);color:#fff;font-size:10px;font-weight:700;min-width:17px;height:17px;border-radius:9px;display:none;align-items:center;justify-content:center;padding:0 3px}
+.ovl{position:fixed;inset:0;background:rgba(61,44,30,.55);z-index:100;display:flex;align-items:flex-end}
+.mdl{background:var(--cream);border-radius:26px 26px 0 0;padding:26px 18px calc(30px + env(safe-area-inset-bottom,0px));width:100%;max-width:430px;margin:0 auto;max-height:90dvh;overflow-y:auto;animation:sup .3s ease}
+.mtitle{font-family:'Fraunces',serif;font-size:21px;font-weight:300;font-style:italic;color:var(--mid);margin-bottom:16px}
+.mtabs{display:flex;gap:8px;margin-bottom:16px}
+.mta{flex:1;padding:10px;border:1.5px solid var(--bdr);background:#fff;border-radius:11px;font-family:inherit;font-size:13px;font-weight:600;color:var(--light);cursor:pointer;text-align:center}
+.mta.on{border-color:var(--terra);background:#fff5ee;color:var(--terra)}
+.pzone{border:2px dashed #d4a882;border-radius:14px;padding:28px 18px;text-align:center;cursor:pointer;background:#fff;margin-bottom:12px}
+.pzi{font-size:38px;margin-bottom:9px}
+.pzone p{color:var(--pale);font-size:14px;line-height:1.6}
+.pprev{width:100%;border-radius:11px;margin-bottom:11px;max-height:170px;object-fit:cover}
+.scbtn{width:100%;padding:14px;background:linear-gradient(135deg,var(--terra),var(--terra2));color:#fff;border:none;border-radius:13px;font-family:inherit;font-size:16px;font-weight:600;cursor:pointer;margin-bottom:9px;display:flex;align-items:center;justify-content:center;gap:7px}
+.scbtn:disabled{opacity:.55}
+.scmsg{text-align:center;color:var(--light);font-size:14px;padding:9px;animation:pls 1.5s infinite}
+.scerr{color:#c0392b;font-size:13px;background:#ffebeb;border-radius:9px;padding:9px;margin-top:7px}
+.mpb{background:#fff8e8;border:1.5px solid #f4c261;border-radius:12px;padding:13px 14px;margin-bottom:12px}
+.mpb h4{font-size:14px;font-weight:600;color:#7a5500;margin-bottom:5px}
+.mpb p{font-size:13px;color:#8a6520;margin-bottom:9px;line-height:1.5}
+.mpbtns{display:flex;flex-direction:column;gap:7px}
+.mpb2{padding:10px;border-radius:10px;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;border:none;text-align:center}
+.mpb2.sc{background:var(--terra);color:#fff}
+.mpb2.mn{background:#fff;border:1.5px solid var(--terra);color:var(--terra)}
+.mpb2.un{background:#e8f4ea;color:var(--gtxt)}
+.fld{margin-bottom:12px}
+.fld label{display:block;font-size:11px;font-weight:700;color:var(--mid);margin-bottom:5px;letter-spacing:.4px;text-transform:uppercase}
+.fld input,.fld select{width:100%;padding:11px 13px;border:1.5px solid var(--bdr);border-radius:11px;background:#fff;font-family:inherit;font-size:15px;color:#3d2c1e;outline:none;-webkit-appearance:none}
+.fld input:focus,.fld select:focus{border-color:var(--terra)}
+.r2{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.tgd{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.tch{padding:9px 5px;border:1.5px solid var(--bdr);background:#fff;border-radius:9px;font-family:inherit;font-size:13px;font-weight:500;color:var(--light);cursor:pointer;text-align:center}
+.tch.on{border-color:var(--terra);background:#fff5ee;color:var(--terra);font-weight:600}
+.stp{display:flex;align-items:center;border:1.5px solid var(--bdr);border-radius:11px;overflow:hidden;background:#fff}
+.stpb{width:48px;height:46px;border:none;background:#f7ede0;font-size:20px;color:var(--terra);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.stpb:active{background:#ffe0cc}
+.stpv{flex:1;text-align:center;font-size:17px;font-weight:600;border:none;outline:none;background:transparent;font-family:inherit;color:#3d2c1e}
+.qhint{font-size:12px;color:var(--pale);margin-top:4px}
+.cntb{width:100%;padding:10px;border:1.5px dashed var(--bdr);border-radius:11px;background:transparent;font-family:inherit;font-size:13px;font-weight:600;color:var(--light);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;margin-top:7px}
+.cntm{text-align:center;font-size:13px;color:var(--light);padding:7px;animation:pls 1.5s infinite}
+.ntr{display:flex;align-items:center;justify-content:space-between;background:#fff;border:1.5px solid var(--bdr);border-radius:11px;padding:11px 13px;margin-bottom:12px}
+.ntr span{font-size:14px;color:var(--mid);font-weight:500}
+.tog{width:44px;height:25px;background:#ddd;border-radius:13px;border:none;cursor:pointer;position:relative;flex-shrink:0}
+.tog.on{background:var(--terra)}
+.tog::after{content:'';position:absolute;top:3px;left:3px;width:19px;height:19px;background:#fff;border-radius:50%;transition:transform .2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.tog.on::after{transform:translateX(19px)}
+.svbtn{width:100%;padding:16px;background:linear-gradient(135deg,var(--terra),var(--terra2));color:#fff;border:none;border-radius:15px;font-family:inherit;font-size:16px;font-weight:600;cursor:pointer;margin-top:8px}
+.clnk{width:100%;padding:12px;background:transparent;border:none;font-family:inherit;font-size:15px;color:var(--pale);cursor:pointer;margin-top:3px;display:block;text-align:center}
+.toast{position:fixed;bottom:calc(var(--nav) + env(safe-area-inset-bottom,0px) + 10px);left:50%;transform:translateX(-50%);background:#3d2c1e;color:#fff;padding:10px 20px;border-radius:26px;font-size:14px;font-weight:500;z-index:200;white-space:nowrap;box-shadow:0 4px 18px rgba(0,0,0,.25);animation:tin .3s ease}
+@keyframes bop{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-5px)}}
+@keyframes sup{from{transform:translateY(100%)}to{transform:translateY(0)}}
+@keyframes pls{0%,100%{opacity:1}50%{opacity:.4}}
+@keyframes tin{from{opacity:0;transform:translateX(-50%) translateY(8px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+@keyframes fu{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 </style>
 </head>
 <body>
+ 
 <header>
-  <div class="header-row">
+  <div class="hr">
     <div>
-      <div class="app-title">Gail's <em>pills</em></div>
-      <div class="date-pill" id="datePill"></div>
-      <script>document.getElementById('datePill').textContent=new Date().toLocaleDateString('en-AU',{weekday:'long',day:'numeric',month:'long'});</script>
+      <div class="title">Gail's <em>pills</em></div>
+      <div class="dpill" id="dp"></div>
     </div>
-    <div class="header-btns">
-      <button class="icon-btn" id="notifBtn" onclick="requestNotifications()">&#x1F514;</button>
-      <button class="icon-btn" onclick="changePrimaryUser()" title="Change name">&#x1F464;</button>
+    <div class="hbtns">
+      <button class="ibtn" id="nBtn" onclick="askNotif()" title="Notifications">&#x1F514;</button>
+      <button class="ibtn" onclick="chgName()" title="Change name">&#x1F464;</button>
     </div>
   </div>
-  <div class="all-done-banner" id="allDoneBanner" style="display:none">&#x2705; All done for today!</div>
+  <div class="done" id="done">&#x2705; All done for today!</div>
 </header>
+ 
 <main>
-  <div id="pagechat" class="active">
-    <div class="chat-messages" id="chatMessages"></div>
-    <div class="quick-actions">
-      <button class="qa-btn primary" onclick="qaAction('status')">&#x1F48A; Today</button>
-      <button class="qa-btn" onclick="qaAction('medicines')">&#x1F4CB; Medicines</button>
-      <button class="qa-btn" onclick="qaAction('supplies')">&#x26A0;&#xFE0F; Supplies</button>
-      <button class="qa-btn" onclick="qaAction('add')">&#x2795; Add medicine</button>
-      <button class="qa-btn" onclick="qaAction('interactions')">&#x1F52C; Interactions</button>
-      <button class="qa-btn" onclick="qaAction('tips')">&#x1F4A1; Tips</button>
+ 
+  <div id="pgc" class="active">
+    <div class="msgs" id="msgs"></div>
+    <div class="qa">
+      <button class="qab hi" onclick="qa('today')">&#x1F48A; Today</button>
+      <button class="qab" onclick="qa('meds')">&#x1F4CB; Medicines</button>
+      <button class="qab" onclick="qa('supply')">&#x26A0;&#xFE0F; Supplies</button>
+      <button class="qab" onclick="qa('add')">&#x2795; Add medicine</button>
+      <button class="qab" onclick="qa('interact')">&#x1F52C; Interactions</button>
+      <button class="qab" onclick="qa('tips')">&#x1F4A1; Tips</button>
     </div>
-    <div class="chat-input-row">
-      <input class="chat-input" id="chatInput" placeholder="Type a message&hellip;" onkeydown="if(event.key==='Enter')sendChat()">
-      <button class="chat-send" id="chatSendBtn" onclick="sendChat()">&#x27A4;</button>
+    <div class="inrow">
+      <input class="cin" id="cin" placeholder="Type a message&#x2026;" onkeydown="if(event.key==='Enter')send()">
+      <button class="sbtn" id="sbtn" onclick="send()">&#x27A4;</button>
     </div>
   </div>
-  <div id="pagetoday" class="page">
-    <div class="person-filter" id="personFilter"></div>
-    <div id="todayCards"></div>
+ 
+  <div id="pgt" class="page">
+    <div class="pfl" id="pfl"></div>
+    <div id="tlist"></div>
   </div>
-  <div id="pagemedicines" class="page">
-    <div class="section-title">Your medicines</div>
-    <button class="add-btn" onclick="openModal()">+ Add a medicine</button>
-    <div class="backup-row">
-      <button class="bk-btn save" onclick="manualExport()">&#x1F4BE; Save backup</button>
-      <button class="bk-btn load" onclick="document.getElementById('importInput').click()">&#x1F4C2; Restore backup</button>
+ 
+  <div id="pgm" class="page">
+    <div class="stitle">Your medicines</div>
+    <button class="addbtn" onclick="openAdd()">+ Add a medicine</button>
+    <div class="bkrow">
+      <button class="bkb sv" onclick="expData()">&#x1F4BE; Save backup</button>
+      <button class="bkb ld" onclick="document.getElementById('impF').click()">&#x1F4C2; Restore</button>
     </div>
-    <div id="medCards"></div>
+    <div id="mlist"></div>
   </div>
-  <div id="pagealerts" class="page">
-    <div class="section-title">What needs attention</div>
-    <div id="alertCards"></div>
+ 
+  <div id="pga" class="page">
+    <div class="stitle">What needs attention</div>
+    <div id="alist"></div>
   </div>
+ 
 </main>
+ 
 <nav>
-  <button class="nav-btn active" id="nav-chat" onclick="switchPage('chat')">
-    <span class="nav-icon">&#x1F4AC;</span>Chat
-  </button>
-  <button class="nav-btn" id="nav-today" onclick="switchPage('today')">
-    <span class="nav-icon">&#x1F4C5;</span>Today
-  </button>
-  <button class="nav-btn" id="nav-medicines" onclick="switchPage('medicines')">
-    <span class="nav-icon">&#x1F48A;</span>Medicines
-  </button>
-  <button class="nav-btn" id="nav-alerts" onclick="switchPage('alerts')">
-    <span class="nav-icon">&#x26A0;&#xFE0F;</span>Alerts
-    <span class="nav-badge" id="alertBadge" style="display:none">0</span>
-  </button>
+  <button class="nb on" id="nb-c" onclick="go('c')"><span class="ni">&#x1F4AC;</span>Chat</button>
+  <button class="nb"    id="nb-t" onclick="go('t')"><span class="ni">&#x1F4C5;</span>Today</button>
+  <button class="nb"    id="nb-m" onclick="go('m')"><span class="ni">&#x1F48A;</span>Medicines</button>
+  <button class="nb"    id="nb-a" onclick="go('a')"><span class="ni">&#x26A0;&#xFE0F;</span>Alerts<span class="nbdg" id="abadge">0</span></button>
 </nav>
  
-<!-- ADD MEDICINE MODAL -->
-<div class="overlay" id="modal" style="display:none" onclick="if(event.target===this)closeModal()">
-  <div class="modal">
-    <div class="modal-title">Add a medicine</div>
-    <div class="modal-tabs">
-      <button class="m-tab active" onclick="switchModalTab('photo',this)">&#x1F4F7; Photo scan</button>
-      <button class="m-tab" onclick="switchModalTab('manual',this)">&#x270F;&#xFE0F; Type it in</button>
+<div class="ovl" id="addM" style="display:none" onclick="if(event.target===this)clsAdd()">
+  <div class="mdl">
+    <div class="mtitle">Add a medicine</div>
+    <div class="mtabs">
+      <button class="mta on" id="mta-p" onclick="mTab('p')">&#x1F4F7; Photo scan</button>
+      <button class="mta" id="mta-m" onclick="mTab('m')">&#x270F;&#xFE0F; Type it in</button>
     </div>
-    <div id="modalPhoto">
-      <input type="file" id="photoInput" accept="image/*" capture="environment" style="display:none" onchange="handlePhoto(this)">
-      <div id="photoZone" class="photo-zone" onclick="document.getElementById('photoInput').click()">
-        <div class="pz-icon">&#x1F4F7;</div>
+    <div id="mpP">
+      <input type="file" id="pF" accept="image/*" capture="environment" style="display:none" onchange="onPh(this)">
+      <div id="pZone" class="pzone" onclick="document.getElementById('pF').click()">
+        <div class="pzi">&#x1F4F7;</div>
         <p>Take a photo of the pharmacy sticker<br><br><strong>Tap to open camera</strong></p>
       </div>
-      <img id="photoPreview" class="photo-preview" style="display:none">
-      <button class="scan-btn" id="scanBtn" style="display:none" onclick="scanLabel()">&#x1F50D; Read the label</button>
-      <button class="cancel-link" id="retakeBtn" style="display:none" onclick="retakePhoto()">Take a different photo</button>
-      <div class="scan-msg" id="scanMsg" style="display:none">Reading your pharmacy label&hellip;</div>
-      <div class="scan-error" id="scanError" style="display:none"></div>
+      <img id="pPrev" class="pprev" style="display:none">
+      <button class="scbtn" id="scBtn" style="display:none" onclick="doScan()">&#x1F50D; Read the label</button>
+      <button class="clnk" id="rtBtn" style="display:none" onclick="retake()">Use a different photo</button>
+      <div class="scmsg" id="scMsg" style="display:none">Reading label&#x2026;</div>
+      <div class="scerr" id="scErr" style="display:none"></div>
     </div>
-    <div id="modalManual" style="display:none">
-      <div class="multipack-banner" id="multipackBanner" style="display:none">
-        <h4 id="multipackTitle">&#x1F4E6; Multiple packets detected</h4>
-        <p id="multipackMsg"></p>
-        <div class="multipack-btns">
-          <button class="mp-btn scan" onclick="scanSecondPacket()">&#x1F4F7; Scan the other packet</button>
-          <button class="mp-btn manual" onclick="enterSecondPacketManually()">&#x270F;&#xFE0F; Enter qty manually</button>
-          <button class="mp-btn unopened" onclick="addFullSecondPacket()">&#x1F4E6; Other packet is unopened</button>
+    <div id="mpM" style="display:none">
+      <div class="mpb" id="mpBan" style="display:none">
+        <h4 id="mpT">&#x1F4E6; Multiple packets</h4>
+        <p id="mpMsg"></p>
+        <div class="mpbtns">
+          <button class="mpb2 sc" onclick="scPkt2()">&#x1F4F7; Scan other packet</button>
+          <button class="mpb2 mn" onclick="entPkt2()">&#x270F;&#xFE0F; Enter qty manually</button>
+          <button class="mpb2 un" onclick="flPkt2()">&#x1F4E6; Other packet unopened</button>
         </div>
       </div>
-      <div class="field"><label>For</label><input id="fPerson" placeholder="e.g. Gail, Tom&hellip;"></div>
-      <div class="field"><label>Medicine name *</label><input id="fName" placeholder="e.g. Metformin"></div>
-      <div class="row2">
-        <div class="field"><label>Strength</label><input id="fStrength" placeholder="e.g. 500mg"></div>
-        <div class="field"><label>Tablets per dose</label><input id="fPPD" type="number" min="0.5" step="0.5" value="1"></div>
+      <div class="fld"><label>For</label><input id="fPer" placeholder="e.g. Gail"></div>
+      <div class="fld"><label>Medicine name *</label><input id="fNm" placeholder="e.g. Metformin"></div>
+      <div class="r2">
+        <div class="fld"><label>Strength</label><input id="fStr" placeholder="e.g. 500mg"></div>
+        <div class="fld"><label>Tablets/dose</label><input id="fPPD" type="number" min="0.5" step="0.5" value="1"></div>
       </div>
-      <div class="field"><label>How often</label>
-        <select id="fFreq"><option>Once daily</option><option>Twice daily</option><option>Three times daily</option><option>Every other day</option><option>Weekly</option></select>
+      <div class="fld"><label>How often</label>
+        <select id="fFrq"><option>Once daily</option><option>Twice daily</option><option>Three times daily</option><option>Every other day</option><option>Weekly</option></select>
       </div>
-      <div class="field"><label>Reminder time(s)</label><div class="time-grid" id="timeChips"></div></div>
-      <div class="field">
+      <div class="fld"><label>Reminder times</label><div class="tgd" id="tChp"></div></div>
+      <div class="fld">
         <label>Tablets remaining</label>
-        <div class="qty-stepper"><button class="stepper-btn" onclick="stepQty(-1)">&#x2212;</button><input class="stepper-val" id="fQty" type="number" placeholder="?"><button class="stepper-btn" onclick="stepQty(1)">+</button></div>
-        <div class="qty-hint">Adjust if the packet is partly used</div>
-        <input type="file" id="countPhotoInput" accept="image/*" capture="environment" style="display:none" onchange="handleCountPhoto(this)">
-        <button class="count-photo-btn" onclick="document.getElementById('countPhotoInput').click()">&#x1F4F7; Or photo remaining tablets to count them</button>
-        <div class="counting-msg" id="countingMsg" style="display:none">Counting tablets&hellip;</div>
+        <div class="stp"><button class="stpb" onclick="adj('fQt',-1)">&#x2212;</button><input class="stpv" id="fQt" type="number" placeholder="?"><button class="stpb" onclick="adj('fQt',1)">+</button></div>
+        <div class="qhint">Adjust if partly used</div>
+        <input type="file" id="cntF" accept="image/*" capture="environment" style="display:none" onchange="cntPills(this)">
+        <button class="cntb" onclick="document.getElementById('cntF').click()">&#x1F4F7; Photo pills to count</button>
+        <div class="cntm" id="cntMsg" style="display:none">Counting&#x2026;</div>
       </div>
-      <div id="secondPacketField" style="display:none">
-        <div class="field"><label>Tablets in second packet</label>
-          <div class="qty-stepper"><button class="stepper-btn" onclick="stepQty2(-1)">&#x2212;</button><input class="stepper-val" id="fQty2" type="number" placeholder="?"><button class="stepper-btn" onclick="stepQty2(1)">+</button></div>
+      <div id="pkt2F" style="display:none">
+        <div class="fld"><label>Second packet tablets</label>
+          <div class="stp"><button class="stpb" onclick="adj('fQt2',-1)">&#x2212;</button><input class="stpv" id="fQt2" type="number" placeholder="?"><button class="stpb" onclick="adj('fQt2',1)">+</button></div>
         </div>
       </div>
-      <div class="row2">
-        <div class="field"><label>Repeats left</label><input id="fRepeats" type="number" placeholder="e.g. 5"></div>
-        <div class="field"><label>Dispensed date</label><input id="fDispensedDate" placeholder="DD/MM/YY"></div>
+      <div class="r2">
+        <div class="fld"><label>Repeats left</label><input id="fRpt" type="number" placeholder="e.g. 5"></div>
+        <div class="fld"><label>Dispensed date</label><input id="fDt" placeholder="DD/MM/YY"></div>
       </div>
-      <div class="field"><label>Doctor</label><input id="fDoctor" placeholder="e.g. Dr D. Smith"></div>
-      <div class="field"><label>Pharmacy name</label><input id="fPharmacyName" placeholder="e.g. Pharmacy 777 Baldivis"></div>
-      <div class="row2">
-        <div class="field"><label>Pharmacy phone</label><input id="fPharmacyPhone" type="tel"></div>
-        <div class="field"><label>Packet</label><input id="fPacketInfo" placeholder="e.g. 1 of 2" readonly style="background:#f8f8f8;color:var(--brown-pale)"></div>
+      <div class="fld"><label>Doctor</label><input id="fDr" placeholder="e.g. Dr D. Smith"></div>
+      <div class="fld"><label>Pharmacy</label><input id="fPh" placeholder="e.g. Pharmacy 777"></div>
+      <div class="r2">
+        <div class="fld"><label>Phone</label><input id="fPhn" type="tel"></div>
+        <div class="fld"><label>Packet #</label><input id="fPkt" placeholder="e.g. 1 of 2" readonly style="background:#f8f8f8;color:var(--pale)"></div>
       </div>
-      <div class="field"><label>Pharmacy address</label><input id="fPharmacyAddress"></div>
-      <div class="notif-row"><span>&#x1F514; Daily reminders</span><button class="toggle on" id="notifToggle" onclick="this.classList.toggle('on')"></button></div>
-      <button class="save-btn" onclick="saveMed()">Save medicine</button>
-      <button class="cancel-link" onclick="closeModal()">Cancel</button>
+      <div class="fld"><label>Address</label><input id="fAdr"></div>
+      <div class="ntr"><span>&#x1F514; Daily reminders</span><button class="tog on" id="fTog" onclick="this.classList.toggle('on')"></button></div>
+      <button class="svbtn" onclick="addMed()">Save medicine</button>
+      <button class="clnk" onclick="clsAdd()">Cancel</button>
     </div>
   </div>
 </div>
-<!-- EDIT MODAL -->
-<div class="overlay" id="editModal" style="display:none" onclick="if(event.target===this)closeEditModal()">
-  <div class="modal">
-    <div class="modal-title">Edit medicine</div>
-    <div class="field"><label>For</label><input id="eName" placeholder="e.g. Gail"></div>
-    <div class="field"><label>Medicine name *</label><input id="eMedName" placeholder="e.g. Metformin"></div>
-    <div class="row2">
-      <div class="field"><label>Strength</label><input id="eStrength" placeholder="e.g. 500mg"></div>
-      <div class="field"><label>Tablets per dose</label><input id="ePPD" type="number" min="0.5" step="0.5"></div>
+ 
+<div class="ovl" id="edtM" style="display:none" onclick="if(event.target===this)clsEdt()">
+  <div class="mdl">
+    <div class="mtitle">Edit medicine</div>
+    <div class="fld"><label>For</label><input id="ePer" placeholder="e.g. Gail"></div>
+    <div class="fld"><label>Medicine name *</label><input id="eNm" placeholder="e.g. Metformin"></div>
+    <div class="r2">
+      <div class="fld"><label>Strength</label><input id="eStr"></div>
+      <div class="fld"><label>Tablets/dose</label><input id="ePPD" type="number" min="0.5" step="0.5"></div>
     </div>
-    <div class="field"><label>How often</label>
-      <select id="eFreq"><option>Once daily</option><option>Twice daily</option><option>Three times daily</option><option>Every other day</option><option>Weekly</option></select>
+    <div class="fld"><label>How often</label>
+      <select id="eFrq"><option>Once daily</option><option>Twice daily</option><option>Three times daily</option><option>Every other day</option><option>Weekly</option></select>
     </div>
-    <div class="row2">
-      <div class="field"><label>Tablets remaining</label>
-        <div class="qty-stepper"><button class="stepper-btn" onclick="editStepQty(-1)">&#x2212;</button><input class="stepper-val" id="eQty" type="number" placeholder="?"><button class="stepper-btn" onclick="editStepQty(1)">+</button></div>
+    <div class="r2">
+      <div class="fld"><label>Tablets remaining</label>
+        <div class="stp"><button class="stpb" onclick="adj('eQt',-1)">&#x2212;</button><input class="stpv" id="eQt" type="number"><button class="stpb" onclick="adj('eQt',1)">+</button></div>
       </div>
-      <div class="field"><label>Repeats left</label><input id="eRepeats" type="number" placeholder="e.g. 5"></div>
+      <div class="fld"><label>Repeats left</label><input id="eRpt" type="number"></div>
     </div>
-    <div class="field"><label>Doctor</label><input id="eDoctor" placeholder="e.g. Dr D. Smith"></div>
-    <div class="field"><label>Pharmacy name</label><input id="ePharmacyName"></div>
-    <div class="row2">
-      <div class="field"><label>Pharmacy phone</label><input id="ePharmacyPhone" type="tel"></div>
-      <div class="field"><label>Dispensed date</label><input id="eDispensedDate" placeholder="DD/MM/YY"></div>
+    <div class="fld"><label>Doctor</label><input id="eDr"></div>
+    <div class="fld"><label>Pharmacy</label><input id="ePh"></div>
+    <div class="r2">
+      <div class="fld"><label>Phone</label><input id="ePhn" type="tel"></div>
+      <div class="fld"><label>Dispensed</label><input id="eDt" placeholder="DD/MM/YY"></div>
     </div>
-    <div class="field"><label>Pharmacy address</label><input id="ePharmacyAddress"></div>
-    <div class="notif-row"><span>&#x1F514; Daily reminders</span><button class="toggle on" id="eNotifToggle" onclick="this.classList.toggle('on')"></button></div>
-    <button class="save-btn" onclick="saveEditMed()">Save changes</button>
-    <button class="cancel-link" style="color:var(--red-border)" onclick="confirmDeleteMed()">&#x1F5D1; Delete this medicine</button>
-    <button class="cancel-link" onclick="closeEditModal()">Cancel</button>
+    <div class="fld"><label>Address</label><input id="eAdr"></div>
+    <div class="ntr"><span>&#x1F514; Daily reminders</span><button class="tog on" id="eTog" onclick="this.classList.toggle('on')"></button></div>
+    <button class="svbtn" onclick="svEdt()">Save changes</button>
+    <button class="clnk" style="color:var(--rbdr)" onclick="dlMed()">&#x1F5D1; Delete this medicine</button>
+    <button class="clnk" onclick="clsEdt()">Cancel</button>
   </div>
 </div>
-<input type="file" id="importInput" accept=".json" style="display:none" onchange="importBackup(this)">
-<input type="file" id="secondPacketInput" accept="image/*" capture="environment" style="display:none" onchange="handleSecondPacketPhoto(this)">
+ 
+<input type="file" id="impF" accept=".json" style="display:none" onchange="impData(this)">
+<input type="file" id="p2F" accept="image/*" capture="environment" style="display:none" onchange="onP2(this)">
  
 <script>
+const WU="https://gails-pills-proxy.casparlewis.workers.dev";
+const KM="gp-meds-v5",KC="gp-chks-v5",KU="gp-usr-v1";
+const TMS=["Morning","Midday","Afternoon","Night"];
+const THR={Morning:8,Midday:12,Afternoon:15,Night:21};
  
-// ─── CONFIG ───────────────────────────────────────────────────
-const LS_MEDS   = 'gails-pills-meds-v3';
-const LS_CHECKS = 'gails-pills-checks-v3';
-const LS_USER   = 'gails-pills-user-v1';
-const TIME_OPTIONS = ['Morning','Midday','Afternoon','Night'];
-const TIME_HOURS   = {Morning:8,Midday:12,Afternoon:15,Night:21};
+let meds=JSON.parse(localStorage.getItem(KM)||"[]");
+let chks=JSON.parse(localStorage.getItem(KC)||"{}");
+let usr=localStorage.getItem(KU)||"";
+let pg="c",who="All",selT=["Morning"];
+let ph64=null,phMime=null,edId=null,pN=null,pT=null,pQ=null;
+let cH=[],rdy=false,bsy=false,nTm=[],tTm=null;
  
-// ─── STATE ────────────────────────────────────────────────────
-let meds            = JSON.parse(localStorage.getItem(LS_MEDS)   || '[]');
-let currentPage     = 'chat';
-let checks          = JSON.parse(localStorage.getItem(LS_CHECKS) || '{}');
-let primaryUserName = localStorage.getItem(LS_USER) || '';
+// utils
+const td=()=>new Date().toISOString().slice(0,10);
+const fd=d=>d.toLocaleDateString("en-AU",{weekday:"long",day:"numeric",month:"long"});
+const ft=i=>new Date(i).toLocaleTimeString("en-AU",{hour:"2-digit",minute:"2-digit"});
+const sc=d=>d>14?"#52b788":d>7?"#f4a261":"#e63946";
+const dpd=f=>{const s=(f||"").toLowerCase();return s.includes("twice")||s.includes("2")?2:s.includes("three")||s.includes("3")?3:1;};
+const dy=m=>{const q=parseFloat(m.qty),p=parseFloat(m.ppd||1),d=dpd(m.freq);return(q&&p&&d)?Math.floor(q/(p*d)):null;};
+const done=()=>meds.length&&meds.every(m=>(chks[td()]||{})[m.id]);
+const fil=()=>who==="All"?meds:meds.filter(m=>(m.who||"")===who);
+const ge=id=>document.getElementById(id);
+const qs=s=>document.querySelectorAll(s);
  
-let selectedTimes= ['Morning'];
-let activePerson = 'All';
-let toastTimer   = null;
-let notifTimers  = [];
-let photoB64     = null;
-let editingMedId = null;
-let photoMime    = null;
-let scannedPacketNumber  = null;
-let scannedTotalPackets  = null;
-let scannedPacketQty     = null;
- 
-// ─── HELPERS ──────────────────────────────────────────────────
-function todayKey(){ return new Date().toISOString().slice(0,10); }
-function fmtDate(d){ return d.toLocaleDateString('en-AU',{weekday:'long',day:'numeric',month:'long'}); }
-function fmtTime(iso){ return new Date(iso).toLocaleTimeString('en-AU',{hour:'2-digit',minute:'2-digit'}); }
-function supplyColor(d){ return d>14?'#52b788':d>7?'#f4a261':'#e63946'; }
-function dosesPerDay(f){
-  if(!f) return 1;
-  const fl=f.toLowerCase();
-  if(fl.includes('twice')||fl.includes('2')) return 2;
-  if(fl.includes('three')||fl.includes('3')) return 3;
-  return 1;
+function save(){localStorage.setItem(KM,JSON.stringify(meds));localStorage.setItem(KC,JSON.stringify(chks));expData();}
+function expData(){
+  const d={v:5,at:new Date().toISOString(),meds,chks,usr};
+  const b=new Blob([JSON.stringify(d,null,2)],{type:"application/json"});
+  const u=URL.createObjectURL(b);const a=document.createElement("a");
+  a.href=u;a.download="gails-pills-backup.json";a.click();URL.revokeObjectURL(u);
 }
-function daysSupply(med){
-  const qty=parseFloat(med.totalQty), ppd=parseFloat(med.pillsPerDose||1), dpd=dosesPerDay(med.frequency);
-  if(!qty||!ppd||!dpd) return null;
-  return Math.floor(qty/(ppd*dpd));
-}
-function allTakenToday(){
-  if(!meds.length) return false;
-  const tc=checks[todayKey()]||{};
-  return meds.every(m=>tc[m.id]);
-}
-function getPersons(){
-  const ps=[...new Set(meds.map(m=>m.person||'').filter(Boolean))];
-  return ps;
-}
-function filteredMeds(){
-  if(activePerson==='All') return meds;
-  return meds.filter(m=>(m.person||'')=== activePerson);
+function impData(inp){
+  const f=inp.files[0];if(!f)return;
+  const r=new FileReader();
+  r.onload=e=>{try{const d=JSON.parse(e.target.result);if(d.meds){meds=d.meds;localStorage.setItem(KM,JSON.stringify(meds));}if(d.chks){chks=d.chks;localStorage.setItem(KC,JSON.stringify(chks));}if(d.usr){usr=d.usr;localStorage.setItem(KU,usr);}rAll();sched();toast("Restored!");}catch(e){toast("Couldn't read file");}};
+  r.readAsText(f);inp.value="";
 }
  
-// ─── PERSIST ──────────────────────────────────────────────────
-function persist(){
-  localStorage.setItem(LS_MEDS,  JSON.stringify(meds));
-  localStorage.setItem(LS_CHECKS,JSON.stringify(checks));
-  autoExport();
-}
-function autoExport(){
-  const data={exportedAt:new Date().toISOString(),version:3,meds,checks};
-  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
-  const url=URL.createObjectURL(blob);
-  const a=document.createElement('a');
-  a.href=url; a.download='gails-pills-backup.json'; a.click();
-  URL.revokeObjectURL(url);
-}
-function manualExport(){ autoExport(); showToast('💾 Backup saved!'); }
-function importBackup(input){
-  const file=input.files[0]; if(!file) return;
-  const reader=new FileReader();
-  reader.onload=e=>{
-    try{
-      const data=JSON.parse(e.target.result);
-      if(data.meds){meds=data.meds;localStorage.setItem(LS_MEDS,JSON.stringify(meds));}
-      if(data.checks){checks=data.checks;localStorage.setItem(LS_CHECKS,JSON.stringify(checks));}
-      if(data.primaryUserName){primaryUserName=data.primaryUserName;localStorage.setItem(LS_USER,primaryUserName);}
-      render(); scheduleAllNotifications(); showToast('✅ Backup restored!');
-    }catch{ showToast('❌ Couldn\'t read that file'); }
-  };
-  reader.readAsText(file); input.value='';
+function go(name){
+  pg=name;
+  qs(".page,#pgc").forEach(p=>p.classList.remove("active"));
+  ge("pg"+name).classList.add("active");
+  qs(".nb").forEach(b=>b.classList.remove("on"));
+  ge("nb-"+name).classList.add("on");
+  if(name==="c")renderChat();
+  else if(name==="t")renderT();
+  else if(name==="m")renderM();
+  else if(name==="a")renderA();
 }
  
-// ─── NOTIFICATIONS ────────────────────────────────────────────
-function updateNotifBtn(){
-  const btn=document.getElementById('notifBtn');
-  if(!('Notification' in window)){btn.style.display='none';return;}
-  btn.className=Notification.permission==='granted'?'notif-btn granted':'notif-btn';
-}
-function requestNotifications(){
-  if(!('Notification' in window)){showToast('Not supported on this browser');return;}
-  if(Notification.permission==='denied'){showToast('Blocked — check browser settings');return;}
-  Notification.requestPermission().then(p=>{
-    updateNotifBtn();
-    if(p==='granted'){showToast('🔔 Reminders on!');scheduleAllNotifications();}
-  });
-}
-function clearAllNotifTimers(){ notifTimers.forEach(t=>clearTimeout(t)); notifTimers=[]; }
-function scheduleAllNotifications(){
-  clearAllNotifTimers();
-  if(!('Notification' in window)||Notification.permission!=='granted') return;
-  meds.forEach(med=>{ if(!med.reminders) return; (med.reminderTimes||['Morning']).forEach(t=>scheduleNotif(med,t)); });
-  const now=new Date(), midnight=new Date(now.getFullYear(),now.getMonth(),now.getDate()+1,0,1);
-  notifTimers.push(setTimeout(()=>scheduleAllNotifications(),midnight-now));
-}
-function scheduleNotif(med,timeName){
-  const hour=TIME_HOURS[timeName]??8, now=new Date();
-  const fire=new Date(now.getFullYear(),now.getMonth(),now.getDate(),hour,0,0);
-  if(fire<=now) return;
-  notifTimers.push(setTimeout(()=>{
-    const tc=checks[todayKey()]||{};
-    if(!tc[med.id]) new Notification('💊 Time for '+med.name,{
-      body:(med.strength?med.strength+' · ':'')+( med.pillsPerDose||1)+' tablet(s)'+(med.person?' for '+med.person:''),
-      tag:med.id+'-'+timeName
-    });
-  },fire-now));
+function rAll(){
+  ge("done").style.display=done()?"flex":"none";
+  const n=alts().length,bdg=ge("abadge");
+  bdg.textContent=n;bdg.style.display=n?"flex":"none";
+  if(pg==="t")renderT();
+  if(pg==="m")renderM();
+  if(pg==="a")renderA();
 }
  
-// ─── RENDER ───────────────────────────────────────────────────
-function render(){
-  var dp=document.getElementById('datePill'); if(dp) dp.textContent=fmtDate(new Date());
-  document.getElementById('allDoneBanner').style.display=allTakenToday()?'flex':'none';
-  updateAlertBadge();
-  if(currentPage==='today')     renderToday();
-  if(currentPage==='medicines') renderMedicines();
-  if(currentPage==='alerts')    renderAlerts();
+function renderT(){
+  const prs=[...new Set(meds.map(m=>m.who||"").filter(Boolean))];
+  ge("pfl").innerHTML=prs.length>=2?["All",...prs].map(p=>`<button class="pfc${who===p?" on":""}" onclick="setW('${p}')">${p}</button>`).join(""):"";
+  const tc=chks[td()]||{},fm=fil(),l=ge("tlist");
+  if(!meds.length){l.innerHTML=`<div class="emp"><div class="ico">&#x1F48A;</div><p>No medicines yet.<br>Tap <strong>Medicines</strong> below.</p></div>`;return;}
+  if(!fm.length){l.innerHTML=`<div class="emp"><div class="ico">&#x1F48A;</div><p>No medicines for ${who}.</p></div>`;return;}
+  l.innerHTML=fm.map((m,i)=>{
+    const tk=!!tc[m.id],d=dy(m),w=d!==null&&d<=7,cr=d!==null&&d<=3;
+    const cc=tk?"taken":cr?"crit":w?"warn":"",bc=cr?"crit":w?"warn":"";
+    const sb=d!==null?`<span class="bdg sup ${bc}">${cr?"&#x26A0;&#xFE0F; ":w?"&#x26A1; ":"&#x1F48A; "}${d} days left</span>`:"";
+    const rb=m.rpts?`<span class="bdg rep">&#x1F501; ${m.rpts} repeat${m.rpts!=="1"?"s":""}</span>`:"";
+    const sub=[m.str,m.ppd?m.ppd+" tablet"+(m.ppd!=="1"?"s":""):"",m.freq,(m.tms||[]).join(" & ")].filter(Boolean).join(" · ");
+    const btn=tk?`<button class="tbtn dn">&#x2713; Taken <span class="ttm">at ${ft(tc[m.id])}</span></button><button class="ulnk" onclick="undo('${m.id}')">undo</button>`:`<button class="tbtn go" onclick="take('${m.id}')">Tap when taken</button>`;
+    return `<div class="pc ${cc}" style="animation:fu .3s ${i*.07}s both">${m.who?`<div class="pwho">${m.who}</div>`:""}<div class="pname">${m.name}</div><div class="psub">${sub}</div><div class="bdgs">${sb}${rb}</div>${btn}</div>`;
+  }).join("");
 }
-function renderAll(){ render(); }
-function updateAlertBadge(){
-  var n=getAlerts().length;
-  var badge=document.getElementById('alertBadge');
-  if(badge){ badge.textContent=n; badge.style.display=n?'flex':'none'; }
+function setW(w){who=w;renderT();}
+function take(id){
+  const t=td();if(!chks[t])chks[t]={};
+  chks[t][id]=new Date().toISOString();
+  meds=meds.map(m=>m.id!==id?m:{...m,qty:String(Math.max(0,(parseFloat(m.qty)||0)-parseFloat(m.ppd||1)))});
+  save();rAll();
 }
+function undo(id){const t=td();if(chks[t])delete chks[t][id];save();rAll();}
  
-function renderPersonFilter(){
-  const persons=getPersons();
-  const el=document.getElementById('personFilter');
-  if(persons.length<2){ el.style.display='none'; return; }
-  el.style.display='flex';
-  const all=['All',...persons];
-  el.innerHTML=all.map(p=>`<button class="pf-chip${activePerson===p?' active':''}" onclick="setActivePerson('${p}')">${p}</button>`).join('');
+function renderM(){
+  const l=ge("mlist");
+  if(!meds.length){l.innerHTML=`<div class="emp" style="padding:16px 0"><p>No medicines yet.</p></div>`;return;}
+  l.innerHTML=meds.map(m=>{
+    const d=dy(m);
+    const bar=d!==null?`<div class="bw"><div class="bg"><div class="bf" style="width:${Math.min(100,(d/30)*100)}%;background:${sc(d)}"></div></div><div class="bl"><span>${d} days left</span><span>${m.rpts?m.rpts+" repeat"+(m.rpts!=="1"?"s":""):"no repeats"}</span></div></div>`:"";
+    const ext=[m.dr?"&#x1F468;&#x200D;&#x2695;&#xFE0F; "+m.dr:"",m.ph?"&#x1F3E5; "+m.ph+(m.phn?` · <a href="tel:${m.phn}" style="color:var(--terra);text-decoration:none;font-weight:600">${m.phn}</a>`:""):"",m.adr?"&#x1F4CD; "+m.adr:"",m.dt?"&#x1F4C5; Dispensed "+m.dt:"",m.notif?"&#x1F514; "+(m.tms||[]).join(", "):""].filter(Boolean).map(e=>`<div class="mcext">${e}</div>`).join("");
+    return `<div class="mc"><div class="mchdr"><div style="flex:1;min-width:0">${m.who?`<div class="mcwho">${m.who}</div>`:""}<div class="mcname">${m.name}</div><div class="mcdet">${[m.str,m.freq].filter(Boolean).join(" · ")}</div>${ext}</div><div class="mcbtns"><button class="mcb" onclick="opnEdt('${m.id}')">&#x270F;&#xFE0F;</button><button class="mcb" onclick="dlById('${m.id}')">&#x1F5D1;</button></div></div>${bar}</div>`;
+  }).join("");
 }
+function dlById(id){if(!confirm("Remove this medicine?"))return;meds=meds.filter(m=>m.id!==id);save();sched();rAll();}
  
-function setActivePerson(p){ activePerson=p; render(); }
- 
-function renderToday(){
-  const el=document.getElementById('todayCards') || document.getElementById('todayCards');
-  const fm=filteredMeds();
-  if(!meds.length){
-    el.innerHTML=`<div class="empty-state"><div class="icon">💊</div><p>No medicines added yet.<br>Go to <strong>Medicines</strong> to add your first one.</p></div>`;
-    return;
-  }
-  if(!fm.length){
-    el.innerHTML=`<div class="empty-state"><div class="icon">💊</div><p>No medicines for ${activePerson} yet.</p></div>`;
-    return;
-  }
-  const tc=checks[todayKey()]||{};
-  el.innerHTML=fm.map((med,i)=>{
-    const taken=!!tc[med.id];
-    const days=daysSupply(med);
-    const isWarn=days!==null&&days<=7, isCrit=days!==null&&days<=3;
-    const cardCls=taken?'taken':isCrit?'crit':isWarn?'warn':'';
-    const badgeCls=isCrit?'crit':isWarn?'warn':'';
-    const supplyBadge=days!==null?`<span class="badge supply ${badgeCls}">${isCrit?'⚠️ ':isWarn?'⚡ ':'💊 '}${days} days left</span>`:'';
-    const repeatBadge=med.repeatsLeft?`<span class="badge repeats">🔁 ${med.repeatsLeft} repeat${med.repeatsLeft!=='1'?'s':''}</span>`:'';
-    const personLine=med.person?`<div class="pill-person">${med.person}</div>`:'';
-    const takenBtn=taken
-      ?`<button class="take-btn done">✓ Taken <span class="take-time">at ${fmtTime(tc[med.id])}</span></button><button class="undo-link" onclick="undoPill('${med.id}')">undo</button>`
-      :`<button class="take-btn untaken" onclick="takePill('${med.id}')">Tap when taken</button>`;
-    return `<div class="pill-card ${cardCls}" style="animation-delay:${i*.07}s">
-      ${personLine}
-      <div class="pill-name">${med.name}</div>
-      <div class="pill-sub">${[med.strength,med.pillsPerDose?med.pillsPerDose+' tablet'+(med.pillsPerDose!=='1'?'s':''):'',med.frequency,(med.reminderTimes||[]).join(' & ')].filter(Boolean).join(' · ')}</div>
-      <div class="badges">${supplyBadge}${repeatBadge}</div>
-      ${takenBtn}
-    </div>`;
-  }).join('');
-}
- 
-function renderMedicines(){
-  const el=document.getElementById('medCards') || document.getElementById('medCards');
-  const cards=meds.map(med=>{
-    const days=daysSupply(med);
-    const bar=days!==null?`<div class="bar-wrap"><div class="bar-bg"><div class="bar-fill" style="width:${Math.min(100,(days/30)*100)}%;background:${supplyColor(days)}"></div></div><div class="bar-label"><span>${days} days remaining</span><span>${med.repeatsLeft?med.repeatsLeft+' repeat'+(med.repeatsLeft!=='1'?'s':''):'no repeats'}</span></div></div>`:'';
-    const personLine=med.person?`<div class="mc-person">${med.person}</div>`:'';
-    const notifNote=med.reminders?`<div class="mc-notif">🔔 ${(med.reminderTimes||[]).join(', ')}</div>`:'';
-    const doctorLine=med.doctor?`<div class="mc-extra">👨‍⚕️ ${med.doctor}</div>`:'';
-    const pharmLine=med.pharmacyName?`<div class="mc-extra">🏥 ${med.pharmacyName}${med.pharmacyPhone?` · <a href="tel:${med.pharmacyPhone}" style="color:var(--terracotta);text-decoration:none;font-weight:600">${med.pharmacyPhone}</a>`:''}</div>`:'';
-    const addrLine=med.pharmacyAddress?`<div class="mc-extra" style="color:var(--brown-pale)">📍 ${med.pharmacyAddress}</div>`:'';
-    const dateLine=med.dispensedDate?`<div class="mc-extra" style="color:var(--brown-pale)">📅 Dispensed ${med.dispensedDate}</div>`:'';
-    const packetLine=med.packetInfo?`<div class="mc-extra">📦 ${med.packetInfo}</div>`:'';
-    return `<div class="manage-card">
-      <div class="mc-header">
-        <div>
-          ${personLine}
-          <div class="mc-name">${med.name}</div>
-          <div class="mc-detail">${[med.strength,med.frequency].filter(Boolean).join(' · ')}</div>
-          ${notifNote}${doctorLine}${pharmLine}${addrLine}${dateLine}${packetLine}
-        </div>
-        <div style="display:flex;gap:6px;flex-shrink:0">
-          <button class="del-btn" style="font-size:16px;color:var(--terracotta);border:1.5px solid var(--border-light);border-radius:10px;padding:6px 10px" onclick="openEditModal('${med.id}')">✏️</button>
-          <button class="del-btn" onclick="deleteMed('${med.id}')">🗑</button>
-        </div>
-      </div>${bar}
-    </div>`;
-  }).join('');
-  el.innerHTML=`
-    <div class="section-title">Your medicines</div>
-    <button class="add-btn" onclick="openModal()">+ Add a medicine</button>
-    <div class="backup-row">
-      <button class="bk-btn save" onclick="manualExport()">💾 Save backup</button>
-      <button class="bk-btn load" onclick="document.getElementById('importInput').click()">📂 Restore backup</button>
-    </div>
-    ${cards||'<div class="empty-state" style="padding:30px 20px"><p>No medicines yet.</p></div>'}
-  `;
-}
- 
-function renderAlerts(){
-  const alerts=getAlerts();
-  const el=document.getElementById('alertCards') || document.getElementById('alertCards');
-  el.innerHTML=`<div class="section-title">What needs attention</div>`+(alerts.length
-    ?alerts.map(a=>`<div class="alert-card ${a.type}"><div class="alert-title">${a.title}${a.person?' <span style="font-size:12px;color:var(--brown-pale)">· ${a.person}</span>':''}</div><div class="alert-detail">${a.msg}</div></div>`).join('')
-    :`<div class="no-alerts"><div class="icon">🌿</div><p>All supplies are looking good.<br>No action needed right now.</p></div>`);
-}
- 
- 
- 
-function getAlerts(){
+function alts(){
   const out=[];
-  meds.forEach(med=>{
-    const days=daysSupply(med), repeats=parseInt(med.repeatsLeft||'0');
-    if(days===null) return;
-    const who=med.person?` for ${med.person}`:'';
-    const phNum=med.pharmacyPhone?` Pharmacy: ${med.pharmacyPhone}`:'';
-    const dr=med.doctor?`Call ${med.doctor} to get a new script.`:'See your doctor.';
-    if(days<=3&&repeats===0)
-      out.push({type:'urgent',title:med.name,person:med.person,msg:`Only ${days} day${days!==1?'s':''} supply left${who} with no repeats. ${dr}${phNum}`});
-    else if(days<=7)
-      out.push({type:'warn',title:med.name,person:med.person,msg:`About ${days} days supply left${who}. ${repeats>0?repeats+' repeat'+(repeats>1?'s':'')+' remaining — time to get a new script.':'No repeats — '+dr}${phNum}`});
+  meds.forEach(m=>{
+    const d=dy(m),r=parseInt(m.rpts||"0");if(d===null)return;
+    const w=m.who?" for "+m.who:"",ph=m.phn?" Pharmacy: "+m.phn:"",dr=m.dr?"Call "+m.dr+" for a script.":"See your doctor.";
+    if(d<=3&&r===0)out.push({type:"urg",name:m.name,who:m.who,msg:`Only ${d} day${d!==1?"s":""} left${w} with no repeats. ${dr}${ph}`});
+    else if(d<=7)out.push({type:"warn",name:m.name,who:m.who,msg:`About ${d} days left${w}. ${r>0?r+" repeat"+(r>1?"s":"")+" remaining — time for a new script.":"No repeats — "+dr}${ph}`});
   });
   return out;
 }
- 
-// ─── PILL ACTIONS ─────────────────────────────────────────────
-function takePill(id){
-  const today=todayKey();
-  if(!checks[today]) checks[today]={};
-  checks[today][id]=new Date().toISOString();
-  meds=meds.map(m=>{
-    if(m.id!==id) return m;
-    const newQty=Math.max(0,(parseFloat(m.totalQty)||0)-parseFloat(m.pillsPerDose||1));
-    return{...m,totalQty:String(newQty)};
-  });
-  persist(); render();
-}
-function undoPill(id){
-  const today=todayKey();
-  if(checks[today]) delete checks[today][id];
-  persist(); render();
-}
-function deleteMed(id){
-  if(!confirm('Remove this medicine?')) return;
-  meds=meds.filter(m=>m.id!==id);
-  persist(); scheduleAllNotifications(); render();
+function renderA(){
+  const al=alts(),l=ge("alist");
+  l.innerHTML=al.length?al.map(a=>`<div class="ac ${a.type}"><div class="at">${a.name}${a.who?` <span style="font-size:12px;opacity:.7">· ${a.who}</span>`:""}</div><div class="ad">${a.msg}</div></div>`).join(""):`<div class="emp"><div class="ico">&#x1F33F;</div><p>All supplies good.</p></div>`;
 }
  
-// ─── TABS ─────────────────────────────────────────────────────
-// switchPage handles navigation
- 
-function switchPage(name){
-  currentPage = name;
-  // Hide all pages
-  document.querySelectorAll('.page, #pagechat').forEach(function(el){
-    el.classList.remove('active');
-  });
-  // Show selected page
-  var page = document.getElementById('page'+name);
-  if(page) page.classList.add('active');
-  // Update nav bar highlight
-  document.querySelectorAll('.nav-btn').forEach(function(b){
-    b.classList.remove('active');
-  });
-  var navBtn = document.getElementById('nav-'+name);
-  if(navBtn) navBtn.classList.add('active');
-  // Render content
-  if(name==='chat')      renderChat();
-  else if(name==='today')     renderToday();
-  else if(name==='medicines') renderMedicines();
-  else if(name==='alerts')    renderAlerts();
+function buildSys(){
+  var tc=chks[td()]||{},hr=new Date().getHours(),tod=hr<12?"morning":hr<17?"afternoon":"evening";
+  var ml=meds.map(function(m){var tk=tc[m.id]?"TAKEN at "+ft(tc[m.id]):"NOT YET TAKEN";var d=dy(m);return "- "+m.name+(m.str?" "+m.str:"")+" ("+m.freq+")"+(m.who?" for "+m.who:"")+": "+tk+". "+(d!==null?d+" days left":"unknown")+", "+(m.rpts||"no")+" repeats."+(m.dr?" Dr:"+m.dr:"")+(m.phn?" Ph:"+m.phn:"");});
+  return "You are a warm caring medication helper called Gail's Pills. Like a trusted knowledgeable friend. Today: "+fd(new Date())+" ("+tod+"). User: "+(usr||"unknown")+". MEDICINES: "+(ml.length?ml.join("; "):"None yet.")+". ROLE: Daily reminders, health companion, reorder support. HEALTH GUIDANCE: Share interactions (grapefruit+Felodipine etc), foods/things to avoid, never-stop-suddenly medicines, side effects worth watching. Frame research as ask your doctor about. RULES: Informational only, defer to doctor/pharmacist, short responses (2-4 sentences), suggest Today tab to mark taken. Tone: warm caring knowledgeable friend.";
 }
- 
-// ─── MODAL ────────────────────────────────────────────────────
-function openModal(){ resetModal(); document.getElementById('modal').style.display='flex'; }
-function closeModal(){ document.getElementById('modal').style.display='none'; resetModal(); }
-function resetModal(){
-  photoB64=null; photoMime=null;
-  scannedPacketNumber=null; scannedTotalPackets=null; scannedPacketQty=null;
-  selectedTimes=['Morning'];
-  ['photoInput','countPhotoInput'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
-  document.getElementById('photoPreview').style.display='none';
-  document.getElementById('photoZone').style.display='';
-  document.getElementById('scanBtn').style.display='none';
-  document.getElementById('retakeBtn').style.display='none';
-  document.getElementById('scanMsg').style.display='none';
-  document.getElementById('scanError').style.display='none';
-  document.getElementById('multipackBanner').style.display='none';
-  document.getElementById('secondPacketField').style.display='none';
-  document.getElementById('countingMsg').style.display='none';
-  ['fPerson','fName','fStrength','fDoctor','fPharmacyName','fPharmacyPhone','fPharmacyAddress','fDispensedDate','fPacketInfo'].forEach(id=>document.getElementById(id).value='');
-  document.getElementById('fPPD').value='1';
-  document.getElementById('fFreq').value='Once daily';
-  document.getElementById('fQty').value='';
-  document.getElementById('fQty2').value='';
-  document.getElementById('fRepeats').value='';
-  document.getElementById('notifToggle').classList.add('on');
-  buildTimeChips();
-  document.querySelectorAll('.m-tab').forEach((t,i)=>t.classList.toggle('active',i===0));
-  document.getElementById('modalPhoto').style.display='';
-  document.getElementById('modalManual').style.display='none';
-}
-function switchModalTab(name,btn){
-  document.querySelectorAll('.m-tab').forEach(t=>t.classList.remove('active'));
-  btn.classList.add('active');
-  document.getElementById('modalPhoto').style.display=name==='photo'?'':'none';
-  document.getElementById('modalManual').style.display=name==='manual'?'':'none';
-}
-function buildTimeChips(){
-  document.getElementById('timeChips').innerHTML=TIME_OPTIONS.map(t=>
-    `<button type="button" class="time-chip${selectedTimes.includes(t)?' selected':''}" onclick="toggleTime('${t}',this)">${t}</button>`
-  ).join('');
-}
-function toggleTime(name,el){
-  if(selectedTimes.includes(name)){ if(selectedTimes.length===1) return; selectedTimes=selectedTimes.filter(t=>t!==name); el.classList.remove('selected'); }
-  else{ selectedTimes.push(name); el.classList.add('selected'); }
-}
- 
-// ─── STEPPER ──────────────────────────────────────────────────
-function stepQty(delta){
-  const el=document.getElementById('fQty');
-  const val=Math.max(0,(parseFloat(el.value)||0)+delta);
-  el.value=val;
-}
-function stepQty2(delta){
-  const el=document.getElementById('fQty2');
-  const val=Math.max(0,(parseFloat(el.value)||0)+delta);
-  el.value=val;
-}
- 
-// ─── PHOTO / SCAN ─────────────────────────────────────────────
-function handlePhoto(input){
-  const file=input.files[0]; if(!file) return;
-  photoMime=file.type||'image/jpeg';
-  const reader=new FileReader();
-  reader.onload=e=>{
-    photoB64=e.target.result.split(',')[1];
-    document.getElementById('photoPreview').src=e.target.result;
-    document.getElementById('photoPreview').style.display='';
-    document.getElementById('photoZone').style.display='none';
-    document.getElementById('scanBtn').style.display='';
-    document.getElementById('retakeBtn').style.display='';
-    document.getElementById('scanError').style.display='none';
-  };
-  reader.readAsDataURL(file);
-}
-function retakePhoto(){
-  photoB64=null; photoMime=null;
-  document.getElementById('photoInput').value='';
-  document.getElementById('photoPreview').style.display='none';
-  document.getElementById('photoZone').style.display='';
-  document.getElementById('scanBtn').style.display='none';
-  document.getElementById('retakeBtn').style.display='none';
-  document.getElementById('scanError').style.display='none';
-}
- 
-async function scanLabel(){
-  if(!photoB64) return;
-  document.getElementById('scanBtn').disabled=true;
-  document.getElementById('scanMsg').style.display='';
-  document.getElementById('scanError').style.display='none';
-  try{
-    const resp=await fetch(WORKER_URL,{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        model:'claude-sonnet-4-6',
-        max_tokens:1000,
-        messages:[{role:'user',content:[
-          {type:'image',source:{type:'base64',media_type:photoMime,data:photoB64}},
-          {type:'text',text:`You are reading an Australian pharmacy dispensing label. Return ONLY valid JSON, no markdown:
-{"name":"medication name","strength":"e.g. 5mg","frequency":"e.g. Once daily","pillsPerDose":"tablets per dose as string","totalQty":"qty on this packet as string","repeatsLeft":"repeats remaining as string or 0","patientName":"patient full name","doctor":"prescribing doctor","pharmacyName":"pharmacy name","pharmacyPhone":"phone number","pharmacyAddress":"full address","dispensedDate":"DD/MM/YY or empty","packetNumber":"e.g. 1 if label says 1 of 2, empty otherwise","totalPackets":"e.g. 2 if label says 1 of 2, empty otherwise"}
-Use empty string for unclear fields. Do not guess.`}
-        ]}]
-      })
-    });
-    const data=await resp.json();
-    if(!resp.ok) throw new Error('API '+resp.status+': '+JSON.stringify(data?.error||data));
-    const text=(data.content||[]).find(b=>b.type==='text')?.text||'';
-    const clean=text.replace(/```json|```/g,'').trim();
-    const p=JSON.parse(clean);
- 
-    // Fill standard fields
-    document.getElementById('fName').value          =p.name          ||'';
-    document.getElementById('fStrength').value      =p.strength      ||'';
-    document.getElementById('fPPD').value           =p.pillsPerDose  ||'1';
-    document.getElementById('fFreq').value          =p.frequency     ||'Once daily';
-    document.getElementById('fQty').value           =p.totalQty      ||'';
-    document.getElementById('fRepeats').value       =p.repeatsLeft   ||'';
-    document.getElementById('fDoctor').value        =p.doctor        ||'';
-    document.getElementById('fPharmacyName').value  =p.pharmacyName  ||'';
-    document.getElementById('fPharmacyPhone').value =p.pharmacyPhone ||'';
-    document.getElementById('fPharmacyAddress').value=p.pharmacyAddress||'';
-    document.getElementById('fDispensedDate').value =p.dispensedDate ||'';
- 
-    // Multi-packet handling
-    if(p.packetNumber && p.totalPackets && p.totalPackets!=='1'){
-      scannedPacketNumber=parseInt(p.packetNumber);
-      scannedTotalPackets=parseInt(p.totalPackets);
-      scannedPacketQty=parseFloat(p.totalQty)||0;
-      document.getElementById('fPacketInfo').value=`${p.packetNumber} of ${p.totalPackets}`;
-      const banner=document.getElementById('multipackBanner');
-      document.getElementById('multipackTitle').textContent=`📦 Packet ${p.packetNumber} of ${p.totalPackets}`;
-      document.getElementById('multipackMsg').textContent=
-        scannedPacketNumber < scannedTotalPackets
-          ? `This label is for packet ${p.packetNumber} of ${p.totalPackets}. What about the other packet?`
-          : `This is the last packet (${p.packetNumber} of ${p.totalPackets}). Has the previous packet already been started?`;
-      banner.style.display='';
-    }
- 
-    // Switch to manual tab
-    document.querySelectorAll('.m-tab').forEach((t,i)=>t.classList.toggle('active',i===1));
-    document.getElementById('modalPhoto').style.display='none';
-    document.getElementById('modalManual').style.display='';
- 
-  }catch(err){
-    document.getElementById('scanError').textContent='Error: '+err.message;
-    document.getElementById('scanError').style.display='';
-    document.querySelectorAll('.m-tab').forEach((t,i)=>t.classList.toggle('active',i===1));
-    document.getElementById('modalPhoto').style.display='none';
-    document.getElementById('modalManual').style.display='';
-  }finally{
-    document.getElementById('scanBtn').disabled=false;
-    document.getElementById('scanMsg').style.display='none';
-  }
-}
- 
-// ─── MULTI-PACKET ACTIONS ─────────────────────────────────────
-function scanSecondPacket(){
-  document.getElementById('multipackBanner').style.display='none';
-  document.getElementById('secondPacketInput').click();
-}
- 
-async function handleSecondPacketPhoto(input){
-  const file=input.files[0]; if(!file) return;
-  const mime=file.type||'image/jpeg';
-  showToast('Reading second packet…');
-  const reader=new FileReader();
-  reader.onload=async e=>{
-    const b64=e.target.result.split(',')[1];
-    try{
-      const resp=await fetch(WORKER_URL,{
-        method:'POST',headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:400,messages:[{role:'user',content:[
-          {type:'image',source:{type:'base64',media_type:mime,data:b64}},
-          {type:'text',text:'Read this Australian pharmacy label. Return ONLY JSON: {"totalQty":"quantity on this packet as string"}. Use empty string if unclear.'}
-        ]}]})
-      });
-      const data=await resp.json();
-      const text=(data.content||[]).find(b=>b.type==='text')?.text||'';
-      const p=JSON.parse(text.replace(/```json|```/g,'').trim());
-      const q2=parseFloat(p.totalQty)||0;
-      document.getElementById('fQty2').value=q2;
-      document.getElementById('secondPacketField').style.display='';
-      showToast(`Second packet: ${q2} tablets added`);
-    }catch{
-      showToast('Couldn\'t read second packet — enter manually');
-      enterSecondPacketManually();
-    }
-  };
-  reader.readAsDataURL(file);
-}
- 
-function enterSecondPacketManually(){
-  document.getElementById('multipackBanner').style.display='none';
-  document.getElementById('secondPacketField').style.display='';
-}
- 
-function addFullSecondPacket(){
-  // Add the same qty as the scanned packet (unopened = full packet)
-  document.getElementById('fQty2').value=scannedPacketQty||'';
-  document.getElementById('secondPacketField').style.display='';
-  document.getElementById('multipackBanner').style.display='none';
-  showToast('Full second packet added');
-}
- 
-// ─── COUNT PHOTO ──────────────────────────────────────────────
-async function handleCountPhoto(input){
-  const file=input.files[0]; if(!file) return;
-  const mime=file.type||'image/jpeg';
-  document.getElementById('countingMsg').style.display='';
-  const reader=new FileReader();
-  reader.onload=async e=>{
-    const b64=e.target.result.split(',')[1];
-    try{
-      const resp=await fetch(WORKER_URL,{
-        method:'POST',headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:200,messages:[{role:'user',content:[
-          {type:'image',source:{type:'base64',media_type:mime,data:b64}},
-          {type:'text',text:'Count the tablets/capsules visible in this image. Return ONLY JSON: {"count":"number as string"}. If you cannot count clearly, use empty string.'}
-        ]}]})
-      });
-      const data=await resp.json();
-      const text=(data.content||[]).find(b=>b.type==='text')?.text||'';
-      const p=JSON.parse(text.replace(/```json|```/g,'').trim());
-      if(p.count){
-        document.getElementById('fQty').value=p.count;
-        showToast(`Counted ${p.count} tablets`);
-      } else {
-        showToast('Couldn\'t count clearly — please adjust manually');
-      }
-    }catch{ showToast('Couldn\'t count — please adjust manually'); }
-    finally{ document.getElementById('countingMsg').style.display='none'; input.value=''; }
-  };
-  reader.readAsDataURL(file);
-}
- 
-// ─── SAVE MED ─────────────────────────────────────────────────
-function saveMed(){
-  const name=document.getElementById('fName').value.trim();
-  if(!name){ showToast('Please enter a medicine name'); return; }
-  const reminders=document.getElementById('notifToggle').classList.contains('on');
-  const qty1=parseFloat(document.getElementById('fQty').value)||0;
-  const qty2=parseFloat(document.getElementById('fQty2').value)||0;
-  const totalQty=qty1+qty2;
-  const med={
-    id:Date.now().toString(),
-    person:      document.getElementById('fPerson').value.trim(),
-    name,
-    strength:    document.getElementById('fStrength').value.trim(),
-    pillsPerDose:document.getElementById('fPPD').value||'1',
-    frequency:   document.getElementById('fFreq').value,
-    reminderTimes:[...selectedTimes],
-    totalQty:    String(totalQty||''),
-    repeatsLeft: document.getElementById('fRepeats').value,
-    doctor:      document.getElementById('fDoctor').value.trim(),
-    pharmacyName:document.getElementById('fPharmacyName').value.trim(),
-    pharmacyPhone:document.getElementById('fPharmacyPhone').value.trim(),
-    pharmacyAddress:document.getElementById('fPharmacyAddress').value.trim(),
-    dispensedDate:document.getElementById('fDispensedDate').value.trim(),
-    packetInfo:  document.getElementById('fPacketInfo').value.trim(),
-    reminders,
-    addedAt:new Date().toISOString()
-  };
-  meds.push(med);
-  persist(); scheduleAllNotifications(); closeModal();
-  switchPage('today'); render();
-  showToast('💊 '+(med.person?med.person+': ':'')+name+' added!');
-}
- 
-// ─── TOAST ────────────────────────────────────────────────────
-function showToast(msg){
-  let t=document.querySelector('.toast'); if(t) t.remove();
-  if(toastTimer) clearTimeout(toastTimer);
-  t=document.createElement('div'); t.className='toast'; t.textContent=msg;
-  document.body.appendChild(t);
-  toastTimer=setTimeout(()=>t&&t.remove(),2500);
-}
- 
-// ─── INIT ─────────────────────────────────────────────────────
- 
- 
-// CHAT STATE
-var chatHistory = [];
-var chatReady   = false;
-var chatWaiting = false;
- 
-function buildSystemPrompt() {
-  var today = todayKey();
-  var tc    = checks[today] || {};
-  var nameGuess = primaryUserName || '';
- 
-  var medLines = [];
-  for(var i=0;i<meds.length;i++){
-    var m=meds[i];
-    var taken = tc[m.id] ? 'TAKEN at '+fmtTime(tc[m.id]) : 'NOT YET TAKEN today';
-    var days  = daysSupply(m);
-    var supply= days!==null ? days+' days supply remaining' : 'supply unknown';
-    var rpts  = m.repeatsLeft ? m.repeatsLeft+' repeats left' : 'no repeats';
-    medLines.push('- '+m.name+(m.strength?' '+m.strength:'')+' ('+m.frequency+')'+(m.person?' for '+m.person:'')+': '+taken+'. '+supply+', '+rpts+'.'+(m.doctor?' Doctor: '+m.doctor+'.':'')+(m.pharmacyPhone?' Pharmacy: '+m.pharmacyPhone+'.':''));
-  }
- 
-  var hour=new Date().getHours();
-  var timeOfDay=hour<12?'morning':hour<17?'afternoon':'evening';
- 
-  var systemPrompt = [
-    'You are a warm, caring medication helper app called "Gail\'s Pills".',
-    'You are like a knowledgeable, trusted friend — warm and approachable, never clinical or bossy.',
-    '',
-    'Today is '+fmtDate(new Date())+' ('+timeOfDay+').',
-    'The primary user\'s name appears to be: '+(nameGuess||'unknown')+'.',
-    '',
-    '== CURRENT MEDICINES AND STATUS ==',
-    medLines.length ? medLines.join('\n') : 'No medicines added yet.',
-    '',
-    '== YOUR ROLE ==',
-    '1. DAILY REMINDERS — Help track and remember medicines each day.',
-    '2. HEALTH COMPANION — Share useful, relevant information about their specific medicines.',
-    '3. REORDER SUPPORT — Remind about low supplies and when to contact pharmacy or doctor.',
-    '',
-    '== HEALTH GUIDANCE ==',
-    'When relevant, proactively share:',
-    '',
-    'INTERACTIONS: Drug-drug, drug-food (e.g. grapefruit with calcium channel blockers like Felodipine, dairy with some antibiotics), drug-alcohol, timing interactions between medicines.',
-    '',
-    'THINGS TO AVOID: Specific foods, drinks, supplements, or OTC medicines that may interact. Activities affected (driving, sun). Flag medicines that should never be stopped suddenly.',
-    '',
-    'SYMPTOMS TO WATCH: Common side effects worth knowing. Signs to contact their doctor or pharmacist. Symptoms suggesting a medicine may not be working. Frame calmly — never alarmist.',
-    '',
-    'RESEARCH & DOCTOR CONVERSATIONS: If aware of relevant recent research or updated guidelines, mention as something to raise at their next appointment. Use phrases like "Something worth asking your doctor about..." Never present as established fact or reason to change their prescription.',
-    '',
-    '== RULES ==',
-    '- Frame ALL health information as informational, never medical advice.',
-    '- Always defer to their prescribing doctor and pharmacist.',
-    '- Use phrases like: "Worth mentioning to your doctor", "Your pharmacist would know more".',
-    '- Never suggest changing doses, stopping medicines, or self-diagnosing.',
-    '- If something sounds urgent, calmly suggest contacting doctor or pharmacist.',
-    '- Keep routine check-in responses SHORT (2-4 sentences). Slightly longer for health topics if genuinely useful.',
-    '- Use their name naturally but not every message.',
-    '- Celebrate warmly when all medicines are taken.',
-    '- Never be preachy or repetitive.',
-    '- Be proactive — mention interactions, low supply, relevant tips naturally in conversation.',
-    '',
-    'Tone: warm, knowledgeable, caring — like a trusted friend who happens to know a lot about medicines.'
-  ].join('\n');
-  return systemPrompt;
-}
- 
-function buildOpeningMessage() {
-  var today   = todayKey();
-  var tc      = checks[today] || {};
-  var untaken = meds.filter(function(m){ return !tc[m.id]; });
-  var taken   = meds.filter(function(m){ return  tc[m.id]; });
-  var name    = primaryUserName || null;
-  var greeting = name ? 'Hi '+name+'! \uD83D\uDC4B' : 'Hi there! \uD83D\uDC4B';
-  var hour = new Date().getHours();
-  var timeGreet = hour<12?'Good morning!':hour<17?'Good afternoon!':'Good evening!';
- 
-  if(!meds.length){
-    return greeting+' '+timeGreet+' I\'m your medication helper.\n\nIt looks like no medicines have been added yet. Tap **➕ Add medicine** below to get started, or if you have a backup file, tap the menu (≡) and choose Restore backup.';
-  }
-  if(untaken.length===0){
-    return greeting+' '+timeGreet+" You've taken all your medicines today \u2014 well done! \u{1F31F} Let me know if you need anything.";
-  }
- 
-  var alerts=getAlerts();
-  var msg=greeting+' '+timeGreet;
- 
-  if(untaken.length===meds.length){
-    msg+=" Here's what's on your list today:\n\n";
-    msg+=untaken.map(function(m){ return '\uD83D\uDC8A **'+m.name+'**'+(m.strength?' '+m.strength:'')+' \u2014 '+m.frequency+(m.person&&m.person!==name?' (for '+m.person+')':''); }).join('\n');
-    msg+='\n\nHave you taken any of these yet?';
+function openMsg(){
+  var tc=chks[td()]||{},un=meds.filter(function(m){return !tc[m.id];}),tk=meds.filter(function(m){return tc[m.id];}),n=usr||null;
+  var gr=(n?"Hi "+n+"! ":"Hi there! ")+"\uD83D\uDC4B";
+  var hr=new Date().getHours(),tg=hr<12?"Good morning!":hr<17?"Good afternoon!":"Good evening!";
+  if(!meds.length) return gr+" "+tg+" I\'m your medication helper. No medicines added yet \u2014 tap + Add medicine or the Medicines tab!";
+  if(!un.length) return gr+" "+tg+" You\'ve taken all your medicines today \u2014 well done!";
+  var msg=gr+" "+tg;
+  if(un.length===meds.length){
+    msg+=" Here\'s your list today: "+un.map(function(m){return m.name+(m.str?" "+m.str:"")+(m.who&&m.who!==n?" (for "+m.who+")":"");}).join(", ")+". Have you taken any of these yet?";
   } else {
-    msg+=' You\'ve taken '+taken.length+' of '+meds.length+' medicines today. ';
-    if(untaken.length===1){
-      msg+='Still to go: **'+untaken[0].name+'**. Have you taken it yet?';
-    } else {
-      msg+='Still to go:\n\n'+untaken.map(function(m){ return '\uD83D\uDC8A **'+m.name+'**'+(m.person&&m.person!==name?' (for '+m.person+')':''); }).join('\n');
-    }
+    msg+=" You\'ve taken "+tk.length+" of "+meds.length+" today. Still to go: "+un.map(function(m){return m.name+(m.who&&m.who!==n?" (for "+m.who+")":"");}).join(", ")+". Taken them?";
   }
-  if(alerts.length){
-    var urgent=alerts.filter(function(a){ return a.type==='urgent'; });
-    if(urgent.length) msg+='\n\n\u26A0\uFE0F Also \u2014 '+urgent[0].title+' is running very low. Worth sorting soon.';
-  }
+  var urg=alts().filter(function(a){return a.type==="urg";});
+  if(urg.length) msg+=" Also \u2014 "+urg[0].name+" is running very low. Worth sorting soon.";
   return msg;
 }
- 
-function buildQuickReplies() {
-  var today   = todayKey();
-  var tc      = checks[today] || {};
-  var untaken = meds.filter(function(m){ return !tc[m.id]; });
-  var replies = [];
-  if(untaken.length>0){
-    replies.push("Yes, I've taken them all");
-    if(untaken.length<=3){
-      untaken.forEach(function(m){ replies.push('Taken my '+m.name); });
-    }
-    replies.push('Not yet');
-  } else {
-    replies.push('All good today!');
-  }
-  if(getAlerts().length) replies.push('Tell me about low supplies');
-  replies.push('Add a new medicine');
-  return replies.slice(0,5);
+function renderChat(){
+  const m=ge("msgs");if(!m)return;
+  m.innerHTML="";
+  if(!rdy){rdy=true;cH=[];const op=openMsg();addBbl("ai",op);cH.push({role:"assistant",content:op});}
+  else cH.forEach(h=>addBbl(h.role==="assistant"?"ai":"me",h.content));
+  scrll();
 }
- 
-function renderChat() {
-  var msgs = document.getElementById('chatMessages');
-  if(!msgs) return;
-  msgs.innerHTML = '';
-  if(!chatReady){
-    chatReady = true; chatHistory = [];
-    var opening = buildOpeningMessage();
-    appendChatBubble('ai', opening);
-    chatHistory.push({role:'assistant', content:opening});
-  } else {
-    chatHistory.forEach(function(m){
-      appendChatBubble(m.role==='assistant'?'ai':'user', m.content);
-    });
-  }
-  scrollChatToBottom();
+function addBbl(role,txt){
+  var m=ge("msgs");if(!m)return;
+  var d=document.createElement("div");d.className="bbl "+role;
+  var html=txt.replace(/\*\*(.*?)\*\*/g,"<strong>$1</strong>").replace(/\n/g,"<br>");
+  d.innerHTML=html;m.appendChild(d);scrll();
 }
- 
-function appendChatBubble(role,text){
-  var messages=document.getElementById('chatMessages');
-  if(!messages) return;
-  var div=document.createElement('div');
-  div.className='chat-bubble '+role;
-  div.innerHTML=text.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>');
-  messages.appendChild(div);
-  scrollChatToBottom();
+function showDots(){const m=ge("msgs");if(!m)return;const d=document.createElement("div");d.className="bbl dots-wrap";d.id="dots";d.innerHTML='<div class="dots"><span></span><span></span><span></span></div>';m.appendChild(d);scrll();}
+function hideDots(){const d=ge("dots");if(d)d.remove();}
+function scrll(){setTimeout(()=>{const m=ge("msgs");if(m)m.scrollTop=m.scrollHeight;},40);}
+function send(){const i=ge("cin");if(!i)return;const t=i.value.trim();if(!t||bsy)return;i.value="";chat(t);}
+function qa(type){
+  const m={today:"What do I still need to take today?",meds:"Give me a summary of all my medicines.",supply:"Which medicines are running low?",add:"I'd like to add a new medicine.",interact:"Any interactions I should know about?",tips:"What tips, side effects or things should I know about my medicines?"};
+  if(type==="add"){chat(m.add);setTimeout(openAdd,600);return;}
+  chat(m[type]);
 }
- 
-function showTyping(){
-  var messages=document.getElementById('chatMessages');
-  if(!messages) return;
-  var div=document.createElement('div');
-  div.className='chat-bubble typing'; div.id='typingIndicator';
-  div.innerHTML='<div class="typing-dots"><span></span><span></span><span></span></div>';
-  messages.appendChild(div); scrollChatToBottom();
-}
- 
-function hideTyping(){ var el=document.getElementById('typingIndicator'); if(el) el.remove(); }
- 
-function scrollChatToBottom(){
-  setTimeout(function(){
-    var el=document.getElementById('chatMessages');
-    if(el) el.scrollTop=el.scrollHeight;
-  },50);
-}
- 
-function renderQuickReplies(){
-  var el=document.getElementById('quickReplies');
-  if(!el) return;
-  var replies=buildQuickReplies();
-  el.innerHTML=replies.map(function(r){
-    return '<button class="qr-btn" onclick="sendChatMessage(\''+r.replace(/'/g,"\\'")+'\')">'+ r +'</button>';
-  }).join('');
-}
- 
-function sendChat(){
-  var input=document.getElementById('chatInput');
-  if(!input) return;
-  var text=input.value.trim();
-  if(!text||chatWaiting) return;
-  input.value='';
-  sendChatMessage(text);
-}
- 
-async function sendChatMessage(text){
-  if(chatWaiting) return;
-  chatWaiting=true;
-  var qr=document.getElementById('quickReplies');
-  if(qr) qr.innerHTML='';
-  var sendBtn=document.getElementById('chatSendBtn');
-  if(sendBtn) sendBtn.disabled=true;
-  appendChatBubble('user',text);
-  chatHistory.push({role:'user',content:text});
-  showTyping();
+async function chat(txt){
+  if(bsy)return;bsy=true;
+  const sb=ge("sbtn");if(sb)sb.disabled=true;
+  addBbl("me",txt);cH.push({role:"user",content:txt});showDots();
   try{
-    var resp=await fetch(WORKER_URL,{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        model:'claude-sonnet-4-6',
-        max_tokens:400,
-        system:buildSystemPrompt(),
-        messages:chatHistory.filter(function(m){ return m.role!=='system'; })
-      })
-    });
-    var data=await resp.json();
-    if(!resp.ok) throw new Error('API '+resp.status);
-    var reply=(data.content||[]).find(function(b){ return b.type==='text'; });
-    reply=reply?reply.text:"Sorry, I didn't catch that.";
-    hideTyping();
-    appendChatBubble('ai',reply);
-    chatHistory.push({role:'assistant',content:reply});
-    checkForMedConfirmations(text);
-  }catch(err){
-    hideTyping();
-    appendChatBubble('ai',"Sorry, I'm having trouble connecting right now. Please check your internet and try again.");
-  }finally{
-    chatWaiting=false;
-    if(sendBtn) sendBtn.disabled=false;
-  }
+    const r=await fetch(WU,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:"claude-sonnet-4-6",max_tokens:400,system:buildSys(),messages:cH})});
+    const d=await r.json();if(!r.ok)throw new Error("API "+r.status);
+    const rep=(d.content||[]).find(b=>b.type==="text")?.text||"Sorry, I didn't catch that.";
+    hideDots();addBbl("ai",rep);cH.push({role:"assistant",content:rep});
+    chkTkn(txt);rAll();
+  }catch(e){hideDots();addBbl("ai","Sorry, I'm having trouble connecting. Please check your internet.");}
+  finally{bsy=false;if(sb)sb.disabled=false;}
+}
+function chkTkn(txt){
+  const lo=txt.toLowerCase();
+  if(!["taken","took","had","done","yes"].some(p=>lo.includes(p)))return;
+  const t=td();if(!chks[t])chks[t]={};let upd=false;
+  if(lo.includes("all")||lo.includes("everything")){meds.forEach(m=>{if(!chks[t][m.id]){chks[t][m.id]=new Date().toISOString();upd=true;}});}
+  else{meds.forEach(m=>{if(!chks[t][m.id]&&lo.includes(m.name.toLowerCase())){chks[t][m.id]=new Date().toISOString();upd=true;}});}
+  if(upd){localStorage.setItem(KC,JSON.stringify(chks));ge("done").style.display=done()?"flex":"none";}
 }
  
-function checkForMedConfirmations(text){
-  var lower=text.toLowerCase();
-  var takenPhrases=['taken','took','had','already','done','yes'];
-  if(!takenPhrases.some(function(p){ return lower.includes(p); })) return;
-  var today=todayKey();
-  if(!checks[today]) checks[today]={};
-  var updated=false;
-  if(lower.includes('all')||lower.includes('everything')){
-    meds.forEach(function(m){
-      if(!checks[today][m.id]){ checks[today][m.id]=new Date().toISOString(); updated=true; }
-    });
-  } else {
-    meds.forEach(function(m){
-      if(!checks[today][m.id]&&lower.includes(m.name.toLowerCase())){ checks[today][m.id]=new Date().toISOString(); updated=true; }
-    });
-  }
-  if(updated){
-    localStorage.setItem(LS_CHECKS,JSON.stringify(checks));
-    document.getElementById('allDoneBanner').style.display=allTakenToday()?'flex':'none';
-  }
+function askNotif(){
+  if(!("Notification" in window)){toast("Not supported");return;}
+  if(Notification.permission==="denied"){toast("Blocked — check settings");return;}
+  Notification.requestPermission().then(p=>{ge("nBtn").style.background=p==="granted"?"#f0faf4":"none";if(p==="granted"){toast("Reminders on!");sched();}});
+}
+function sched(){
+  nTm.forEach(t=>clearTimeout(t));nTm=[];
+  if(!("Notification" in window)||Notification.permission!=="granted")return;
+  meds.forEach(m=>{if(!m.notif)return;(m.tms||["Morning"]).forEach(t=>schedOne(m,t));});
+  const now=new Date(),mn=new Date(now.getFullYear(),now.getMonth(),now.getDate()+1,0,1);
+  nTm.push(setTimeout(sched,mn-now));
+}
+function schedOne(med,tn){
+  const h=THR[tn]||8,now=new Date(),fire=new Date(now.getFullYear(),now.getMonth(),now.getDate(),h,0,0);
+  if(fire<=now)return;
+  nTm.push(setTimeout(()=>{if(!(chks[td()]||{})[med.id])new Notification("Time for "+med.name,{body:(med.str?med.str+" · ":"")+(med.ppd||1)+" tablet(s)"+(med.who?" for "+med.who:""),tag:med.id+"-"+tn});},fire-now));
 }
  
- 
-function qaAction(type){
-  var msgs={
-    status:   "What medicines do I still need to take today?",
-    medicines: "Can you give me a summary of all my medicines?",
-    supplies:  "Which medicines are running low and need reordering?",
-    add:       "I'd like to add a new medicine.",
-    interactions: "Are there any interactions or things I should avoid with my current medicines?",
-    tips:      "What should I know about my medicines? Any tips, side effects or things to watch for?"
+// ADD MODAL
+function openAdd(){resetF();ge("addM").style.display="flex";}
+function clsAdd(){ge("addM").style.display="none";resetF();}
+function resetF(){
+  ph64=null;phMime=null;pN=null;pT=null;pQ=null;selT=["Morning"];
+  ["pF","cntF"].forEach(id=>{const e=ge(id);if(e)e.value="";});
+  ge("pPrev").style.display="none";ge("pZone").style.display="";
+  ge("scBtn").style.display="none";ge("rtBtn").style.display="none";
+  ge("scMsg").style.display="none";ge("scErr").style.display="none";
+  ge("mpBan").style.display="none";ge("pkt2F").style.display="none";ge("cntMsg").style.display="none";
+  ["fPer","fNm","fStr","fDr","fPh","fPhn","fAdr","fDt","fPkt"].forEach(id=>ge(id).value="");
+  ge("fPPD").value="1";ge("fFrq").value="Once daily";ge("fQt").value="";ge("fQt2").value="";ge("fRpt").value="";
+  ge("fTog").classList.add("on");buildTC();mTab("p");
+}
+function mTab(t){
+  ge("mta-p").classList.toggle("on",t==="p");ge("mta-m").classList.toggle("on",t==="m");
+  ge("mpP").style.display=t==="p"?"":"none";ge("mpM").style.display=t==="m"?"":"none";
+}
+function buildTC(){ge("tChp").innerHTML=TMS.map(t=>`<button type="button" class="tch${selT.includes(t)?" on":""}" onclick="togT('${t}',this)">${t}</button>`).join("");}
+function togT(n,b){if(selT.includes(n)){if(selT.length===1)return;selT=selT.filter(t=>t!==n);b.classList.remove("on");}else{selT.push(n);b.classList.add("on");}}
+function adj(id,d){const e=ge(id);e.value=Math.max(0,(parseFloat(e.value)||0)+d);}
+function onPh(inp){
+  const f=inp.files[0];if(!f)return;phMime=f.type||"image/jpeg";
+  const r=new FileReader();
+  r.onload=e=>{ph64=e.target.result.split(",")[1];ge("pPrev").src=e.target.result;ge("pPrev").style.display="";ge("pZone").style.display="none";ge("scBtn").style.display="";ge("rtBtn").style.display="";ge("scErr").style.display="none";};
+  r.readAsDataURL(f);
+}
+function retake(){ph64=null;phMime=null;ge("pF").value="";ge("pPrev").style.display="none";ge("pZone").style.display="";ge("scBtn").style.display="none";ge("rtBtn").style.display="none";}
+async function doScan(){
+  if(!ph64)return;ge("scBtn").disabled=true;ge("scMsg").style.display="";ge("scErr").style.display="none";
+  try{
+    const r=await fetch(WU,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:"claude-sonnet-4-6",max_tokens:1000,messages:[{role:"user",content:[{type:"image",source:{type:"base64",media_type:phMime,data:ph64}},{type:"text",text:`Read this Australian pharmacy label. ONLY return valid JSON:
+{"name":"","str":"strength","freq":"frequency","ppd":"pills/dose","qty":"total qty","rpts":"repeats","dr":"doctor","ph":"pharmacy name","phn":"phone","adr":"address","dt":"DD/MM/YY","pktN":"packet number if shown","pktT":"total packets if shown"}
+Empty string for unclear fields.`}]}]})});
+    const data=await r.json();if(!r.ok)throw new Error("API "+r.status+": "+JSON.stringify(data.error||data));
+    const txt=(data.content||[]).find(b=>b.type==="text")?.text||"";
+    const p=JSON.parse(txt.replace(/```json|```/g,"").trim());
+    ge("fNm").value=p.name||"";ge("fStr").value=p.str||"";ge("fPPD").value=p.ppd||"1";ge("fFrq").value=p.freq||"Once daily";
+    ge("fQt").value=p.qty||"";ge("fRpt").value=p.rpts||"";ge("fDr").value=p.dr||"";ge("fPh").value=p.ph||"";
+    ge("fPhn").value=p.phn||"";ge("fAdr").value=p.adr||"";ge("fDt").value=p.dt||"";
+    if(p.pktN&&p.pktT&&p.pktT!=="1"){pN=parseInt(p.pktN);pT=parseInt(p.pktT);pQ=parseFloat(p.qty)||0;ge("fPkt").value=p.pktN+" of "+p.pktT;ge("mpT").textContent="Packet "+p.pktN+" of "+p.pktT;ge("mpMsg").textContent=pN<pT?"Packet "+p.pktN+" of "+p.pktT+". What about the other packet?":"Last packet. Has the previous one been started?";ge("mpBan").style.display="";}
+    mTab("m");
+  }catch(e){ge("scErr").textContent="Error: "+e.message;ge("scErr").style.display="";mTab("m");}
+  finally{ge("scBtn").disabled=false;ge("scMsg").style.display="none";}
+}
+function scPkt2(){ge("mpBan").style.display="none";ge("p2F").click();}
+async function onP2(inp){
+  var f=inp.files[0];if(!f)return;var mime=f.type||"image/jpeg";toast("Reading second packet…");
+  var r=new FileReader();
+  r.onload=async function(e){
+    var b=e.target.result.split(",")[1];
+    try{
+      var res=await fetch(WU,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:"claude-sonnet-4-6",max_tokens:100,messages:[{role:"user",content:[{type:"image",source:{type:"base64",media_type:mime,data:b}},{type:"text",text:"Read the total quantity dispensed from this pharmacy label. Return only JSON with a qty field as a string number."}]}]})});
+      var d=await res.json();var t=(d.content||[]).find(function(b){return b.type==="text";});t=t?t.text:"";
+      var p=JSON.parse(t.replace(/```json|```/g,"").trim());
+      ge("fQt2").value=parseFloat(p.qty)||0;ge("pkt2F").style.display="";toast("Second packet added");
+    }catch(e){toast("Couldn't read — enter manually");entPkt2();}
   };
-  var msg=msgs[type];
-  if(!msg) return;
-  // If 'add', open modal directly
-  if(type==='add'){
-    sendChatMessage(msg);
-    setTimeout(function(){ openModal(); },600);
-    return;
-  }
-  sendChatMessage(msg);
+  r.readAsDataURL(f);
+}
+function entPkt2(){ge("mpBan").style.display="none";ge("pkt2F").style.display="";}
+function flPkt2(){ge("fQt2").value=pQ||"";ge("pkt2F").style.display="";ge("mpBan").style.display="none";toast("Full second packet added");}
+async function cntPills(inp){
+  var f=inp.files[0];if(!f)return;var mime=f.type||"image/jpeg";ge("cntMsg").style.display="";
+  var r=new FileReader();
+  r.onload=async function(e){
+    var b=e.target.result.split(",")[1];
+    try{
+      var res=await fetch(WU,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:"claude-sonnet-4-6",max_tokens:100,messages:[{role:"user",content:[{type:"image",source:{type:"base64",media_type:mime,data:b}},{type:"text",text:"Count the tablets or capsules visible in this image. Return only JSON with a count field as a string number, or empty string if unclear."}]}]})});
+      var d=await res.json();var t=(d.content||[]).find(function(b){return b.type==="text";});t=t?t.text:"";
+      var p=JSON.parse(t.replace(/```json|```/g,"").trim());
+      if(p.count){ge("fQt").value=p.count;toast("Counted "+p.count+" tablets");}else toast("Couldn't count — adjust manually");
+    }catch(e){toast("Couldn't count — adjust manually");}
+    finally{ge("cntMsg").style.display="none";inp.value="";}
+  };
+  r.readAsDataURL(f);
+}
+function addMed(){
+  const name=ge("fNm").value.trim();if(!name){toast("Please enter a medicine name");return;}
+  const q1=parseFloat(ge("fQt").value)||0,q2=parseFloat(ge("fQt2").value)||0;
+  meds.push({id:Date.now().toString(),at:new Date().toISOString(),who:ge("fPer").value.trim(),name,str:ge("fStr").value.trim(),ppd:ge("fPPD").value||"1",freq:ge("fFrq").value,tms:[...selT],qty:String(q1+q2||""),rpts:ge("fRpt").value,dr:ge("fDr").value.trim(),ph:ge("fPh").value.trim(),phn:ge("fPhn").value.trim(),adr:ge("fAdr").value.trim(),dt:ge("fDt").value.trim(),pkt:ge("fPkt").value.trim(),notif:ge("fTog").classList.contains("on")});
+  save();sched();clsAdd();toast("&#x1F48A; "+(ge("fPer").value.trim()?ge("fPer").value.trim()+": ":"")+name+" added!");rAll();
 }
  
+// EDIT MODAL
+function opnEdt(id){
+  const m=meds.find(m=>m.id===id);if(!m)return;edId=id;
+  ge("ePer").value=m.who||"";ge("eNm").value=m.name||"";ge("eStr").value=m.str||"";ge("ePPD").value=m.ppd||"1";ge("eFrq").value=m.freq||"Once daily";ge("eQt").value=m.qty||"";ge("eRpt").value=m.rpts||"";ge("eDr").value=m.dr||"";ge("ePh").value=m.ph||"";ge("ePhn").value=m.phn||"";ge("eDt").value=m.dt||"";ge("eAdr").value=m.adr||"";
+  const tog=ge("eTog");if(m.notif)tog.classList.add("on");else tog.classList.remove("on");
+  ge("edtM").style.display="flex";
+}
+function clsEdt(){ge("edtM").style.display="none";edId=null;}
+function svEdt(){
+  if(!edId)return;const name=ge("eNm").value.trim();if(!name){toast("Please enter a name");return;}
+  meds=meds.map(m=>m.id!==edId?m:{...m,who:ge("ePer").value.trim(),name,str:ge("eStr").value.trim(),ppd:ge("ePPD").value||"1",freq:ge("eFrq").value,qty:ge("eQt").value,rpts:ge("eRpt").value,dr:ge("eDr").value.trim(),ph:ge("ePh").value.trim(),phn:ge("ePhn").value.trim(),dt:ge("eDt").value.trim(),adr:ge("eAdr").value.trim(),notif:ge("eTog").classList.contains("on")});
+  save();sched();clsEdt();toast("Updated "+name);rAll();
+}
+function dlMed(){
+  if(!edId)return;const m=meds.find(m=>m.id===edId);if(!m)return;
+  if(confirm("Remove "+m.name+"?")){meds=meds.filter(m=>m.id!==edId);save();sched();clsEdt();toast("Removed "+m.name);rAll();}
+}
  
-// ─── INIT ─────────────────────────────────────────────────────
-window.addEventListener('DOMContentLoaded', function() {
-  updateNotifBtn();
-  buildTimeChips();
-  scheduleAllNotifications();
-  updateAlertBadge();
-  if(!primaryUserName){
-    setTimeout(function(){
-      var n=prompt("Welcome to Gail's Pills!\n\nWhat's your name?");
-      if(n&&n.trim()){primaryUserName=n.trim();localStorage.setItem(LS_USER,primaryUserName);}
+function chgName(){const n=prompt("What's your name?",usr||"");if(n!==null&&n.trim()){usr=n.trim();localStorage.setItem(KU,usr);rdy=false;toast("Hi "+usr+"!");if(pg==="c")renderChat();}}
+function toast(msg){const t=document.querySelector(".toast");if(t)t.remove();if(tTm)clearTimeout(tTm);const d=document.createElement("div");d.className="toast";d.textContent=msg;document.body.appendChild(d);tTm=setTimeout(()=>d&&d.remove(),2500);}
+ 
+document.addEventListener("DOMContentLoaded",()=>{
+  ge("dp").textContent=fd(new Date());
+  if("Notification" in window&&Notification.permission==="granted") ge("nBtn").style.background="#f0faf4";
+  sched();rAll();buildTC();
+  if(!usr){
+    setTimeout(()=>{
+      const n=prompt("Welcome to Gail's Pills!\n\nWhat's your name?");
+      if(n&&n.trim()){usr=n.trim();localStorage.setItem(KU,usr);}
       renderChat();
     },300);
-  } else { renderChat(); }
-  if('Notification' in window && Notification.permission==='default'){
-    setTimeout(function(){
-      if(confirm("Can Gail's Pills send reminders?")) requestNotifications();
-    },2500);
+  } else renderChat();
+  if("Notification" in window&&Notification.permission==="default"){
+    setTimeout(()=>{if(confirm("Can Gail's Pills send reminders?"))askNotif();},2500);
   }
 });
- 
-// ─── EDIT MEDICINE ────────────────────────────────────────────
- 
-function openEditModal(id) {
-  var med = meds.find(function(m){ return m.id === id; });
-  if(!med) return;
-  editingMedId = id;
-  document.getElementById('eName').value           = med.person          || '';
-  document.getElementById('eMedName').value        = med.name            || '';
-  document.getElementById('eStrength').value       = med.strength        || '';
-  document.getElementById('ePPD').value            = med.pillsPerDose    || '1';
-  document.getElementById('eFreq').value           = med.frequency       || 'Once daily';
-  document.getElementById('eQty').value            = med.totalQty        || '';
-  document.getElementById('eRepeats').value        = med.repeatsLeft     || '';
-  document.getElementById('eDoctor').value         = med.doctor          || '';
-  document.getElementById('ePharmacyName').value   = med.pharmacyName    || '';
-  document.getElementById('ePharmacyPhone').value  = med.pharmacyPhone   || '';
-  document.getElementById('eDispensedDate').value  = med.dispensedDate   || '';
-  document.getElementById('ePharmacyAddress').value= med.pharmacyAddress || '';
-  var toggle = document.getElementById('eNotifToggle');
-  if(med.reminders) toggle.classList.add('on'); else toggle.classList.remove('on');
-  document.getElementById('editModal').style.display = 'flex';
-}
- 
-function closeEditModal() {
-  document.getElementById('editModal').style.display = 'none';
-  editingMedId = null;
-}
- 
-function editStepQty(delta) {
-  var el = document.getElementById('eQty');
-  el.value = Math.max(0, (parseFloat(el.value) || 0) + delta);
-}
- 
-function saveEditMed() {
-  if(!editingMedId) return;
-  var name = document.getElementById('eMedName').value.trim();
-  if(!name) { showToast('Please enter a medicine name'); return; }
-  meds = meds.map(function(m) {
-    if(m.id !== editingMedId) return m;
-    return {
-      id:              m.id,
-      addedAt:         m.addedAt,
-      person:          document.getElementById('eName').value.trim(),
-      name:            name,
-      strength:        document.getElementById('eStrength').value.trim(),
-      pillsPerDose:    document.getElementById('ePPD').value || '1',
-      frequency:       document.getElementById('eFreq').value,
-      reminderTimes:   m.reminderTimes || ['Morning'],
-      totalQty:        document.getElementById('eQty').value,
-      repeatsLeft:     document.getElementById('eRepeats').value,
-      doctor:          document.getElementById('eDoctor').value.trim(),
-      pharmacyName:    document.getElementById('ePharmacyName').value.trim(),
-      pharmacyPhone:   document.getElementById('ePharmacyPhone').value.trim(),
-      dispensedDate:   document.getElementById('eDispensedDate').value.trim(),
-      pharmacyAddress: document.getElementById('ePharmacyAddress').value.trim(),
-      packetInfo:      m.packetInfo || '',
-      reminders:       document.getElementById('eNotifToggle').classList.contains('on')
-    };
-  });
-  persist();
-  scheduleAllNotifications();
-  closeEditModal();
-  showToast('✓ ' + name + ' updated');
-  if(currentPage === 'medicines') renderMedicines();
-}
- 
-function confirmDeleteMed() {
-  if(!editingMedId) return;
-  var med = meds.find(function(m){ return m.id === editingMedId; });
-  if(!med) return;
-  if(confirm('Remove ' + med.name + '? This cannot be undone.')) {
-    meds = meds.filter(function(m){ return m.id !== editingMedId; });
-    persist();
-    scheduleAllNotifications();
-    closeEditModal();
-    showToast('Removed ' + med.name);
-    if(currentPage === 'medicines') renderMedicines();
-  }
-}
- 
- 
-// ─── PRIMARY USER ─────────────────────────────────────────────
-function changePrimaryUser() {
-  var n = prompt("What's your name?", primaryUserName || '');
-  if(n !== null && n.trim()) {
-    primaryUserName = n.trim();
-    localStorage.setItem(LS_USER, primaryUserName);
-    chatReady = false;
-    showToast('Hi ' + primaryUserName + '!');
-    if(currentPage === 'chat') renderChat();
-  }
-}
- 
- 
- 
- 
 </script>
 </body>
 </html>
