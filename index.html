@@ -606,7 +606,25 @@ function deleteMed(id){
 // switchPage handles navigation
  
 function switchPage(name){
-  setTimeout(function(){ switchPage(name); },200);
+  currentPage = name;
+  // Hide all pages
+  document.querySelectorAll('.page, #pagechat').forEach(function(el){
+    el.classList.remove('active');
+  });
+  // Show selected page
+  var page = document.getElementById('page'+name);
+  if(page) page.classList.add('active');
+  // Update nav bar highlight
+  document.querySelectorAll('.nav-btn').forEach(function(b){
+    b.classList.remove('active');
+  });
+  var navBtn = document.getElementById('nav-'+name);
+  if(navBtn) navBtn.classList.add('active');
+  // Render content
+  if(name==='chat')      renderChat();
+  else if(name==='today')     renderToday();
+  else if(name==='medicines') renderMedicines();
+  else if(name==='alerts')    renderAlerts();
 }
  
 // ─── MODAL ────────────────────────────────────────────────────
