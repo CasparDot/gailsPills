@@ -145,6 +145,18 @@ nav{position:fixed;bottom:0;left:0;right:0;height:calc(var(--nav) + env(safe-are
 @keyframes pls{0%,100%{opacity:1}50%{opacity:.4}}
 @keyframes tin{from{opacity:0;transform:translateX(-50%) translateY(8px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
 @keyframes fu{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+ 
+.mrga{background:#e8f4ff;border:1.5px solid #90caf9;border-radius:12px;padding:13px 14px;margin-bottom:12px;display:flex;gap:10px;align-items:flex-start}
+.mrga-ico{font-size:22px;flex-shrink:0}
+.mrga-body{flex:1;font-size:13px;color:#1a237e}
+.mrga-body strong{display:block;margin-bottom:3px;font-size:13px}
+.merge-existing-info{display:block;margin-bottom:8px;color:#283593}
+.mrga-btns{display:flex;flex-direction:column;gap:6px}
+.mrga-btn{padding:9px 12px;border-radius:9px;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;border:none;text-align:left}
+.mrga-btn.yes{background:#1565c0;color:#fff}
+.mrga-btn.no{background:#e3f2fd;color:#1565c0}
+.mbtn.mrg{background:#e8f4ff;border-color:#90caf9;color:#1565c0}
+.budg{text-align:center;font-size:12px;padding:4px 16px 2px;font-weight:600}
 </style>
 </head>
 <body>
@@ -174,6 +186,7 @@ nav{position:fixed;bottom:0;left:0;right:0;height:calc(var(--nav) + env(safe-are
       <button class="qab" onclick="qa('interact')">&#x1F52C; Interactions</button>
       <button class="qab" onclick="qa('tips')">&#x1F4A1; Tips</button>
     </div>
+    <div class="budg" id="chatBudget" style="display:none"></div>
     <div class="inr">
       <input class="ci" id="ci" placeholder="Type a message..." onkeydown="if(event.key==='Enter')send()">
       <button class="sb" id="sBtn" onclick="send()">&#x27A4;</button>
@@ -228,6 +241,17 @@ nav{position:fixed;bottom:0;left:0;right:0;height:calc(var(--nav) + env(safe-are
       <div class="sce" id="scE" style="display:none"></div>
     </div>
     <div id="mpM" style="display:none">
+      <div class="mrga" id="mergeAlert" style="display:none">
+        <div class="mrga-ico">&#x1F4CB;</div>
+        <div class="mrga-body">
+          <strong>Already in your list:</strong>
+          <span class="merge-existing-info"></span>
+          <div class="mrga-btns">
+            <button class="mrga-btn yes" onclick="mergeWithExisting()">Add tablets to existing entry</button>
+            <button class="mrga-btn no" onclick="document.getElementById('mergeAlert').style.display='none'">Add as separate entry</button>
+          </div>
+        </div>
+      </div>
       <div class="mpb" id="mpBn" style="display:none">
         <h4 id="mpT">&#x1F4E6; Multiple packets</h4>
         <p id="mpMg"></p>
@@ -312,12 +336,12 @@ nav{position:fixed;bottom:0;left:0;right:0;height:calc(var(--nav) + env(safe-are
  
 <input type="file" id="impF" accept=".json" style="display:none" onchange="impData(this)">
 <input type="file" id="p2Pf" accept="image/*" capture="environment" style="display:none" onchange="onP2(this)">
- 
 <script>
 const WU="https://gails-pills-proxy.casparlewis.workers.dev";
-const KM="gp-meds-v5",KC="gp-chks-v5",KU="gp-usr-v1";
+const KM="gp-meds-v5",KC="gp-chks-v5",KU="gp-usr-v1",KCH="gp-chat-v1";
 const TMS=["Morning","Midday","Afternoon","Night"];
 const THR={Morning:8,Midday:12,Afternoon:15,Night:21};
+const CHAT_DAILY_LIMIT=20;
  
 let meds=JSON.parse(localStorage.getItem(KM)||"[]");
 let chks=JSON.parse(localStorage.getItem(KC)||"{}");
@@ -336,6 +360,17 @@ const allDone=()=>meds.length&&meds.every(m=>(chks[td()]||{})[m.id]);
 const fil=()=>who==="All"?meds:meds.filter(m=>(m.who||"")===who);
 const ge=id=>document.getElementById(id);
 const qs=s=>document.querySelectorAll(s);
+ 
+// ── CHAT BUDGET ────────────────────────────────────────────────
+function getChatUsage(){
+  try{const d=JSON.parse(localStorage.getItem(KCH)||"{}");return d.date===td()?d.count||0:0;}catch(e){return 0;}
+}
+function incChatUsage(){
+  const c=getChatUsage()+1;
+  localStorage.setItem(KCH,JSON.stringify({date:td(),count:c}));
+  return c;
+}
+function chatRemaining(){return Math.max(0,CHAT_DAILY_LIMIT-getChatUsage());}
  
 // ── PERSIST ────────────────────────────────────────────────────
 function save(){
@@ -419,6 +454,15 @@ function undo(id){const t=td(); if(chks[t]) delete chks[t][id]; save(); rAll();}
 function renderM(){
   const l=ge("mlist");
   if(!meds.length){l.innerHTML='<div class="emp" style="padding:16px 0"><p>No medicines yet.</p></div>'; return;}
+ 
+  // Find duplicates (same name+str+who)
+  const dupeKeys={};
+  meds.forEach(m=>{
+    const k=(m.name+"|"+(m.str||"")+"|"+(m.who||"")).toLowerCase();
+    if(!dupeKeys[k]) dupeKeys[k]=[];
+    dupeKeys[k].push(m.id);
+  });
+ 
   l.innerHTML=meds.map(m=>{
     const d=dy(m);
     const bar=d!==null?`<div class="bw"><div class="bg"><div class="bf" style="width:${Math.min(100,(d/30)*100)}%;background:${sc(d)}"></div></div><div class="bl"><span>${d} days left</span><span>${m.rpts?m.rpts+" repeat"+(m.rpts!=="1"?"s":""):"no repeats"}</span></div></div>`:"";
@@ -429,9 +473,36 @@ function renderM(){
       m.dt?"&#x1F4C5; Dispensed "+m.dt:"",
       m.notif?"&#x1F514; "+(m.tms||[]).join(", "):"",
     ].filter(Boolean).map(e=>`<div class="me">${e}</div>`).join("");
-    return `<div class="mc"><div class="mh"><div style="flex:1;min-width:0">${m.who?`<div class="mw">${m.who}</div>`:""}<div class="mn">${m.name}</div><div class="md">${[m.str,m.freq].filter(Boolean).join(" \u00b7 ")}</div>${ext}</div><div class="mb"><button class="mbtn" onclick="opnEdt('${m.id}')">&#x270F;&#xFE0F;</button><button class="mbtn" onclick="dlById('${m.id}')">&#x1F5D1;</button></div></div>${bar}</div>`;
+ 
+    // Show merge button if duplicates exist
+    const k=(m.name+"|"+(m.str||"")+"|"+(m.who||"")).toLowerCase();
+    const dupes=dupeKeys[k];
+    const mergeBtn=dupes&&dupes.length>1?`<button class="mbtn mrg" onclick="mergeMeds('${k}')" title="Merge duplicate entries">&#x1F4CB;</button>`:"";
+ 
+    return `<div class="mc" id="mc-${m.id}"><div class="mh"><div style="flex:1;min-width:0">${m.who?`<div class="mw">${m.who}</div>`:""}<div class="mn">${m.name}</div><div class="md">${[m.str,m.freq].filter(Boolean).join(" \u00b7 ")}</div>${ext}</div><div class="mb">${mergeBtn}<button class="mbtn" onclick="opnEdt('${m.id}')">&#x270F;&#xFE0F;</button><button class="mbtn" onclick="dlById('${m.id}')">&#x1F5D1;</button></div></div>${bar}</div>`;
   }).join("");
 }
+ 
+// ── MERGE DUPLICATES ───────────────────────────────────────────
+function mergeMeds(key){
+  const matches=meds.filter(m=>(m.name+"|"+(m.str||"")+"|"+(m.who||"")).toLowerCase()===key);
+  if(matches.length<2) return;
+  const names=matches.map(m=>m.name+" ("+( m.qty||"?")+")").join(" + ");
+  if(!confirm("Merge these entries?\n\n"+names+"\n\nQuantities will be combined. The most recent details will be kept.")) return;
+ 
+  // Keep the most recently added entry, sum all quantities
+  const keeper={...matches.sort((a,b)=>b.id-a.id)[0]};
+  const totalQty=matches.reduce((s,m)=>s+(parseFloat(m.qty)||0),0);
+  keeper.qty=String(totalQty);
+ 
+  // Remove all matches, add merged keeper
+  const otherIds=new Set(matches.map(m=>m.id));
+  meds=meds.filter(m=>!otherIds.has(m.id));
+  meds.push(keeper);
+  save(); renderM();
+  toast("Merged \u2014 "+totalQty+" tablets combined");
+}
+ 
 function dlById(id){if(!confirm("Remove this medicine?"))return; meds=meds.filter(m=>m.id!==id); save(); sched(); rAll();}
  
 // ── ALERTS ─────────────────────────────────────────────────────
@@ -462,7 +533,7 @@ function buildSys(){
     const d=dy(m);
     return "- "+m.name+(m.str?" "+m.str:"")+" ("+m.freq+")"+(m.who?" for "+m.who:"")+": "+tk+". "+(d!==null?d+" days left":"unknown supply")+", "+(m.rpts||"no")+" repeats."+(m.dr?" Dr:"+m.dr:"")+(m.pn?" Ph:"+m.pn:"");
   });
-  return "You are a warm caring medication helper called Gail's Pills, like a trusted knowledgeable friend. Today: "+fd(new Date())+" ("+tod+"). User: "+(usr||"unknown")+". MEDICINES: "+(ml.length?ml.join("; "):"None yet.")+". ROLE: Daily reminders, health companion, reorder support. HEALTH GUIDANCE: Share drug interactions (e.g. grapefruit+calcium channel blockers like Felodipine), foods/supplements to avoid, medicines never to stop suddenly, side effects worth knowing, symptoms to watch. Frame research findings as something to ask your doctor about. RULES: Informational only, always defer to prescribing doctor/pharmacist, keep responses short (2-4 sentences for check-ins), suggest Today tab to mark medicines as taken. Tone: warm caring knowledgeable friend.";
+  return "You are a warm caring medication helper called Gail's Pills, like a trusted knowledgeable friend. Today: "+fd(new Date())+" ("+tod+"). User: "+(usr||"unknown")+". MEDICINES: "+(ml.length?ml.join("; "):"None yet.")+". ROLE: Daily reminders, health companion, reorder support. HEALTH GUIDANCE: Share drug interactions (e.g. grapefruit+calcium channel blockers like Felodipine, Simvastatin interactions, Metformin timing), foods/supplements to avoid, medicines never to stop suddenly (Clonidine, Ramipril), side effects worth knowing, symptoms to watch. Frame research findings as something to ask your doctor about. RULES: Informational only, always defer to prescribing doctor/pharmacist, keep responses short (2-4 sentences for check-ins), suggest Today tab to mark medicines as taken. Tone: warm caring knowledgeable friend.";
 }
 function openMsg(){
   const tc=chks[td()]||{};
@@ -492,7 +563,20 @@ function renderChat(){
   } else {
     cH.forEach(h=>addBbl(h.role==="assistant"?"ai":"me",h.content));
   }
+  updateChatBudgetUI();
   scrll();
+}
+function updateChatBudgetUI(){
+  const rem=chatRemaining();
+  const el=ge("chatBudget");
+  if(!el) return;
+  if(rem<=5){
+    el.textContent=rem===0?"Chat limit reached for today":""+rem+" messages left today";
+    el.style.display="block";
+    el.style.color=rem===0?"var(--rbd)":"var(--pale)";
+  } else {
+    el.style.display="none";
+  }
 }
 function addBbl(role,txt){
   const m=ge("msgs"); if(!m) return;
@@ -519,14 +603,28 @@ function qa(type){
   chat(m[type]);
 }
 async function chat(txt){
-  if(bsy) return; bsy=true;
+  if(bsy) return;
+ 
+  // Check budget
+  if(chatRemaining()<=0){
+    addBbl("ai","I've used my chat allowance for today ("+CHAT_DAILY_LIMIT+" messages). For general questions try Claude at claude.ai or ChatGPT \u2014 I'll still track your medicines as normal and the Today tab is always available!");
+    return;
+  }
+ 
+  bsy=true;
   const sb=ge("sBtn"); if(sb) sb.disabled=true;
   addBbl("me",txt); cH.push({role:"user",content:txt}); showDots();
+ 
+  // Trim history to last 10 messages to control token use
+  const trimmedH=cH.slice(-10);
+ 
   try{
-    const r=await fetch(WU,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:"claude-sonnet-4-6",max_tokens:400,system:buildSys(),messages:cH})});
+    const r=await fetch(WU,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:"claude-sonnet-4-6",max_tokens:400,system:buildSys(),messages:trimmedH})});
     const d=await r.json(); if(!r.ok) throw new Error("API "+r.status);
     const rep=(d.content||[]).find(b=>b.type==="text")?.text||"Sorry, I didn't catch that.";
     hideDots(); addBbl("ai",rep); cH.push({role:"assistant",content:rep});
+    incChatUsage();
+    updateChatBudgetUI();
     chkTkn(txt); rAll();
   }catch(e){
     hideDots(); addBbl("ai","Sorry, I'm having trouble connecting. Please check your internet.");
@@ -546,10 +644,11 @@ function chkTkn(txt){
  
 // ── NOTIFICATIONS ──────────────────────────────────────────────
 function askNotif(){
-  if(!("Notification" in window)){toast("Not supported"); return;}
+  if(!("Notification" in window)){toast("Not supported on this browser"); return;}
   if(Notification.permission==="denied"){toast("Blocked \u2014 check browser settings"); return;}
   Notification.requestPermission().then(p=>{
     if(p==="granted"){ ge("nBtn").style.background="#f0faf4"; toast("Reminders on!"); sched(); }
+    else toast("Reminders not enabled");
   });
 }
 function sched(){
@@ -579,7 +678,9 @@ function resetF(){
   ge("scB").style.display="none"; ge("rtB").style.display="none";
   ge("scM").style.display="none"; ge("scE").style.display="none";
   ge("mpBn").style.display="none"; ge("p2F").style.display="none"; ge("cM").style.display="none";
-  ["fPr","fNm","fSt","fDr","fPh","fPn","fAd","fDt","fPk"].forEach(id=>ge(id).value="");
+  ["fNm","fSt","fDr","fPh","fPn","fAd","fDt","fPk"].forEach(id=>ge(id).value="");
+  // Pre-fill "For" with user's name
+  ge("fPr").value=usr||"";
   ge("fPD").value="1"; ge("fFq").value="Once daily";
   ge("fQt").value=""; ge("fQ2").value=""; ge("fRp").value="";
   ge("fTg").classList.add("on"); buildTC(); mTab("p");
@@ -615,6 +716,10 @@ async function doScan(){
     ge("fFq").value=p.freq||"Once daily"; ge("fQt").value=p.qty||""; ge("fRp").value=p.rpts||"";
     ge("fDr").value=p.dr||""; ge("fPh").value=p.ph||""; ge("fPn").value=p.phn||"";
     ge("fAd").value=p.adr||""; ge("fDt").value=p.dt||"";
+    // fPr already pre-filled with usr; only override if label has a different patient name
+    if(p.patientName&&p.patientName.trim()&&p.patientName.trim().toLowerCase()!==usr.toLowerCase()){
+      ge("fPr").value=p.patientName.trim();
+    }
     if(p.pktN&&p.pktT&&p.pktT!=="1"){
       pN=parseInt(p.pktN); pT=parseInt(p.pktT); pQ=parseFloat(p.qty)||0;
       ge("fPk").value=p.pktN+" of "+p.pktT;
@@ -622,10 +727,34 @@ async function doScan(){
       ge("mpMg").textContent=pN<pT?"This is packet "+p.pktN+" of "+p.pktT+". What about the other packet?":"Last packet. Has the previous one been started?";
       ge("mpBn").style.display="";
     }
+    // Check for existing medicine with same name+str+who — offer to merge
+    const scanWho=ge("fPr").value.trim();
+    const scanName=(p.name||"").toLowerCase();
+    const scanStr=(p.str||"").toLowerCase();
+    const existing=meds.find(m=>m.name.toLowerCase()===scanName&&(m.str||"").toLowerCase()===scanStr&&(m.who||"").toLowerCase()===scanWho.toLowerCase());
+    if(existing){
+      ge("mergeAlert").style.display="";
+      ge("mergeAlert").dataset.existingId=existing.id;
+      ge("mergeAlert").querySelector(".merge-existing-info").textContent=
+        existing.name+(existing.str?" "+existing.str:"")+(existing.who?" for "+existing.who:"")+" \u2014 "+( existing.qty||"?")+` tablets remaining`;
+    } else {
+      ge("mergeAlert").style.display="none";
+    }
     mTab("m");
   }catch(e){ge("scE").textContent="Error: "+e.message; ge("scE").style.display=""; mTab("m");}
   finally{ge("scB").disabled=false; ge("scM").style.display="none";}
 }
+ 
+function mergeWithExisting(){
+  const alert=ge("mergeAlert");
+  const existId=alert.dataset.existingId;
+  const existing=meds.find(m=>m.id===existId); if(!existing) return;
+  const newQty=(parseFloat(ge("fQt").value)||0)+(parseFloat(ge("fQ2").value)||0);
+  const combined=(parseFloat(existing.qty)||0)+newQty;
+  meds=meds.map(m=>m.id!==existId?m:{...m,qty:String(combined),rpts:ge("fRp").value||m.rpts,dt:ge("fDt").value||m.dt});
+  save(); clsAdd(); toast("\uD83D\uDC8A Added "+newQty+" tablets to "+existing.name+" \u2014 now "+combined+" total"); rAll();
+}
+ 
 function scPkt2(){ge("mpBn").style.display="none"; ge("p2Pf").click();}
 async function onP2(inp){
   const f=inp.files[0]; if(!f) return; const mime=f.type||"image/jpeg"; toast("Reading second packet...");
@@ -741,6 +870,7 @@ document.addEventListener("DOMContentLoaded",()=>{
     setTimeout(()=>{if(confirm("Can Gail's Pills send reminders?")) askNotif();},2500);
   }
 });
+ 
 </script>
 </body>
 </html>
